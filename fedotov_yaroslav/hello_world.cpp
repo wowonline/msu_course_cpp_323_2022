@@ -6,3 +6,4 @@ int main() {
   std::cout << "Федотов Ярослав" << std::endl;
   return 0;
 }
+
