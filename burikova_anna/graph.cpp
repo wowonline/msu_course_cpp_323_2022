@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-int kVerticesCount=14;
+int kVerticesCount = 14;
 
 class Graph {
   using VertexId = int;
