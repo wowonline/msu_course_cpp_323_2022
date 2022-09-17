@@ -1,29 +1,44 @@
-// uncomment the 85nd line to output the graph
-
+#include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <vector>
 
 class Graph {
+ private:
   using VertexId = int;
   using EdgeId = int;
 
  public:
-  void add_vertex() { kVerticesCount++; }
+  void add_vertex() { vertices_.emplace_back(Vertex(gen_new_vertex_id())); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    edges.emplace(edges.end(),
-                  (Edge(kEdgesCount++, from_vertex_id, to_vertex_id)));
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
+    edges_.emplace_back(
+        (Edge(gen_new_edge_id(), from_vertex_id, to_vertex_id)));
   }
 
-  // Run through all edges and show connected vertices by each one of them
   void show_graph() const {
-    for (const auto& edge : edges) {
+    for (const auto& edge : edges_) {
       std::cout << edge.id() << " : " << edge.from_vertex_id() << " --> "
                 << edge.to_vertex_id() << std::endl;
     }
   }
 
  private:
+  bool has_vertex(VertexId id) const {
+    if (std::any_of(vertices_.begin(), vertices_.end(),
+                    [&id](Vertex v) { return v.id() == id; })) {
+      return true;
+    }
+
+    return false;
+  }
+
+  EdgeId gen_new_edge_id() { return kEdgesCount_++; }
+
+  VertexId gen_new_vertex_id() { return kVerticesCount_++; }
+
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -50,13 +65,14 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  VertexId kVerticesCount = 0;
-  EdgeId kEdgesCount = 0;
-  std::vector<Edge> edges;
+  VertexId kVerticesCount_ = 0;
+  EdgeId kEdgesCount_ = 0;
+  std::vector<Edge> edges_;
+  std::vector<Vertex> vertices_;
 };
 
 int main() {
-  enum { kVerticesCount = 13 };
+  static constexpr int kVerticesCount = 14;
   auto graph = Graph();
 
   for (int i = 0; i < kVerticesCount; i++) {
@@ -82,7 +98,7 @@ int main() {
   graph.add_edge(11, 13);
   graph.add_edge(12, 13);
 
-  // graph.show_graph();
+  graph.show_graph();
 
   return 0;
 }
