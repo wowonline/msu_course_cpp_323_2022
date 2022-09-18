@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vector>
 
 constexpr int kVerticesCount = 14;
@@ -8,13 +7,10 @@ class Graph {
   using VertexId = int;
   using EdgeId = int;
 
-  void add_vertex() {
-    vertices.emplace(vertices.end(), (Vertex(vertex_id_++)));
-  };
+  void add_vertex() { vertices_.emplace_back(Vertex(get_new_vertex_id())); };
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    edges.emplace(edges.end(),
-                  (Edge(edge_id_++, from_vertex_id, to_vertex_id)));
+    edges_.emplace_back(Edge(get_new_edge_id(), from_vertex_id, to_vertex_id));
   };
 
  private:
@@ -43,10 +39,14 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  VertexId vertex_id_ = 0;
-  EdgeId edge_id_ = 0;
-  std::vector<Edge> edges;
-  std::vector<Vertex> vertices;
+  VertexId current_vertex_id_ = 0;
+  EdgeId current_edge_id_ = 0;
+
+  VertexId get_new_vertex_id() { return current_vertex_id_++; }
+  EdgeId get_new_edge_id() { return current_edge_id_++; }
+
+  std::vector<Edge> edges_;
+  std::vector<Vertex> vertices_;
 };
 
 int main() {
