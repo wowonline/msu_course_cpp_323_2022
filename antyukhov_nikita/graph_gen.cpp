@@ -53,7 +53,7 @@ int main() {
   const int kVerticesCount = 14;
   auto graph = Graph();
 
-  for (int j = 0; j < kVerticesCount; j++) {
+  for (int i = 0; i < kVerticesCount; i++) {
     graph.add_vertex();
   }
 
