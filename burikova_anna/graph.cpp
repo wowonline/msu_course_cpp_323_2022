@@ -4,8 +4,13 @@
 int kVerticesCount = 14;
 
 class Graph {
+ public:
   using VertexId = int;
   using EdgeId = int;
+  void add_vertex();
+  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
+
+ private:
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -29,37 +34,22 @@ class Graph {
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
   };
-  std::vector<Vertex> vertexes;
-  std::vector<Edge> edges;
 
- public:
-  void add_vertex();
-  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
-  void print_vertexes() {
-    std::cout << "Vertexes:";
-    for (int i = 0; i < vertexes.size(); ++i) {
-      std::cout << vertexes[i].id() << " ";
-    }
-    std::cout << std::endl;
-  }
-  void print_edges() {
-    std::cout << "Edges:" << std::endl;
-    for (int i = 0; i < edges.size(); ++i) {
-      std::cout << "edge " << edges[i].id() << " : ";
-      std::cout << "(" << edges[i].from_vertex_id() << ", "
-                << edges[i].to_vertex_id() << ")" << std::endl;
-    }
-  }
+  std::vector<Vertex> vertices_;
+  std::vector<Edge> edges_;
+  int last_vertex_id_ = 0;
+  int last_edge_id_ = 0;
+
+  VertexId get_new_vertex_id() { return last_vertex_id_++; }
+  EdgeId get_new_edge_id() { return last_edge_id_++; }
 };
 
 void Graph::add_vertex() {
-  struct Vertex vertex(vertexes.size());
-  vertexes.push_back(vertex);
+  vertices_.emplace_back(Vertex(get_new_vertex_id()));
 }
 
 void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-  struct Edge edge(edges.size(), from_vertex_id, to_vertex_id);
-  edges.push_back(edge);
+  edges_.emplace_back(Edge(get_new_edge_id(), from_vertex_id, to_vertex_id));
 }
 
 int main() {
