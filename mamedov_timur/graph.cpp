@@ -2,14 +2,13 @@
 #include <vector>
 
 class Graph {
+ public:
   using VertexId = int;
   using EdgeId = int;
-
- public:
-  void add_vertex() { vertexes.emplace_back(vertexes.size()); }
+  void add_vertex() { vertexes_.emplace_back(get_new_vertex_id()); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    edges.emplace_back(edges.size(), from_vertex_id, to_vertex_id);
+    edges_.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
   }
 
  private:
@@ -19,8 +18,11 @@ class Graph {
 
     VertexId id() const { return id_; }
 
+    VertexId get_new_vertex_id() { return last_vertex_id_++; }
+
    private:
-    VertexId id_{};
+    VertexId id_ = 0;
+    size_t last_vertex_id_ = 0;
   };
 
   struct Edge {
@@ -30,28 +32,31 @@ class Graph {
           from_vertex_id_(from_vertex_id),
           to_vertex_id_(to_vertex_id) {}
 
-    void print() const {
-      std::cout << from_vertex_id_ << " " << to_vertex_id_ << std::endl;
-    }
-
     EdgeId id() const { return id_; }
     VertexId from_vertex_id() const { return from_vertex_id_; }
     VertexId to_vertex_id() const { return to_vertex_id_; }
 
    private:
-    EdgeId id_{};
+    EdgeId id_ = 0;
 
-    VertexId from_vertex_id_{};
-    VertexId to_vertex_id_{};
+    VertexId from_vertex_id_ = 0;
+    VertexId to_vertex_id_ = 0;
   };
 
-  std::vector<Vertex> vertexes;
-  std::vector<Edge> edges;
+  VertexId get_new_vertex_id() { return last_vertex_id_++; }
+  EdgeId get_new_edge_id() { return last_edge_id_++; }
+
+  std::vector<Vertex> vertexes_;
+  std::vector<Edge> edges_;
+
+  VertexId last_vertex_id_ = 0;
+  EdgeId last_edge_id_ = 0;
 };
+
+constexpr int kVertexesCount = 13;
 
 int main() {
   auto graph = Graph();
-  int kVertexesCount = 13;
 
   for (int i = 0; i < kVertexesCount; i++) {
     graph.add_vertex();
