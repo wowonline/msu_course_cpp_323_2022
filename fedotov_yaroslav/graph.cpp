@@ -1,17 +1,34 @@
+#include <cassert>
+#include <iostream>
 #include <vector>
 
 class Graph {
+ public:
   using VertexId = int;
   using EdgeId = int;
 
- public:
-  void add_vertex() { vertices_.emplace_back(last_vertex_id_++); }
+  void add_vertex() { vertices_.emplace_back(get_new_vertex_id()); }
 
-  void add_edge(VertexId first, VertexId second) {
-    edges_.emplace_back(last_edge_id_++,first, second);
+  void add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {
+    assert(has_vertex(first_vertex_id));
+    assert(has_vertex(second_vertex_id));
+    edges_.emplace_back(get_new_edge_id(), first_vertex_id, second_vertex_id);
   }
 
  private:
+  bool has_vertex(VertexId id) const {
+    for (const auto& vertex : vertices_) {
+      if (vertex.id() == id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  VertexId get_new_vertex_id() { return last_vertex_id_++; }
+
+  EdgeId get_new_edge_id() { return last_edge_id_++; }
+
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -40,11 +57,11 @@ class Graph {
 
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
-  VertexId last_vertex_id_;
-  EdgeId last_edge_id_;
+  VertexId last_vertex_id_ = 0;
+  EdgeId last_edge_id_ = 0;
 };
 
-constexpr int kVerticesCount = 13;
+constexpr int kVerticesCount = 14;
 
 int main() {
   auto graph = Graph();
