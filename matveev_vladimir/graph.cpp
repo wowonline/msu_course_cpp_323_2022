@@ -5,7 +5,7 @@
 constexpr int kVerticesCount = 14;
 
 class Graph {
- public:
+public:
   using VertexId = int;
   using EdgeId = int;
 
@@ -17,27 +17,26 @@ class Graph {
                                  to_vertex_id);
   }
 
- private:
+private:
   struct Vertex {
-   public:
+  public:
     explicit Vertex(VertexId id) : id_(id) {}
     VertexId id() const { return id_; }
 
-   private:
+  private:
     VertexId id_ = 0;
   };
 
   struct Edge {
-   public:
+  public:
     Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
-        : id_(id),
-          from_vertex_id_(from_vertex_id),
+        : id_(id), from_vertex_id_(from_vertex_id),
           to_vertex_id_(to_vertex_id) {}
     EdgeId id() const { return id_; }
     VertexId from_vertex_id() const { return from_vertex_id_; }
     VertexId to_vertex_id() const { return to_vertex_id_; }
 
-   private:
+  private:
     EdgeId id_ = 0;
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
@@ -54,7 +53,7 @@ class Graph {
 
   bool find_vertex(VertexId id) const { return id < num_verteces_; }
   bool find_edge(VertexId id_from, VertexId id_to) const {
-    for (const auto& edge : vector_edges_) {
+    for (const auto &edge : vector_edges_) {
       if (edge.from_vertex_id() == id_from && edge.to_vertex_id() == id_to ||
           edge.from_vertex_id() == id_to && edge.to_vertex_id() == id_from)
         return true;
