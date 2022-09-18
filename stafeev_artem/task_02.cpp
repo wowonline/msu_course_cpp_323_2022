@@ -1,20 +1,25 @@
-#include <iostream>
+#include <algorithm>
+#include <cassert>
 #include <vector>
-
-enum { kVerticesCount = 13 };
 
 class Graph {
   using VertexId = int;
   using EdgeId = int;
 
  public:
-  void add_vertex() {}
+  void add_vertex() { vertices_.emplace_back((Vertex(get_new_vertex_id()))); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    edges.emplace(edges.end(), (Edge(count++, from_vertex_id, to_vertex_id)));
+    assert(from_vertex_id < kVerticesCount_ && to_vertex_id < kVerticesCount_);
+    edges_.emplace_back(
+        (Edge(get_new_edge_id(), from_vertex_id, to_vertex_id)));
   }
 
  private:
+  EdgeId get_new_edge_id() { return kEdgesCount_++; }
+
+  VertexId get_new_vertex_id() { return kVerticesCount_++; }
+
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -41,12 +46,16 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  EdgeId count = 0;
-  std::vector<Edge> edges;
+  VertexId kVerticesCount_ = 0;
+  EdgeId kEdgesCount_ = 0;
+  std::vector<Edge> edges_;
+  std::vector<Vertex> vertices_;
 };
 
 int main() {
   auto graph = Graph();
+
+  constexpr int kVerticesCount = 14;
 
   for (int i = 0; i < kVerticesCount; i++) {
     graph.add_vertex();
