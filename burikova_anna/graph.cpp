@@ -45,11 +45,11 @@ class Graph {
 };
 
 void Graph::add_vertex() {
-  vertices_.emplace_back(Vertex(get_new_vertex_id()));
+  vertices_.emplace_back(get_new_vertex_id());
 }
 
 void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-  edges_.emplace_back(Edge(get_new_edge_id(), from_vertex_id, to_vertex_id));
+  edges_.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
 }
 
 int main() {
