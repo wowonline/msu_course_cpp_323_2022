@@ -1,7 +1,7 @@
 #include "graph.hpp"
 #include <cassert>
 #include <iostream>
-#include "printing.cpp"
+#include "printing.hpp"
 
 void Graph::add_vertex() {
   vertices_.emplace_back(get_new_vertex_id());
