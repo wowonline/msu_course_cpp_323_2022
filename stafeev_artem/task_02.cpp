@@ -11,15 +11,25 @@ class Graph {
   void add_vertex() { vertices_.emplace_back((Vertex(get_new_vertex_id()))); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    assert(from_vertex_id < kVerticesCount_ && to_vertex_id < kVerticesCount_);
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
     edges_.emplace_back(
         (Edge(get_new_edge_id(), from_vertex_id, to_vertex_id)));
   }
 
  private:
-  EdgeId get_new_edge_id() { return kEdgesCount_++; }
+  EdgeId get_new_edge_id() { return k_edges_count_++; }
 
-  VertexId get_new_vertex_id() { return kVerticesCount_++; }
+  VertexId get_new_vertex_id() { return k_vertices_count_++; }
+
+  bool has_vertex(VertexId id) const {
+    if (std::any_of(vertices_.begin(), vertices_.end(),
+                    [&id](Vertex vert) { return vert.id() == id; })) {
+      return true;
+    }
+
+    return false;
+  }
 
   struct Vertex {
    public:
@@ -47,8 +57,8 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  VertexId kVerticesCount_ = 0;
-  EdgeId kEdgesCount_ = 0;
+  VertexId k_vertices_count_ = 0;
+  EdgeId k_edges_count_ = 0;
   std::vector<Edge> edges_;
   std::vector<Vertex> vertices_;
 };
