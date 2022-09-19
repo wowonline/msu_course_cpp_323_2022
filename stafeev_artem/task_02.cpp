@@ -3,7 +3,7 @@
 #include <vector>
 
 class Graph {
-private:
+ private:
   using VertexId = int;
   using EdgeId = int;
 
