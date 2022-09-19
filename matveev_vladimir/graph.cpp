@@ -45,13 +45,13 @@ private:
   std::vector<Vertex> vector_vertices_;
   std::vector<Edge> vector_edges_;
 
-  VertexId num_verteces_ = 0;
+  VertexId num_vertices_ = 0;
   EdgeId num_edges_ = 0;
 
-  VertexId generate_vertex_id() { return num_verteces_++; }
+  VertexId generate_vertex_id() { return num_vertices_++; }
   EdgeId generate_edge_id() { return num_edges_++; }
 
-  bool find_vertex(VertexId id) const { return id < num_verteces_; }
+  bool find_vertex(VertexId id) const { return id < num_vertices_; }
   bool find_edge(VertexId id_from, VertexId id_to) const {
     for (const auto &edge : vector_edges_) {
       if (edge.from_vertex_id() == id_from && edge.to_vertex_id() == id_to ||
