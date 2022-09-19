@@ -36,9 +36,9 @@ class Graph {
   void add_vertex() { vertices_.emplace_back(get_new_vertex_id()); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    edges_.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
     assert(has_vertex(from_vertex_id));
     assert(has_vertex(to_vertex_id));
+    edges_.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
     connections_[from_vertex_id].push_back(get_new_edge_id());
     connections_[to_vertex_id].push_back(get_new_edge_id());
   }
