@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <vector>
 
 class Graph {
  public:
@@ -45,21 +46,22 @@ class Graph {
     VertexId to_;
   };
 
-  void add_vertex() { ++vertices_cnt_; }
+  void add_vertex() { vertices_.emplace_back(vertices_.size()); }
 
   void add_edge(VertexId from, VertexId to) {
-    if (from < 0 || from >= vertices_cnt_ || to < 0 || to >= vertices_cnt_ ||
-        set.find(Edge(0, from, to)) != set.end()) {
+    if (from < 0 || from >= vertices_.size() || to < 0 ||
+        to >= vertices_.size() ||
+        edges_.find(Edge(0, from, to)) != edges_.end()) {
       return;
     }
-    set.emplace(edges_cnt_, from, to);
-    set.emplace(edges_cnt_, to, from);
+    edges_.emplace(edges_cnt_, from, to);
+    edges_.emplace(edges_cnt_, to, from);
     ++edges_cnt_;
   }
 
  private:
-  VertexId vertices_cnt_ = 0;
   EdgeId edges_cnt_ = 0;
 
-  std::set<Edge> set;
+  std::set<Edge> edges_;
+  std::vector<Vertex> vertices_;
 };
