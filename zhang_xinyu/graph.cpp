@@ -1,66 +1,64 @@
 #include <iostream>
 #include <vector>
 
+class Graph {
+ public:
+  using VertexId = int;  //頂點
+  using EdgeId = int;    //邊
+  void add_vertex();
+  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
-class Graph{
-public:
-    using VertexId = int; //頂點
-    using EdgeId = int; //邊
-    void add_vertex();
-    void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
-    
-private:
-    struct Vertex{
-    public:
-        explicit Vertex(VertexId id) : id_(id) {}
-        VertexId id() const { return id_; }
-        VertexId get_new_vertex_id(){
-            return last_vertex_id_++;
-        }
-    private:
-        VertexId id_ = 0;
-        size_t last_vertex_id_ =0;
-    };
-    
-    struct Edge{
-    public:
-      Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id) :
-        id_(id), from_vertex_id_(from_vertex_id), to_vertex_id_(to_vertex_id) {}
+ private:
+  struct Vertex {
+   public:
+    explicit Vertex(VertexId id) : id_(id) {}
+    VertexId id() const { return id_; }
+    VertexId get_new_vertex_id() { return last_vertex_id_++; }
 
-        EdgeId id() const { return id_; }
-        VertexId from_vertex_id() const { return from_vertex_id_; }
-        VertexId to_vertex_id() const { return to_vertex_id_; }
+   private:
+    VertexId id_ = 0;
+    size_t last_vertex_id_ = 0;
+  };
 
-     private:
-      EdgeId id_ = 0;
-      VertexId from_vertex_id_ = 0;
-      VertexId to_vertex_id_ = 0;
-    };
-    
-    friend int get_new_vertex_id(Graph & gr);
-    friend int get_new_edge_id(Graph & gr);
-    std::vector<Vertex> vertexes_;
-    std::vector<Edge> edges_;
-    int last_vertex_id_ = 0;
-    int last_edge_id_ = 0;
-    
+  struct Edge {
+   public:
+    Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
+        : id_(id),
+          from_vertex_id_(from_vertex_id),
+          to_vertex_id_(to_vertex_id) {}
+
+    EdgeId id() const { return id_; }
+    VertexId from_vertex_id() const { return from_vertex_id_; }
+    VertexId to_vertex_id() const { return to_vertex_id_; }
+
+   private:
+    EdgeId id_ = 0;
+    VertexId from_vertex_id_ = 0;
+    VertexId to_vertex_id_ = 0;
+  };
+
+  friend int get_new_vertex_id(Graph& gr);
+  friend int get_new_edge_id(Graph& gr);
+  std::vector<Vertex> vertexes_;
+  std::vector<Edge> edges_;
+  int last_vertex_id_ = 0;
+  int last_edge_id_ = 0;
 };
 
-void Graph::add_vertex(){
-    vertexes_.emplace_back(get_new_vertex_id(*this));
+void Graph::add_vertex() {
+  vertexes_.emplace_back(get_new_vertex_id(*this));
 }
 
-void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id){
-    edges_.emplace_back(get_new_vertex_id(*this), from_vertex_id, to_vertex_id);
+void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+  edges_.emplace_back(get_new_vertex_id(*this), from_vertex_id, to_vertex_id);
 }
 
-int get_new_vertex_id(Graph & gr) {
-    return gr.last_vertex_id_++;
+int get_new_vertex_id(Graph& gr) {
+  return gr.last_vertex_id_++;
 }
-int get_new_edge_id(Graph & gr) {
-    return gr.last_edge_id_++;
+int get_new_edge_id(Graph& gr) {
+  return gr.last_edge_id_++;
 }
-
 
 int kVerticesCount = 13;
 
