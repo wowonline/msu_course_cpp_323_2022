@@ -3,27 +3,19 @@
 #include <set>
 #include <vector>
 
+#include "vertex.hpp"
+
 class Graph {
  public:
-  using VertexId = int;
   using EdgeId = int;
-
-  struct Vertex {
-   public:
-    explicit Vertex(VertexId id) : id_(id) {}
-    VertexId id() const { return id_; }
-
-   private:
-    VertexId id_ = 0;
-  };
 
   struct Edge {
    public:
-    Edge(EdgeId id, VertexId from, VertexId to)
+    Edge(EdgeId id, Vertex::Id from, Vertex::Id to)
         : id_(id), from_(from), to_(to) {}
     EdgeId id() const { return id_; }
-    VertexId from() const { return from_; }
-    VertexId to() const { return to_; }
+    Vertex::Id from() const { return from_; }
+    Vertex::Id to() const { return to_; }
 
     bool operator==(const Edge& rhs) const {
       return (from_ == rhs.from_ && to_ == rhs.to_) ||
@@ -42,13 +34,13 @@ class Graph {
 
    private:
     EdgeId id_;
-    VertexId from_;
-    VertexId to_;
+    Vertex::Id from_;
+    Vertex::Id to_;
   };
 
   void add_vertex() { vertices_.emplace_back(vertices_.size()); }
 
-  void add_edge(VertexId from, VertexId to) {
+  void add_edge(Vertex::Id from, Vertex::Id to) {
     if (from < 0 || from >= vertices_.size() || to < 0 ||
         to >= vertices_.size() ||
         edges_.find(Edge(0, from, to)) != edges_.end()) {
