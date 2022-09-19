@@ -32,9 +32,7 @@ class Graph {
     const VertexId id_ = 0;
   };
 
-  void add_vertex() {
-    vertices_.emplace_back(get_new_vertex_id());
-  }
+  void add_vertex() { vertices_.emplace_back(get_new_vertex_id()); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     edges_.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
@@ -61,7 +59,7 @@ class Graph {
 int main() {
   auto graph = Graph();
 
-  for (int i = 1; i < kVerticesCount; i++) {
+  for (int i = 0; i <= kVerticesCount; i++) {
     graph.add_vertex();
   }
 
