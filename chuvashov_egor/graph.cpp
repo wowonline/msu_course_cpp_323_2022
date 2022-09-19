@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -34,6 +35,7 @@ class Graph {
 
    private:
     const VertexId id_ = 0;
+    std::vector<EdgeId> edges_connected_;
   };
 
   void add_vertex() {
@@ -43,12 +45,15 @@ class Graph {
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     edges.push_back(Edge(new_edge_id, from_vertex_id, to_vertex_id));
+    vertices[from_vertex_id].edges_connected_.push_back(new_edge_id);
+    vertices[to_vertex_id].edges_connected_.push_back(new_edge_id);
     new_edge_id++;
   }
 
  private:
   std::vector<Vertex> vertices;
   std::vector<Edge> edges;
+
   EdgeId new_edge_id = 0;
   VertexId new_vertex_id = 0;
 };
