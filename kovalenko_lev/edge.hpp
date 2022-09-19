@@ -10,7 +10,7 @@ struct Edge {
 
   Edge(Id id, Vertex::Id from, Vertex::Id to) : id_(id), from_(from), to_(to) {
     if (from > to) {
-        std::swap(from, to);
+      std::swap(from, to);
     }
   }
   Id id() const { return id_; }
