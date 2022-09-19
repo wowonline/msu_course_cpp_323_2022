@@ -1,6 +1,6 @@
+#include <iostream>
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 #include <vector>
 
 class Graph {
