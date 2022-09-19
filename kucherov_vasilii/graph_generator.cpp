@@ -40,12 +40,12 @@ class Graph {
     VertexId id_ = 0;
   };
 
-  VertexId get_new_vertex_id() { return vertices_count_++; }
+  VertexId get_new_vertex_id() { return next_free_vertex_id_++; }
 
-  EdgeId get_new_edge_id() { return edges_count_++; }
+  EdgeId get_new_edge_id() { return next_free_edge_id_++; }
 
-  VertexId vertices_count_ = 0;
-  EdgeId edges_count_ = 0;
+  VertexId next_free_vertex_id_ = 0;
+  EdgeId next_free_edge_id_ = 0;
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
 };
