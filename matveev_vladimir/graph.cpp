@@ -1,5 +1,4 @@
-#include <assert.h>
-#include <iostream>
+#include <cassert>
 #include <vector>
 
 constexpr int kVerticesCount = 14;
@@ -11,11 +10,11 @@ class Graph {
 
   void add_vertex() { vector_vertices_.emplace_back(generate_vertex_id()); }
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    assert(find_vertex(from_vertex_id));
-    assert(find_vertex(to_vertex_id));
-    if (!find_edge(from_vertex_id, to_vertex_id))
-      vector_edges_.emplace_back(generate_edge_id(), from_vertex_id,
-                                 to_vertex_id);
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
+    assert(!has_edge(from_vertex_id, to_vertex_id));
+    vector_edges_.emplace_back(generate_edge_id(), from_vertex_id,
+                               to_vertex_id);
   }
 
  private:
@@ -53,13 +52,13 @@ class Graph {
   VertexId generate_vertex_id() { return num_vertices_++; }
   EdgeId generate_edge_id() { return num_edges_++; }
 
-  bool find_vertex(VertexId id) const {
+  bool has_vertex(VertexId id) const {
     for (const auto& vertex : vector_vertices_)
       if (vertex.id() == id)
         return true;
     return false;
   }
-  bool find_edge(VertexId id_from, VertexId id_to) const {
+  bool has_edge(VertexId id_from, VertexId id_to) const {
     for (const auto& edge : vector_edges_) {
       if (edge.from_vertex_id() == id_from && edge.to_vertex_id() == id_to ||
           edge.from_vertex_id() == id_to && edge.to_vertex_id() == id_from)
