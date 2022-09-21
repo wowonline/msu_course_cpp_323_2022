@@ -24,12 +24,13 @@ public:
 	}
 
 	//************************************
+	//************************************************************************##
 	std::string print_json() const {
 		//*******************************
 		std::vector<Vertex>::const_iterator con_vertex_it;
 		std::vector<Edge>::const_iterator con_edge_it;
 
-		std::string str_json = "{\"vertices\":[";
+		std::string str_json = "{\n  \"vertices\":[\n   ";
 		// 打印verticesa
 		bool is_first_1 = true;
 		for (con_vertex_it = vertexes_.begin(); con_vertex_it < vertexes_.end(); ++con_vertex_it) {
@@ -39,7 +40,7 @@ public:
 			else {
 				str_json += ",";
 			}
-			str_json += "{\"id\":" + std::to_string((*con_vertex_it).id()) + ",\"edge_ids\":[";
+			str_json += " {\n      \"id\":" + std::to_string((*con_vertex_it).id()) + ",\n      \"edge_ids\":[";
 			bool is_first_2 = true;
 			for (con_edge_it = edges_.begin(); con_edge_it < edges_.end(); ++con_edge_it) {
 				if ((*con_edge_it).to_vertex_id() == ((*con_vertex_it).id()) || (*con_edge_it).from_vertex_id() == ((*con_vertex_it).id())) {
@@ -53,10 +54,10 @@ public:
 					}
 			}
 		
-			str_json += "]}";
+			str_json += "]\n    }";
 		}
 		// 打印 edges
-		str_json += "],\"edges\":[";
+		str_json += "\n  ],\n  \"edges\":[\n   ";
 		bool is_first_3 = true;
 		
 		for (con_edge_it = edges_.begin(); con_edge_it < edges_.end(); ++con_edge_it) {
@@ -66,10 +67,10 @@ public:
 			else {
 				str_json += ",";
 			}
-			str_json += "{\"id\":" + std::to_string((*con_edge_it).id()) + ",\"vertex_ids\":[" + std::to_string((*con_edge_it).from_vertex_id()) + "," + std::to_string((*con_edge_it).to_vertex_id()) + "]}";
+			str_json += " {\n      \"id\":" + std::to_string((*con_edge_it).id()) + ",\n      \"vertex_ids\":[" + std::to_string((*con_edge_it).from_vertex_id()) + "," + std::to_string((*con_edge_it).to_vertex_id()) + "]\n    }";
 		}
 
-		return str_json += "]}";
+		return str_json += "\n  ]\n}";
 	}
 
 private:
