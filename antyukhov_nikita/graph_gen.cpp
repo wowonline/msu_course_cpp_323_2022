@@ -59,7 +59,7 @@ class Graph {
 
 int main() {
   const int kVerticesCount = 14;
-  auto graph = Graph();
+  Graph graph = Graph();
 
   for (int j = 0; j < kVerticesCount; j++) {
     graph.add_vertex();
