@@ -5,9 +5,9 @@ class Graph {
   using VertexId = int;
   using EdgeId = int;
 
-  public:
-  VertexId get_new_vertex_id() {return vertices_amount_++;};
-  VertexId get_new_edge_id() {return edges_amount_++;};
+ public:
+  VertexId get_new_vertex_id() { return vertices_amount_++; };
+  VertexId get_new_edge_id() { return edges_amount_++; };
   void add_vertex() {
     Vertex new_vertex{get_new_vertex_id()};
     vertices_vector_.push_back(new_vertex);
@@ -20,8 +20,10 @@ class Graph {
     edges_vector_.push_back(new_edge1);
     edges_vector_.push_back(new_edge2);
 
-    vertices_edges_map_[from_vertex_id].emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
-    vertices_edges_map_[to_vertex_id].emplace_back(get_new_edge_id(), to_vertex_id, from_vertex_id);
+    vertices_edges_map_[from_vertex_id].emplace_back(
+        get_new_edge_id(), from_vertex_id, to_vertex_id);
+    vertices_edges_map_[to_vertex_id].emplace_back(
+        get_new_edge_id(), to_vertex_id, from_vertex_id);
   };
 
   struct Vertex {
@@ -53,8 +55,6 @@ class Graph {
   std::unordered_map<VertexId, std::vector<Edge>> vertices_edges_map_ = {};
   VertexId vertices_amount_ = 0;
   EdgeId edges_amount_ = 0;
-
-
 };
 
 int main() {
