@@ -1,5 +1,5 @@
 
-// graph1_2.cpp
+// graph1_3.cpp
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -7,6 +7,7 @@
 
 class Graph{// vertex		edge
 public:
+
     using VertexId = int; //頂點
     using EdgeId = int; //邊
     void add_vertex();
@@ -24,13 +25,12 @@ public:
 	}
 
 	//************************************
-	//************************************************************************##
 	std::string print_json() const {
 		//*******************************
 		std::vector<Vertex>::const_iterator con_vertex_it;
 		std::vector<Edge>::const_iterator con_edge_it;
 
-		std::string str_json = "{\n  \"vertices\":[\n   ";
+		std::string str_json = "{\"vertices\":[";
 		// 打印verticesa
 		bool is_first_1 = true;
 		for (con_vertex_it = vertexes_.begin(); con_vertex_it < vertexes_.end(); ++con_vertex_it) {
@@ -40,7 +40,7 @@ public:
 			else {
 				str_json += ",";
 			}
-			str_json += " {\n      \"id\":" + std::to_string((*con_vertex_it).id()) + ",\n      \"edge_ids\":[";
+			str_json += "{\"id\":" + std::to_string((*con_vertex_it).id()) + ",\"edge_ids\":[";
 			bool is_first_2 = true;
 			for (con_edge_it = edges_.begin(); con_edge_it < edges_.end(); ++con_edge_it) {
 				if ((*con_edge_it).to_vertex_id() == ((*con_vertex_it).id()) || (*con_edge_it).from_vertex_id() == ((*con_vertex_it).id())) {
@@ -54,10 +54,10 @@ public:
 					}
 			}
 		
-			str_json += "]\n    }";
+			str_json += "]}";
 		}
 		// 打印 edges
-		str_json += "\n  ],\n  \"edges\":[\n   ";
+		str_json += "],\"edges\":[";
 		bool is_first_3 = true;
 		
 		for (con_edge_it = edges_.begin(); con_edge_it < edges_.end(); ++con_edge_it) {
@@ -67,10 +67,10 @@ public:
 			else {
 				str_json += ",";
 			}
-			str_json += " {\n      \"id\":" + std::to_string((*con_edge_it).id()) + ",\n      \"vertex_ids\":[" + std::to_string((*con_edge_it).from_vertex_id()) + "," + std::to_string((*con_edge_it).to_vertex_id()) + "]\n    }";
+			str_json += "{\"id\":" + std::to_string((*con_edge_it).id()) + ",\"vertex_ids\":[" + std::to_string((*con_edge_it).from_vertex_id()) + "," + std::to_string((*con_edge_it).to_vertex_id()) + "]}";
 		}
 
-		return str_json += "\n  ]\n}";
+		return str_json += "]}";
 	}
 
 private:
@@ -122,11 +122,6 @@ namespace printing {
 namespace json {
 	
 	std::string print_graph(const Graph & graph) {
-		/*
-		std::string str = "{\"vertices\":[";
-		std::vector<Graph::Vertex>::iterator vertex_it;
-		std::vector<Edge>::iterator edge_it;
-		*/
 		return graph.print_json();
 	}
 }
@@ -156,12 +151,10 @@ void write_to_file(const std::string & text, const std::string & filename) {
 	fout.close();
 }
 
-int kVerticesCount = 13;
-
-int main() {
+Graph generate_graph(int kVerticesCount = 14) {
   auto graph = Graph();
 
-  for (int i = 0; i <= kVerticesCount; i++) {
+  for (int i = 0; i < kVerticesCount; i++) {
     graph.add_vertex();
   }
 
@@ -183,23 +176,21 @@ int main() {
   graph.add_edge(10, 13);
   graph.add_edge(11, 13);
   graph.add_edge(12, 13);
+	
+  return graph;
+}
 
-  	/*
-  	graph.print_all_vertex();//打印全部顶点的顶点id
-	std::cout << std::endl;
-	graph.print_all_edge();  //打印全部边的信息
-
-	std::cout << graph.print_json() << std::endl;
-	*/
+int main() {
 
 //*****************************************************************************
 //（在这里添加）
+  	const auto graph = generate_graph();
 	const auto graph_json = printing::json::print_graph(graph);
 	std::cout << graph_json << std::endl;
 	write_to_file(graph_json, "graph.json");
 //*****************************************************************************
 
-  return 0;
+  	return 0;
 }
 
 
