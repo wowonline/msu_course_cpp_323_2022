@@ -1,10 +1,14 @@
 #include <cassert>
+#include <iostream>
 #include <vector>
 
 constexpr int kVerticesCount = 14;
 
 class Graph {
  public:
+  friend std::string print_graph(const Graph&);
+  friend std::string print_vertex(const Graph::Vertex&, const Graph&);
+
   using VertexId = int;
   using EdgeId = int;
 
@@ -68,6 +72,43 @@ class Graph {
   }
 };
 
+namespace printing {
+namespace json {
+std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
+  std::string edges_ids_string = "[";
+  for (const auto& edge : graph.vector_edges_) {
+    if (edge.from_vertex_id() == vertex.id() ||
+        edge.to_vertex_id() == vertex.id())
+      edges_ids_string += std::to_string(edge.id()) + ',';
+  }
+  edges_ids_string.erase(edges_ids_string.length() - 1,
+                         edges_ids_string.length());
+  return "\"id\":" + std::to_string(vertex.id()) +
+         ",\"edge_ids\":" + edges_ids_string + "]";
+}
+
+std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
+  return "\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
+         std::to_string(edge.from_vertex_id()) + "," +
+         std::to_string(edge.to_vertex_id()) + "]";
+}
+
+std::string print_graph(const Graph& graph) {
+  std::string graph_string = "{\n  \"vertices\": [\n";
+  for (const auto& vertex : graph.vector_vertices_) {
+    graph_string += "    {" + print_vertex(vertex, graph) + "},\n";
+  }
+  graph_string.erase(graph_string.length() - 2, graph_string.length());
+  graph_string += "\n  ],\n  \"edges\": [\n";
+  for (const auto& edge : graph.vector_edges_) {
+    graph_string += "    {" + print_edge(edge, graph) + "},\n";
+  }
+  graph_string.erase(graph_string.length() - 2, graph_string.length());
+  return graph_string + "\n  ]\n}";
+}
+}  // namespace json
+}  // namespace printing
+
 int main() {
   auto graph = Graph();
 
@@ -93,6 +134,8 @@ int main() {
   graph.add_edge(10, 13);
   graph.add_edge(11, 13);
   graph.add_edge(12, 13);
+
+  std::cout << printing::json::print_graph(graph);
 
   return 0;
 }
