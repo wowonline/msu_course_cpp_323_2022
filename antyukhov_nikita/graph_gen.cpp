@@ -6,8 +6,8 @@ class Graph {
  public:
   using VertexId = int;
   using EdgeId = int;
-  struct Vertex;
-  struct Edge;
+  // struct Vertex;
+  // struct Edge;
   void add_vertex() {
     ++vertices_amount_;
     VertexId new_id = get_new_vertex_id();
