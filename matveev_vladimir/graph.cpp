@@ -1,14 +1,13 @@
 #include <cassert>
+#include <fstream>
 #include <iostream>
+#include <map>
 #include <vector>
 
 constexpr int kVerticesCount = 14;
 
 class Graph {
  public:
-  friend std::string print_graph(const Graph&);
-  friend std::string print_vertex(const Graph::Vertex&, const Graph&);
-
   using VertexId = int;
   using EdgeId = int;
 
@@ -21,7 +20,6 @@ class Graph {
                                to_vertex_id);
   }
 
- private:
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -47,6 +45,11 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
+  std::vector<Vertex> get_vector_vertices() const { return vector_vertices_; }
+
+  std::vector<Edge> get_vector_edges() const { return vector_edges_; }
+
+ private:
   std::vector<Vertex> vector_vertices_;
   std::vector<Edge> vector_edges_;
 
@@ -76,7 +79,7 @@ namespace printing {
 namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string edges_ids_string = "[";
-  for (const auto& edge : graph.vector_edges_) {
+  for (const auto& edge : graph.get_vector_edges()) {
     if (edge.from_vertex_id() == vertex.id() ||
         edge.to_vertex_id() == vertex.id())
       edges_ids_string += std::to_string(edge.id()) + ',';
@@ -95,12 +98,12 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
 
 std::string print_graph(const Graph& graph) {
   std::string graph_string = "{\n  \"vertices\": [\n";
-  for (const auto& vertex : graph.vector_vertices_) {
+  for (const auto& vertex : graph.get_vector_vertices()) {
     graph_string += "    {" + print_vertex(vertex, graph) + "},\n";
   }
   graph_string.erase(graph_string.length() - 2, graph_string.length());
   graph_string += "\n  ],\n  \"edges\": [\n";
-  for (const auto& edge : graph.vector_edges_) {
+  for (const auto& edge : graph.get_vector_edges()) {
     graph_string += "    {" + print_edge(edge, graph) + "},\n";
   }
   graph_string.erase(graph_string.length() - 2, graph_string.length());
@@ -109,7 +112,7 @@ std::string print_graph(const Graph& graph) {
 }  // namespace json
 }  // namespace printing
 
-int main() {
+Graph generate_graph() {
   auto graph = Graph();
 
   for (int i = 0; i < kVerticesCount; i++) {
@@ -135,7 +138,23 @@ int main() {
   graph.add_edge(11, 13);
   graph.add_edge(12, 13);
 
-  std::cout << printing::json::print_graph(graph);
+  return graph;
+}
+
+void write_to_file(const std::string content, const std::string file_name) {
+  std::ofstream new_file(file_name);
+
+  new_file << content;
+
+  new_file.close();
+}
+
+int main() {
+  const auto graph = generate_graph();
+  const auto graph_json = printing::json::print_graph(graph);
+  std::cout << graph_json << std::endl;
+
+  write_to_file(graph_json, "graph.json");
 
   return 0;
 }
