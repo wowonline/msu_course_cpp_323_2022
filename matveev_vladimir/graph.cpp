@@ -1,7 +1,6 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <vector>
 
 constexpr int kVerticesCount = 14;
