@@ -46,5 +46,4 @@ class Graph {
 
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
-
 };
