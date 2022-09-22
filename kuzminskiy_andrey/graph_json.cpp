@@ -144,8 +144,8 @@ std::string print_graph(const Graph& graph) {
 
   return graph_json;
 }
-}
-}
+}  // namespace json
+}  // namespace printing
 
 Graph generate_graph(int kVerticesCount = 14) {
   auto graph = Graph();
