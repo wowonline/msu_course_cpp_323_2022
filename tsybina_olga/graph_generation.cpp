@@ -44,6 +44,16 @@ class Graph {
   EdgeId get_new_edge_id() { return last_edge_id_++; }
 };
 
+namespace printing {
+namespace json {
+
+std::string print_graph(const Graph& graph);
+std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph);
+std::string print_edge(const Graph::Edge& edge, const Graph& graph);
+
+}  // namespace json
+}  // namespace printing
+
 int main() {
   auto graph = Graph();
   constexpr int kVerticesCount = 14;
