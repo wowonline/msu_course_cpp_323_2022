@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 class Graph {
@@ -26,7 +27,7 @@ class Graph {
         : id_(id),
           from_vertex_id_(from_vertex_id),
           to_vertex_id_(to_vertex_id) {}
-    EdgeId id() { return id_; }
+    EdgeId id() const { return id_; }
     VertexId from_vertex_id() const { return from_vertex_id_; };
     VertexId to_vertex_id() const { return to_vertex_id_; };
 
@@ -50,7 +51,16 @@ namespace json {
 
 std::string print_graph(const Graph& graph);
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph);
-std::string print_edge(const Graph::Edge& edge, const Graph& graph);
+
+// return json like {"id":0,"vertex_ids":[0,1]}
+std::string print_edge(const Graph::Edge& edge) {
+  std::ostringstream stream;
+  stream << "{";
+  stream << R"("id":)" << edge.id() << ",";
+  stream << R"("vertex_ids":[)" << edge.from_vertex_id() << "," << edge.to_vertex_id() << "]";
+  stream << "}";
+  return stream.str();
+}
 
 }  // namespace json
 }  // namespace printing
