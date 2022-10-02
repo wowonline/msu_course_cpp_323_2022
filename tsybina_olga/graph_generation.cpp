@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <vector>
 
@@ -82,6 +83,13 @@ Graph generate_graph() {
   graph.add_edge(12, 13);
 
   return graph;
+}
+
+void write_to_file(const std::string& data, const std::string& file_path) {
+  std::ofstream out;
+  out.open(file_path, std::ios::out | std::ios::trunc);
+  out << data;
+  out.close();
 }
 
 int main() {
