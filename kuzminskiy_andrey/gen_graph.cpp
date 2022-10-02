@@ -26,7 +26,7 @@ class Graph {
  private:
   bool has_vertex(VertexId id) const {
     return std::any_of(vertices_.begin(), vertices_.end(),
-                    [id](Vertex v) { return v.id() == id; });
+                       [id](Vertex v) { return v.id() == id; });
   }
 
   EdgeId gen_new_edge_id() { return edges_count_++; }
