@@ -2,7 +2,8 @@
 #include <unordered_map>
 #include <vector>
 
-#define kVerticesCount 13
+constexpr int kVerticesCount = 14;
+
 class Graph {
  public:
   using VertexId = int;
@@ -38,15 +39,21 @@ class Graph {
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     assert(has_vertex(from_vertex_id));
     assert(has_vertex(to_vertex_id));
-    edges_.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
-    connections_[from_vertex_id].push_back(get_new_edge_id());
-    connections_[to_vertex_id].push_back(get_new_edge_id());
+    int new_id = get_new_edge_id();
+    edges_.emplace_back(new_id, from_vertex_id, to_vertex_id);
+    connections_[from_vertex_id].push_back(new_id);
+    connections_[to_vertex_id].push_back(new_id);
   }
 
-  bool has_vertex(VertexId id) const { return id < vertices_.size(); }
+  bool has_vertex(VertexId id) const { 
+    for (Vertex vertex : vertices_) {
+      if (vertex.id() == id) return true;
+    }
+    return false;
+  }
 
   VertexId get_new_vertex_id() { return new_vertex_id_++; }
-  VertexId get_new_edge_id() { return new_edge_id_++; }
+  EdgeId get_new_edge_id() { return new_edge_id_++; }
 
  private:
   std::vector<Vertex> vertices_;
@@ -60,7 +67,7 @@ class Graph {
 int main() {
   auto graph = Graph();
 
-  for (int i = 0; i <= kVerticesCount; i++) {
+  for (int i = 0; i < kVerticesCount; ++i) {
     graph.add_vertex();
   }
 
