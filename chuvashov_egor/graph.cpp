@@ -45,9 +45,10 @@ class Graph {
     connections_[to_vertex_id].push_back(new_id);
   }
 
-  bool has_vertex(VertexId id) const { 
+  bool has_vertex(VertexId id) const {
     for (Vertex vertex : vertices_) {
-      if (vertex.id() == id) return true;
+      if (vertex.id() == id)
+        return true;
     }
     return false;
   }
