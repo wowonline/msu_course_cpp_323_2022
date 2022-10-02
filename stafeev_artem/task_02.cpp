@@ -18,18 +18,13 @@ class Graph {
   }
 
  private:
-  EdgeId get_new_edge_id() { return k_edges_count_++; }
+  EdgeId get_new_edge_id() { return edges_count_++; }
 
-  VertexId get_new_vertex_id() { return k_vertices_count_++; }
+  VertexId get_new_vertex_id() { return vertices_count_++; }
 
   bool has_vertex(VertexId id) const {
-    if (std::any_of(vertices_.begin(), vertices_.end(),
-                    [&id](Vertex vert) { return vert.id() == id; })) {
-      return true;
-    }
-
-    return false;
-  }
+    return std::any_of(vertices_.begin(), vertices_.end(),
+                    [id](Vertex vert) { return vert.id() == id; })
 
   struct Vertex {
    public:
@@ -57,8 +52,8 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  VertexId k_vertices_count_ = 0;
-  EdgeId k_edges_count_ = 0;
+  VertexId vertices_count_ = 0;
+  EdgeId edges_count_ = 0;
   std::vector<Edge> edges_;
   std::vector<Vertex> vertices_;
 };
