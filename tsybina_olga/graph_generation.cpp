@@ -53,7 +53,7 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph);
 }  // namespace json
 }  // namespace printing
 
-int main() {
+Graph generate_graph() {
   auto graph = Graph();
   constexpr int kVerticesCount = 14;
 
@@ -80,5 +80,5 @@ int main() {
   graph.add_edge(11, 13);
   graph.add_edge(12, 13);
 
-  return 0;
+  return graph;
 }
