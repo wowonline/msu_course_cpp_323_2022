@@ -52,6 +52,7 @@ class Graph {
 
   std::string vertex_with_edges_json(const Vertex& vertex) const {
     int id = vertex.id();
+    assert(has_vertex(id));
     std::string vertex_json =
         "{\"id\":" + std::to_string(id) + ",\"edge_ids\":[";
     bool is_have = false;
@@ -71,6 +72,7 @@ class Graph {
   }
 
   std::string edge_with_vertices_json(const Edge& edge) const {
+    assert(has_edge(edge.id()));
     std::string edge_json = "{\"id\":" + std::to_string(edge.id()) +
                             ",\"vertex_ids\":[" +
                             std::to_string(edge.from_vertex_id()) + "," +
@@ -86,6 +88,11 @@ class Graph {
   bool has_vertex(VertexId id) const {
     return std::any_of(vertices_.begin(), vertices_.end(),
                        [id](Vertex v) { return v.id() == id; });
+  }
+
+  bool has_edge(EdgeId id) const {
+    return std::any_of(edges_.begin(), edges_.end(),
+                       [id](Edge e) { return e.id() == id; });
   }
 
   EdgeId gen_new_edge_id() { return edges_count_++; }
