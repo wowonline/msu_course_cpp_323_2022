@@ -10,7 +10,6 @@ class Graph {
     edges_.emplace_back(Edge(get_new_edge_id(), from_vertex_id, to_vertex_id));
   };
 
- private:
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
