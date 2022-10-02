@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vector>
 
 class Graph {
@@ -81,4 +82,13 @@ Graph generate_graph() {
   graph.add_edge(12, 13);
 
   return graph;
+}
+
+int main() {
+  const auto graph = generate_graph();
+  const auto graph_json = printing::json::print_graph(graph);
+  std::cout << graph_json << std::endl;
+  write_to_file(graph_json, "graph.json");
+
+  return 0;
 }
