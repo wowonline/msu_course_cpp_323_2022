@@ -6,11 +6,9 @@
 #include <vector>
 
 class Graph {
- private:
+ public:
   using VertexId = int;
   using EdgeId = int;
-
- public:
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -86,20 +84,16 @@ class Graph {
 
  private:
   bool has_vertex(VertexId id) const {
-    if (std::any_of(vertices_.begin(), vertices_.end(),
-                    [&id](Vertex v) { return v.id() == id; })) {
-      return true;
-    }
-
-    return false;
+    return std::any_of(vertices_.begin(), vertices_.end(),
+                       [id](Vertex v) { return v.id() == id; });
   }
 
-  EdgeId gen_new_edge_id() { return kEdgesCount_++; }
+  EdgeId gen_new_edge_id() { return edges_count_++; }
 
-  VertexId gen_new_vertex_id() { return kVerticesCount_++; }
+  VertexId gen_new_vertex_id() { return vertices_count_++; }
 
-  VertexId kVerticesCount_ = 0;
-  EdgeId kEdgesCount_ = 0;
+  VertexId vertices_count_ = 0;
+  EdgeId edges_count_ = 0;
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
   std::vector<std::vector<EdgeId>> VertexPullEdges_;
@@ -147,7 +141,7 @@ std::string print_graph(const Graph& graph) {
 }  // namespace json
 }  // namespace printing
 
-Graph generate_graph(int kVerticesCount = 14) {
+Graph generate_graph(const int& kVerticesCount = 14) {
   auto graph = Graph();
 
   for (int i = 0; i < kVerticesCount; i++) {
@@ -177,7 +171,7 @@ Graph generate_graph(int kVerticesCount = 14) {
 }
 
 void write_to_file(const std::string& str, const std::string& filename) {
-  std::ofstream out(filename);
+  std::ofstream out(filename, std::ios::trunc);
   out << str;
   out.close();
 }
