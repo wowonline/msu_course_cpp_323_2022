@@ -4,11 +4,9 @@
 #include <vector>
 
 class Graph {
- private:
+ public:
   using VertexId = int;
   using EdgeId = int;
-
- public:
   void add_vertex() { vertices_.emplace_back(Vertex(gen_new_vertex_id())); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
@@ -27,17 +25,13 @@ class Graph {
 
  private:
   bool has_vertex(VertexId id) const {
-    if (std::any_of(vertices_.begin(), vertices_.end(),
-                    [&id](Vertex v) { return v.id() == id; })) {
-      return true;
-    }
-
-    return false;
+    return std::any_of(vertices_.begin(), vertices_.end(),
+                    [id](Vertex v) { return v.id() == id; });
   }
 
-  EdgeId gen_new_edge_id() { return kEdgesCount_++; }
+  EdgeId gen_new_edge_id() { return edges_count_++; }
 
-  VertexId gen_new_vertex_id() { return kVerticesCount_++; }
+  VertexId gen_new_vertex_id() { return vertices_count_++; }
 
   struct Vertex {
    public:
@@ -65,14 +59,15 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  VertexId kVerticesCount_ = 0;
-  EdgeId kEdgesCount_ = 0;
+  VertexId vertices_count_ = 0;
+  EdgeId edges_count_ = 0;
   std::vector<Edge> edges_;
   std::vector<Vertex> vertices_;
 };
 
+static constexpr int kVerticesCount = 14;
+
 int main() {
-  static constexpr int kVerticesCount = 14;
   auto graph = Graph();
 
   for (int i = 0; i < kVerticesCount; i++) {
