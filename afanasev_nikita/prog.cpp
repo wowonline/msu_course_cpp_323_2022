@@ -1,3 +1,4 @@
+#include <cassert>
 #include <vector>
 
 constexpr int kVerticesCount = 14;
@@ -10,6 +11,12 @@ class Graph {
   void add_vertex() { vertices_.emplace_back(next_vertex_id()); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+    assert((void("vertex_presence_check failed"),
+            vertex_presence_check(from_vertex_id)));
+    assert((void("vertex_presence_check failed"),
+            vertex_presence_check(to_vertex_id)));
+    assert((void("edge_presence_check failed"),
+            edge_presence_check(from_vertex_id, to_vertex_id)));
     edges_.emplace_back(next_edge_id(), from_vertex_id, to_vertex_id);
   }
 
@@ -20,6 +27,26 @@ class Graph {
   VertexId next_vertex_id() { return curr_vertex_id_++; }
 
   EdgeId next_edge_id() { return curr_edge_id_++; }
+
+  bool vertex_presence_check(VertexId vertex_id) const {
+    if (curr_vertex_id_ == 0 || vertex_id < 0 || vertex_id >= curr_vertex_id_) {
+      return false;
+    }
+    return true;
+  }
+
+  bool edge_presence_check(VertexId from_vertex_id,
+                           VertexId to_vertex_id) const {
+    for (auto next : edges_) {
+      if (next.from_vertex_id() == from_vertex_id &&
+              next.to_vertex_id() == to_vertex_id ||
+          next.from_vertex_id() == to_vertex_id &&
+              next.to_vertex_id() == from_vertex_id) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   struct Vertex {
    public:
