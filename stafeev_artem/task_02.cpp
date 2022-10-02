@@ -24,7 +24,8 @@ class Graph {
 
   bool has_vertex(VertexId id) const {
     return std::any_of(vertices_.begin(), vertices_.end(),
-                    [id](Vertex vert) { return vert.id() == id; })
+                       [id](Vertex vert) { return vert.id() == id; });
+  }
 
   struct Vertex {
    public:
