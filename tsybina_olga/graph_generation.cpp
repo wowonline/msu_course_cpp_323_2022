@@ -13,6 +13,10 @@ class Graph {
     edges_.emplace_back(Edge(get_new_edge_id(), from_vertex_id, to_vertex_id));
   };
 
+  auto vertices_begin() const { return vertices_.begin(); }
+
+  auto vertices_end() const { return vertices_.end(); }
+
   auto edges_begin() const { return edges_.begin(); }
 
   auto edges_end() const { return edges_.end(); }
@@ -53,7 +57,6 @@ class Graph {
 namespace printing {
 namespace json {
 
-std::string print_graph(const Graph& graph);
 // return json like {"id":0,"edge_ids":[0,1,2]}
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::ostringstream stream;
@@ -86,6 +89,36 @@ std::string print_edge(const Graph::Edge& edge) {
   stream << R"("vertex_ids":[)" << edge.from_vertex_id() << ","
          << edge.to_vertex_id() << "]";
   stream << "}";
+  return stream.str();
+}
+
+std::string print_graph(const Graph& graph) {
+  std::ostringstream stream;
+  stream << "{";
+  stream << R"("vertices":)"
+         << "[";
+
+  std::string separator = "";
+
+  std::for_each(graph.vertices_begin(), graph.vertices_end(),
+                [&](const auto& vertex) {
+                  stream << separator << print_vertex(vertex, graph);
+                  separator = ",";
+                });
+
+  stream << "],"
+         << R"("edges":)"
+         << "[";
+  separator = "";
+
+  std::for_each(graph.edges_begin(), graph.edges_end(), [&](const auto& edge) {
+    stream << separator << print_edge(edge);
+    separator = ",";
+  });
+
+  stream << "]";
+  stream << "}";
+
   return stream.str();
 }
 
