@@ -26,12 +26,12 @@ class Graph {
  private:
   bool has_vertex(VertexId id) const {
     return std::any_of(vertices_.begin(), vertices_.end(),
-                       [id](Vertex v) { return v.id() == id; });
+                       [id](const Vertex& v) { return v.id() == id; });
   }
 
-  EdgeId gen_new_edge_id() { return edges_count_++; }
+  EdgeId gen_new_edge_id() { return next_edge_id_++; }
 
-  VertexId gen_new_vertex_id() { return vertices_count_++; }
+  VertexId gen_new_vertex_id() { return next_vertex_id_++; }
 
   struct Vertex {
    public:
@@ -59,8 +59,8 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  VertexId vertices_count_ = 0;
-  EdgeId edges_count_ = 0;
+  VertexId next_vertex_id_ = 0;
+  EdgeId next_edge_id_ = 0;
   std::vector<Edge> edges_;
   std::vector<Vertex> vertices_;
 };
