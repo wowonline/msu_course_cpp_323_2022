@@ -1,6 +1,6 @@
 #include "graph.hpp"
 
-constexpr int kVerticesCount = 14;
+constexpr int kVerticesCount = 13;
 
 int main() {
   auto graph = Graph();
