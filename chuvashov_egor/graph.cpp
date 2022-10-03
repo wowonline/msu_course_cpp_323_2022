@@ -1,10 +1,10 @@
 #include <cassert>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <iostream>
-#include <sstream>
-#include <fstream>
 
 constexpr int kVerticesCount = 14;
 
@@ -43,14 +43,14 @@ class Graph {
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     assert(has_vertex(from_vertex_id));
     assert(has_vertex(to_vertex_id));
-    int new_id = get_new_edge_id();
+    const int new_id = get_new_edge_id();
     edges_.emplace_back(new_id, from_vertex_id, to_vertex_id);
     connections_[from_vertex_id].push_back(new_id);
     connections_[to_vertex_id].push_back(new_id);
   }
 
   bool has_vertex(VertexId id) const {
-    for (Vertex vertex : vertices_) {
+    for (const auto& vertex : vertices_) {
       if (vertex.id() == id)
         return true;
     }
@@ -64,7 +64,8 @@ class Graph {
     std::stringstream s;
     std::vector<EdgeId> edges = connections_.at(id);
     s << "[";
-    for (std::vector<EdgeId>::iterator edge_it = edges.begin(); edge_it != edges.end(); ++edge_it) {
+    for (std::vector<EdgeId>::iterator edge_it = edges.begin();
+         edge_it != edges.end(); ++edge_it) {
       s << *edge_it;
       if (edge_it != (--edges.end())) {
         s << ", ";
@@ -166,7 +167,6 @@ void write_to_file(const std::string& graph_json, const std::string& filename) {
   file << graph_json;
   file.close();
 }
-
 
 int main() {
   const auto graph = generate_graph();
