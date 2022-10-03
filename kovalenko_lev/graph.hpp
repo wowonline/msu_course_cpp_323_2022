@@ -24,10 +24,6 @@ class Graph {
     VertexId from() const { return from_; }
     VertexId to() const { return to_; }
 
-    bool operator==(const Edge& rhs) const {
-      return (from_ == rhs.from_ && to_ == rhs.to_) || (from_ == rhs.to_ && to_ == rhs.from_);
-    }
-
     bool operator<(const Edge& rhs) const {
       return from() == rhs.from() ? to() < rhs.to() : from() < rhs.from();
     }
@@ -53,11 +49,11 @@ class Graph {
   void add_vertex() { ++vertices_cnt_; }
 
   void add_edge(VertexId from, VertexId to) {
-    if (from < 0 || from >= vertices_cnt_ || to < 0 || to >= vertices_cnt_ || set.find(Edge(0, from, to)) != set.end()) {
+    if (from < 0 || from >= vertices_cnt_ || to < 0 || to >= vertices_cnt_) {
       return;
     }
-    set.emplace(edges_cnt_, from, to);
-    set.emplace(edges_cnt_, to, from);
+    graph.emplace(edges_cnt_, from, to);
+    graph.emplace(edges_cnt_, to, from);
     ++edges_cnt_;
   }
 
@@ -65,5 +61,5 @@ class Graph {
   VertexId vertices_cnt_ = 0;
   EdgeId edges_cnt_ = 0;
 
-  std::set<Edge> set;
+  std::set<Edge> graph;
 };
