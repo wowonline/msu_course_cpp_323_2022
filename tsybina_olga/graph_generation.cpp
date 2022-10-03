@@ -13,6 +13,10 @@ class Graph {
     edges_.emplace_back(Edge(get_new_edge_id(), from_vertex_id, to_vertex_id));
   };
 
+  auto edges_begin() const { return edges_.begin(); }
+
+  auto edges_end() const { return edges_.end(); }
+
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -50,14 +54,37 @@ namespace printing {
 namespace json {
 
 std::string print_graph(const Graph& graph);
-std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph);
+// return json like {"id":0,"edge_ids":[0,1,2]}
+std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
+  std::ostringstream stream;
+  stream << "{";
+  stream << R"("id":)" << vertex.id() << ",";
+  stream << R"("edge_ids":[)";
+  std::string separator = "";
+
+  std::for_each(graph.edges_begin(), graph.edges_end(), [&](const auto& edge) {
+    if (edge.from_vertex_id() == vertex.id()) {
+      stream << separator << edge.to_vertex_id();
+      separator = ",";
+    } else if (edge.to_vertex_id() == vertex.id()) {
+      stream << separator << edge.from_vertex_id();
+      separator = ",";
+    }
+  });
+
+  stream << "]";
+  stream << "}";
+
+  return stream.str();
+}
 
 // return json like {"id":0,"vertex_ids":[0,1]}
 std::string print_edge(const Graph::Edge& edge) {
   std::ostringstream stream;
   stream << "{";
   stream << R"("id":)" << edge.id() << ",";
-  stream << R"("vertex_ids":[)" << edge.from_vertex_id() << "," << edge.to_vertex_id() << "]";
+  stream << R"("vertex_ids":[)" << edge.from_vertex_id() << ","
+         << edge.to_vertex_id() << "]";
   stream << "}";
   return stream.str();
 }
