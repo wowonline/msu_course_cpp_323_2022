@@ -1,35 +1,17 @@
+#include <iostream>
 #include <unordered_map>
 #include <vector>
 
+constexpr int kVerticesCount = 14;
+
 class Graph {
+ public:
   using VertexId = int;
   using EdgeId = int;
-
- public:
-  VertexId get_new_vertex_id() { return vertices_amount_++; };
-  VertexId get_new_edge_id() { return edges_amount_++; };
-  void add_vertex() {
-    Vertex new_vertex{get_new_vertex_id()};
-    vertices_vector_.push_back(new_vertex);
-  };
-
-  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    Edge new_edge1{get_new_edge_id(), from_vertex_id, to_vertex_id};
-    Edge new_edge2{get_new_edge_id(), to_vertex_id, from_vertex_id};
-
-    edges_vector_.push_back(new_edge1);
-    edges_vector_.push_back(new_edge2);
-
-    vertices_edges_map_[from_vertex_id].emplace_back(
-        get_new_edge_id(), from_vertex_id, to_vertex_id);
-    vertices_edges_map_[to_vertex_id].emplace_back(
-        get_new_edge_id(), to_vertex_id, from_vertex_id);
-  };
-
   struct Vertex {
    public:
-    explicit Vertex(VertexId id) : id_(id) {}
-    VertexId id() const { return id_; }
+    explicit Vertex(VertexId id) : id_(id){};
+    VertexId id() const { return id_; };
 
    private:
     VertexId id_ = 0;
@@ -37,34 +19,64 @@ class Graph {
 
   struct Edge {
    public:
-    Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
-        : id_(id), from_vertex_id_(from_vertex_id) {}
+    explicit Edge(EdgeId id, VertexId first_vertex_id, VertexId second_vertex_id)
+        : id_(id),
+          first_vertex_id(first_vertex_id),
+          second_vertex_id(second_vertex_id){};
 
-    EdgeId id() const { return id_; }
-    VertexId from_vertex_id() const { return from_vertex_id_; }
-    VertexId to_vertex_id() const { return to_vertex_id_; }
+    EdgeId id() const { return id_; };
+    VertexId get_first_vertex_id() const { return first_vertex_id; };
+    VertexId get_second_vertex_id() const { return second_vertex_id; };
 
    private:
     EdgeId id_ = 0;
-    VertexId from_vertex_id_ = 0;
-    VertexId to_vertex_id_ = 0;
+    VertexId first_vertex_id = 0;
+    VertexId second_vertex_id = 0;
+  };
+  void add_vertex() {
+    const VertexId new_id = get_new_vertex_id();
+    vertices_.emplace_back(new_id);
+
+    connections_[new_id] = {};
   };
 
-  std::vector<Vertex> vertices_vector_ = {};
-  std::vector<Edge> edges_vector_ = {};
-  std::unordered_map<VertexId, std::vector<Edge>> vertices_edges_map_ = {};
-  VertexId vertices_amount_ = 0;
-  EdgeId edges_amount_ = 0;
+  void add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {
+    EdgeId new_edge_id = get_new_edge_id();
+    Edge new_edge1{new_edge_id, first_vertex_id, second_vertex_id};
+    edges_.push_back(new_edge1);
+    connections_[first_vertex_id].push_back(new_edge_id);
+    connections_[second_vertex_id].push_back(new_edge_id);
+  };
+
+  std::vector<Edge> get_edges_vector() const { return this->edges_; }
+
+  std::vector<Vertex> get_vertices_vector() const {
+    return vertices_;
+  }
+
+  std::unordered_map<VertexId, std::vector<EdgeId>> get_connectioins_()
+      const {
+    return connections_;
+  }
+
+ private:
+  VertexId get_new_vertex_id() { return last_vertex_id_++; };
+
+  EdgeId get_new_edge_id() { return last_edge_id_++; };
+
+  std::vector<Vertex> vertices_ = {};
+  std::vector<Edge> edges_ = {};
+  std::unordered_map<VertexId, std::vector<EdgeId>> connections_ = {};
+  VertexId last_vertex_id_ = 0;
+  EdgeId last_edge_id_ = 0;
 };
 
 int main() {
-  const int kVerticesCount = 14;
   auto graph = Graph();
 
-  for (int j = 0; j < kVerticesCount; j++) {
+  for (int i = 0; i < kVerticesCount; ++i) {
     graph.add_vertex();
   }
-
   graph.add_edge(0, 1);
   graph.add_edge(0, 2);
   graph.add_edge(0, 3);
