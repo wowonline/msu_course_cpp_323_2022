@@ -66,11 +66,8 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string separator = "";
 
   std::for_each(graph.edges_begin(), graph.edges_end(), [&](const auto& edge) {
-    if (edge.from_vertex_id() == vertex.id()) {
-      stream << separator << edge.to_vertex_id();
-      separator = ",";
-    } else if (edge.to_vertex_id() == vertex.id()) {
-      stream << separator << edge.from_vertex_id();
+    if (edge.from_vertex_id() == vertex.id() || edge.to_vertex_id() == vertex.id()) {
+      stream << separator << edge.id();
       separator = ",";
     }
   });
