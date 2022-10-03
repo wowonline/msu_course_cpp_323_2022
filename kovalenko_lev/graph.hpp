@@ -25,19 +25,24 @@ class Graph {
     VertexId to() const { return to_; }
 
     bool operator==(const Edge& rhs) const {
-      return (from_ == rhs.from_ && to_ == rhs.to_) ||
-             (from_ == rhs.to_ && to_ == rhs.from_);
+      return (from_ == rhs.from_ && to_ == rhs.to_) || (from_ == rhs.to_ && to_ == rhs.from_);
     }
 
     bool operator<(const Edge& rhs) const {
       return from() == rhs.from() ? to() < rhs.to() : from() < rhs.from();
     }
 
-    bool operator>(const Edge& rhs) const { return rhs < *this; }
+    bool operator>(const Edge& rhs) const {
+      return rhs < *this;
+    }
 
-    bool operator>=(const Edge& rhs) const { return !operator<(rhs); }
+    bool operator>=(const Edge& rhs) const {
+      return !operator<(rhs);
+    }
 
-    bool operator<=(const Edge& rhs) const { return !operator>(rhs); }
+    bool operator <=(const Edge& rhs) const {
+      return !operator>(rhs);
+    }
 
    private:
     EdgeId id_;
@@ -48,8 +53,7 @@ class Graph {
   void add_vertex() { ++vertices_cnt_; }
 
   void add_edge(VertexId from, VertexId to) {
-    if (from < 0 || from >= vertices_cnt_ || to < 0 || to >= vertices_cnt_ ||
-        set.find(Edge(0, from, to)) != set.end()) {
+    if (from < 0 || from >= vertices_cnt_ || to < 0 || to >= vertices_cnt_ || set.find(Edge(0, from, to)) != set.end()) {
       return;
     }
     set.emplace(edges_cnt_, from, to);
