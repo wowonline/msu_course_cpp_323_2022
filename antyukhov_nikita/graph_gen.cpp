@@ -19,7 +19,9 @@ class Graph {
 
   struct Edge {
    public:
-    explicit Edge(EdgeId id, VertexId first_vertex_id, VertexId second_vertex_id)
+    explicit Edge(EdgeId id,
+                  VertexId first_vertex_id,
+                  VertexId second_vertex_id)
         : id_(id),
           first_vertex_id(first_vertex_id),
           second_vertex_id(second_vertex_id){};
@@ -50,12 +52,9 @@ class Graph {
 
   std::vector<Edge> get_edges_vector() const { return this->edges_; }
 
-  std::vector<Vertex> get_vertices_vector() const {
-    return vertices_;
-  }
+  std::vector<Vertex> get_vertices_vector() const { return vertices_; }
 
-  std::unordered_map<VertexId, std::vector<EdgeId>> get_connectioins_()
-      const {
+  std::unordered_map<VertexId, std::vector<EdgeId>> get_connectioins_() const {
     return connections_;
   }
 
