@@ -6,7 +6,6 @@
 
 constexpr int kVerticesCount = 14;
 
-
 class Graph {
  public:
   using VertexId = int;
@@ -22,7 +21,9 @@ class Graph {
 
   struct Edge {
    public:
-    explicit Edge(EdgeId id, VertexId first_vertex_id, VertexId second_vertex_id)
+    explicit Edge(EdgeId id,
+                  VertexId first_vertex_id,
+                  VertexId second_vertex_id)
         : id_(id),
           first_vertex_id(first_vertex_id),
           second_vertex_id(second_vertex_id){};
@@ -53,12 +54,9 @@ class Graph {
 
   std::vector<Edge> get_edges_vector() const { return this->edges_; }
 
-  std::vector<Vertex> get_vertices_vector() const {
-    return vertices_;
-  }
+  std::vector<Vertex> get_vertices_vector() const { return vertices_; }
 
-  std::unordered_map<VertexId, std::vector<EdgeId>> get_connectioins_()
-      const {
+  std::unordered_map<VertexId, std::vector<EdgeId>> get_connectioins_() const {
     return connections_;
   }
 
@@ -98,7 +96,8 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
   std::stringstream json_string;
   json_string << "\n\t\t{ \"id\": " << edge.id() << ", \"vertex_ids\": ["
-              << edge.get_first_vertex_id() << ", " << edge.get_second_vertex_id() << "] }";
+              << edge.get_first_vertex_id() << ", "
+              << edge.get_second_vertex_id() << "] }";
 
   return json_string.str();
 }
