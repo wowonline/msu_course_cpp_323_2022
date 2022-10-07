@@ -9,6 +9,7 @@ class Graph {
  public:
   using VertexId = int;
   using EdgeId = int;
+  using Depth = int;
 
   void add_vertex() { vector_vertices_.emplace_back(generate_vertex_id()); }
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
@@ -30,6 +31,7 @@ class Graph {
 
   struct Edge {
    public:
+    enum class Color { Grey, Green, Yellow, Red };
     Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
         : id_(id),
           from_vertex_id_(from_vertex_id),
@@ -43,6 +45,35 @@ class Graph {
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
   };
+
+  Depth get_vertex_depth(VertexId vertex_id) { return -1; }
+
+  // const auto from_vertex_depth = get_vertex_depth(from_vertex_id);
+  // set_vertex_depth(to_vertex_id, from_vertex_depth + 1);
+
+  std::vector<Edge> get_edges(VertexId vertex_id) {
+    std::vector<Edge> vec = std::vector<Edge>();
+    return vec;
+  }
+
+  Edge::Color set_edge_color(VertexId from_vertex_id, VertexId to_vertex_id) {
+    const auto from_vertex_depth = get_vertex_depth(from_vertex_id);
+    const auto to_vertex_depth = get_vertex_depth(to_vertex_id);
+    if (from_vertex_id == to_vertex_id) {
+      return Edge::Color::Green;
+    }
+    if (get_edges(to_vertex_id).size() == 0) {
+      return Edge::Color::Grey;
+    }
+    if (to_vertex_depth - from_vertex_depth == 1 &&
+        !has_edge(from_vertex_id, to_vertex_id)) {
+      return Edge::Color::Yellow;
+    }
+    if (to_vertex_depth - from_vertex_depth == 2) {
+      return Edge::Color::Red;
+    }
+    throw std::runtime_error("Failed to determine color");
+  }
 
   std::vector<Vertex> get_vector_vertices() const { return vector_vertices_; }
 
@@ -74,7 +105,52 @@ class Graph {
   }
 };
 
+class GraphGenerator {
+ public:
+  struct Params {
+   public:
+    Params(Graph::Depth depth, int new_vertices_count)
+        : depth_(depth), new_vertices_count_(new_vertices_count) {}
+
+    Graph::Depth depth() const { return depth_; }
+    int new_vertices_count() const { return new_vertices_count_; }
+
+   private:
+    Graph::Depth depth_ = 0;
+    int new_vertices_count_ = 0;
+  };
+
+  explicit GraphGenerator(Params&& params) : params_(std::move(params)) {}
+
+  Graph generate() const {
+    auto graph = Graph();
+    graph.add_vertex();
+    /*generate_grey_edges(graph);
+    generate_green_edges(graph);
+    generate_yellow_edges(graph);
+    generate_red_edges(graph);*/
+    return graph;
+  }
+
+ private:
+  Params params_ = Params(0, 0);
+};
+
 namespace printing {
+std::string print_edge_color(const Graph::Edge::Color& color) {
+  switch (color) {
+    case Graph::Edge::Color::Grey:
+      return "Grey";
+    case Graph::Edge::Color::Green:
+      return "Green";
+    case Graph::Edge::Color::Yellow:
+      return "Yellow";
+    case Graph::Edge::Color::Red:
+      return "Red";
+    default:
+      return "";
+  }
+}
 namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string edges_ids_string = "[";
