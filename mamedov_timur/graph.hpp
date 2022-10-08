@@ -11,6 +11,8 @@ class Graph {
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
+  bool has_vertex(VertexId id) const;
+
   struct Vertex {
    public:
     explicit Vertex(VertexId id);
@@ -19,7 +21,6 @@ class Graph {
 
    private:
     VertexId id_ = 0;
-    VertexId last_vertex_id_ = 0;
   };
 
   struct Edge {
@@ -37,8 +38,8 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  std::vector<Vertex> vertexes_;
-  std::vector<Edge> edges_;
+  std::vector<Vertex> vertexes;
+  std::vector<Edge> edges;
 
  private:
   VertexId get_new_vertex_id();

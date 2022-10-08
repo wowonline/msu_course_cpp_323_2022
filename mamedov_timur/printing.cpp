@@ -16,7 +16,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::ostringstream buf;
   buf << "{\n      \"id\" : " << vertex.id() << ",\n      \"edge_ids\" : ";
   bool first_edge = true;
-  for (const auto& edge : graph.edges_) {
+  for (const auto& edge : graph.edges) {
     if (vertex.id() == edge.from_vertex_id() ||
         vertex.id() == edge.to_vertex_id()) {
       if (first_edge) {
@@ -38,7 +38,7 @@ std::string print_graph(const Graph& graph) {
   std::ostringstream buf;
   buf << "{\n  \"vertices\" : ";
   bool first_vertex = true;
-  for (const auto& vertex : graph.vertexes_) {
+  for (const auto& vertex : graph.vertexes) {
     if (first_vertex) {
       buf << "[ \n    " << print_vertex(vertex, graph);
       first_vertex = false;
@@ -54,7 +54,7 @@ std::string print_graph(const Graph& graph) {
 
   buf << "\n  \"edges\" : ";
   bool first_edge = true;
-  for (const auto& edge : graph.edges_) {
+  for (const auto& edge : graph.edges) {
     if (first_edge) {
       buf << "[ \n    " << print_edge(edge, graph);
       first_edge = false;
