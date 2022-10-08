@@ -8,7 +8,6 @@ all: $(TARGET)
 
 clean:
 	rm -rf $(TARGET) $(BIN)/*.o
-	rm -f graph.json
 
 graph_generation.o: graph_generation.cpp
 	clang++ $(FLAGS) -c -o $(BIN)/graph_generation.o graph_generation.cpp
