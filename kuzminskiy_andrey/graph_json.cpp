@@ -86,21 +86,22 @@ class Graph {
 
  private:
   bool has_vertex(VertexId id) const {
-    return std::any_of(vertices_.begin(), vertices_.end(),
-                       [id](Vertex v) { return v.id() == id; });
+    return std::any_of(
+        vertices_.begin(), vertices_.end(),
+        [id](const Vertex& vertex) { return vertex.id() == id; });
   }
 
   bool has_edge(EdgeId id) const {
     return std::any_of(edges_.begin(), edges_.end(),
-                       [id](Edge e) { return e.id() == id; });
+                       [id](const Edge& edge) { return edge.id() == id; });
   }
 
-  EdgeId gen_new_edge_id() { return edges_count_++; }
+  EdgeId gen_new_edge_id() { return next_edge_id_++; }
 
-  VertexId gen_new_vertex_id() { return vertices_count_++; }
+  VertexId gen_new_vertex_id() { return next_vertex_id_++; }
 
-  VertexId vertices_count_ = 0;
-  EdgeId edges_count_ = 0;
+  VertexId next_vertex_id_ = 0;
+  EdgeId next_edge_id_ = 0;
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
   std::vector<std::vector<EdgeId>> VertexPullEdges_;
