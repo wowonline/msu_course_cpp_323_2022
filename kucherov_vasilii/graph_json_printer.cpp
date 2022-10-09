@@ -164,7 +164,8 @@ Graph generate_graph() {
   return graph;
 }
 
-void write_to_file(std::string graph_json, std::string file_name) {
+void write_to_file(const std::string& graph_json,
+                   const std::string& file_name) {
   std::ofstream json_file(file_name);
 
   json_file << graph_json;
