@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <vector>
 
@@ -5,24 +6,31 @@ class Graph {
  public:
   using VertexId = int;
   using EdgeId = int;
-  void add_vertex() { vertexes_.emplace_back(get_new_vertex_id()); }
 
-  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    edges_.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
+  bool has_vertex(VertexId id) const {
+    for (auto vertex : vertexes) {
+      if (vertex.id() == id)
+        return true;
+    }
+    return false;
   }
 
- private:
+  void add_vertex() { vertexes.emplace_back(get_new_vertex_id()); }
+
+  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
+    edges.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
+  }
+
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
 
     VertexId id() const { return id_; }
 
-    VertexId get_new_vertex_id() { return last_vertex_id_++; }
-
    private:
     VertexId id_ = 0;
-    size_t last_vertex_id_ = 0;
   };
 
   struct Edge {
@@ -43,17 +51,18 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
+  std::vector<Vertex> vertexes;
+  std::vector<Edge> edges;
+
+ private:
   VertexId get_new_vertex_id() { return last_vertex_id_++; }
   EdgeId get_new_edge_id() { return last_edge_id_++; }
-
-  std::vector<Vertex> vertexes_;
-  std::vector<Edge> edges_;
 
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
 };
 
-constexpr int kVertexesCount = 13;
+constexpr int kVertexesCount = 14;
 
 int main() {
   auto graph = Graph();
