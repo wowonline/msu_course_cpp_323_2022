@@ -1,4 +1,3 @@
-#include <iostream>
 #include <unordered_map>
 #include <vector>
 
@@ -43,18 +42,17 @@ class Graph {
   };
 
   void add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {
-    EdgeId new_edge_id = get_new_edge_id();
-    Edge new_edge1{new_edge_id, first_vertex_id, second_vertex_id};
-    edges_.push_back(new_edge1);
-    connections_[first_vertex_id].push_back(new_edge_id);
-    connections_[second_vertex_id].push_back(new_edge_id);
+    const EdgeId new_edge_id = get_new_edge_id();
+    edges_.emplace_back(new_edge_id, first_vertex_id, second_vertex_id);
+    connections_[first_vertex_id].emplace_back(new_edge_id, first_vertex_id, second_vertex_id);
+    connections_[second_vertex_id].emplace_back(new_edge_id, first_vertex_id, second_vertex_id);
   };
 
-  std::vector<Edge> get_edges_vector() const { return this->edges_; }
+  const std::vector<Edge>& get_edges() const { return edges_; }
 
-  std::vector<Vertex> get_vertices_vector() const { return vertices_; }
+  const std::vector<Vertex>& get_vertices() const { return vertices_; }
 
-  std::unordered_map<VertexId, std::vector<EdgeId>> get_connectioins_() const {
+  std::unordered_map<VertexId, std::vector<EdgeId>> get_connections() const {
     return connections_;
   }
 
