@@ -45,18 +45,17 @@ class Graph {
   };
 
   void add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {
-    EdgeId new_edge_id = get_new_edge_id();
-    Edge new_edge1{new_edge_id, first_vertex_id, second_vertex_id};
-    edges_.push_back(new_edge1);
+    const EdgeId new_edge_id = get_new_edge_id();
+    edges_.emplace_back(new_edge_id, first_vertex_id, second_vertex_id);
     connections_[first_vertex_id].push_back(new_edge_id);
     connections_[second_vertex_id].push_back(new_edge_id);
   };
 
-  std::vector<Edge> get_edges_vector() const { return this->edges_; }
+  const std::vector<Edge>& get_edges() const { return edges_; }
 
-  std::vector<Vertex> get_vertices_vector() const { return vertices_; }
+  const std::vector<Vertex>& get_vertices() const { return vertices_; }
 
-  std::unordered_map<VertexId, std::vector<EdgeId>> get_connectioins_() const {
+  std::unordered_map<VertexId, std::vector<EdgeId>> get_connections() const {
     return connections_;
   }
 
@@ -71,60 +70,6 @@ class Graph {
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
 };
-
-namespace printing {
-namespace json {
-
-std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
-  std::stringstream json_string;
-  std::unordered_map<Graph::VertexId, std::vector<Graph::EdgeId>> set =
-      graph.get_connectioins_();
-  json_string << "\n\t\t{ \"id\":" << vertex.id() << ", \"edges_ids\": [";
-  std::vector<Graph::EdgeId> connections = set[vertex.id()];
-
-  for (Graph::EdgeId y : connections) {
-    json_string << y;
-    if (y != connections[connections.size() - 1])
-      json_string << ", ";
-  }
-
-  json_string << "] }";
-
-  return json_string.str();
-}
-
-std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
-  std::stringstream json_string;
-  json_string << "\n\t\t{ \"id\": " << edge.id() << ", \"vertex_ids\": ["
-              << edge.get_first_vertex_id() << ", "
-              << edge.get_second_vertex_id() << "] }";
-
-  return json_string.str();
-}
-
-std::string print_graph(const Graph& graph) {
-  std::stringstream json_string;
-  json_string << "{\n\t\"vertices\": [";
-  std::vector<Graph::Vertex> vertices = graph.get_vertices_vector();
-  std::vector<Graph::Edge> edges = graph.get_edges_vector();
-  for (auto x : vertices) {
-    json_string << printing::json::print_vertex(x, graph);
-    if (x.id() != vertices[vertices.size() - 1].id())
-      json_string << ",";
-  }
-
-  json_string << "\n\t],\n\t\"edges\": [";
-  for (auto x : edges) {
-    json_string << print_edge(x, graph);
-    if (x.id() != edges[edges.size() - 1].id())
-      json_string << ",";
-  }
-  json_string << "\n\t]\n}";
-
-  return json_string.str();
-}
-}  // namespace json
-}  // namespace printing
 
 Graph generate_graph() {
   auto graph = Graph();
@@ -154,7 +99,62 @@ Graph generate_graph() {
   return graph;
 }
 
-void write_to_file(std::string s, std::string file) {
+namespace printing {
+namespace json {
+
+std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
+  std::stringstream json_string;
+  std::unordered_map<Graph::VertexId, std::vector<Graph::EdgeId>> set =
+      graph.get_connections();
+  json_string << "\n\t\t{ \"id\":" << vertex.id() << ", \"edges_ids\": [";
+  std::vector<Graph::EdgeId> connections = set[vertex.id()];
+
+  for (Graph::EdgeId y : connections) {
+    json_string << y;
+    if (y != connections[connections.size() - 1])
+      json_string << ", ";
+  }
+
+  json_string << "] }";
+
+  return json_string.str();
+}
+
+std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
+  std::stringstream json_string;
+  json_string << "\n\t\t{ \"id\": " << edge.id() << ", \"vertex_ids\": ["
+              << edge.get_first_vertex_id() << ", "
+              << edge.get_second_vertex_id() << "] }";
+
+  return json_string.str();
+}
+
+const std::string print_graph(const Graph& graph) {
+  std::stringstream json_string;
+  json_string << "{\n\t\"vertices\": [";
+  std::vector<Graph::Vertex> vertices = graph.get_vertices();
+  std::vector<Graph::Edge> edges = graph.get_edges();
+  for (auto x : vertices) {
+    json_string << printing::json::print_vertex(x, graph);
+    if (x.id() != vertices[vertices.size() - 1].id())
+      json_string << ",";
+  }
+
+  json_string << "\n\t],\n\t\"edges\": [";
+  for (auto x : edges) {
+    json_string << print_edge(x, graph);
+    if (x.id() != edges[edges.size() - 1].id())
+      json_string << ",";
+  }
+  json_string << "\n\t]\n}";
+
+  return json_string.str();
+}
+}  // namespace json
+}  // namespace printing
+
+
+void write_to_file(const std::string& s, const std::string& file) {
   std::ofstream fout;
   fout.open(file);
   fout << s;
