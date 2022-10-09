@@ -153,7 +153,6 @@ const std::string print_graph(const Graph& graph) {
 }  // namespace json
 }  // namespace printing
 
-
 void write_to_file(const std::string& s, const std::string& file) {
   std::ofstream fout;
   fout.open(file);
