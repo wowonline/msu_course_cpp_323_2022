@@ -16,8 +16,7 @@ class Graph {
 
   void add_edge(Vertex::Id from_vertex_id, Vertex::Id to_vertex_id) {
     const auto edge_id = generate_edge_id();
-    edges_.emplace(std::piecewise_construct, std::make_tuple(edge_id),
-                   std::make_tuple(edge_id, from_vertex_id, to_vertex_id));
+    edges_[edge_id] = Edge(edge_id, from_vertex_id, to_vertex_id);
     connetions_[from_vertex_id].insert(edge_id);
     connetions_[to_vertex_id].insert(edge_id);
   }
