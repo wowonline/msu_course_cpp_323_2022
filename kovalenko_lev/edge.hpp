@@ -8,21 +8,25 @@ struct Edge {
  public:
   using Id = int;
 
-  Edge(Id id, Vertex::Id from, Vertex::Id to) : id_(id), from_(from), to_(to) {
-    if (from > to) {
-      std::swap(from, to);
+  Edge(Id id, Vertex::Id from_vertex_id, Vertex::Id to_vertex_id)
+      : id_(id), from_vertex_id_(from_vertex_id), to_vertex_id_(to_vertex_id) {
+    if (from_vertex_id > to_vertex_id) {
+      std::swap(from_vertex_id, to_vertex_id);
     }
   }
   Id id() const { return id_; }
-  Vertex::Id from() const { return from_; }
-  Vertex::Id to() const { return to_; }
+  Vertex::Id from_vertex_id() const { return from_vertex_id_; }
+  Vertex::Id to_vertex_id() const { return to_vertex_id_; }
 
   bool operator==(const Edge& rhs) const {
-    return from_ == rhs.from_ && to_ == rhs.to_;
+    return from_vertex_id_ == rhs.from_vertex_id_ &&
+           to_vertex_id_ == rhs.to_vertex_id_;
   }
 
   bool operator<(const Edge& rhs) const {
-    return from() == rhs.from() ? to() < rhs.to() : from() < rhs.from();
+    return from_vertex_id() == rhs.from_vertex_id()
+               ? to_vertex_id() < rhs.to_vertex_id()
+               : from_vertex_id() < rhs.from_vertex_id();
   }
 
   bool operator>(const Edge& rhs) const { return rhs < *this; }
@@ -33,6 +37,6 @@ struct Edge {
 
  private:
   Id id_;
-  Vertex::Id from_;
-  Vertex::Id to_;
+  Vertex::Id from_vertex_id_;
+  Vertex::Id to_vertex_id_;
 };

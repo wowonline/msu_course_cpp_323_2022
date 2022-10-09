@@ -14,12 +14,12 @@ class Graph {
     vertices_.emplace(vertex_id, vertex_id);
   }
 
-  void add_edge(Vertex::Id from, Vertex::Id to) {
+  void add_edge(Vertex::Id from_vertex_id, Vertex::Id to_vertex_id) {
     auto edge_id = generate_edge_id();
     edges_.emplace(std::piecewise_construct, std::make_tuple(edge_id),
-                   std::make_tuple(edge_id, from, to));
-    connetions_[from].insert(edge_id);
-    connetions_[to].insert(edge_id);
+                   std::make_tuple(edge_id, from_vertex_id, to_vertex_id));
+    connetions_[from_vertex_id].insert(edge_id);
+    connetions_[to_vertex_id].insert(edge_id);
   }
 
  private:
