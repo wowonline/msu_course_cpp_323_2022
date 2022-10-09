@@ -23,20 +23,11 @@ class Graph {
   }
 
  private:
-  Vertex::Id generate_vertex_id() const {
-    Vertex::Id ans = next_vertex_id_;
-    next_vertex_id_ = Vertex::next_id(next_vertex_id_);
-    return ans;
-  }
+  Vertex::Id generate_vertex_id() { return next_vertex_id_++; }
+  Edge::Id generate_edge_id() { return next_edge_id_++; }
 
-  Edge::Id generate_edge_id() const {
-    Edge::Id ans = next_edge_id_;
-    next_edge_id_ = Edge::next_id(next_edge_id_);
-    return ans;
-  }
-
-  mutable Vertex::Id next_vertex_id_ = 0;
-  mutable Edge::Id next_edge_id_ = 0;
+  Vertex::Id next_vertex_id_ = 0;
+  Edge::Id next_edge_id_ = 0;
 
   std::map<Vertex::Id, Vertex> vertices_;
   std::map<Edge::Id, Edge> edges_;

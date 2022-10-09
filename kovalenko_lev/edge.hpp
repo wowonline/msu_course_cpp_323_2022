@@ -16,7 +16,6 @@ struct Edge {
   Id id() const { return id_; }
   Vertex::Id from() const { return from_; }
   Vertex::Id to() const { return to_; }
-  static Id next_id(Id current) { return current + 1; }
 
   bool operator==(const Edge& rhs) const {
     return from_ == rhs.from_ && to_ == rhs.to_;
