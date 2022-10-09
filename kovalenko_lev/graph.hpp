@@ -22,7 +22,8 @@ class Graph {
     assert(to_vertex_id < next_vertex_id_);
 
     const auto edge_id = generate_edge_id();
-    edges_[edge_id] = Edge(edge_id, from_vertex_id, to_vertex_id);
+    edges_.insert(
+        std::make_pair(edge_id, Edge(edge_id, from_vertex_id, to_vertex_id)));
     connetions_[from_vertex_id].insert(edge_id);
     connetions_[to_vertex_id].insert(edge_id);
   }
