@@ -100,8 +100,8 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
 }
 
 std::string print_graph(const Graph& graph) {
-  const auto vertices = graph.get_vertices();
-  const auto edges = graph.get_edges();
+  const auto& vertices = graph.get_vertices();
+  const auto& edges = graph.get_edges();
 
   std::string graph_json = "{\n\t\"vertices\": [\n";
 
