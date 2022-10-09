@@ -115,18 +115,23 @@ std::string print_graph(const Graph& graph) {
 
   std::string graph_json = "{\n\t\"vertices\": [\n";
 
-  for (const auto& vertex : vertices) {
-    graph_json += "\t\t" + print_vertex(vertex, graph) + ",\n";
+  if (vertices.size() != 0) {
+    for (const auto& vertex : vertices) {
+      graph_json += "\t\t" + print_vertex(vertex, graph) + ",\n";
+    }
+    graph_json.pop_back();
+    graph_json.pop_back();
   }
-  graph_json.pop_back();
-  graph_json.pop_back();
+
   graph_json += "\n\t],\n\t\"edges\":[\n";
 
-  for (const auto& edge : edges) {
-    graph_json += "\t\t" + print_edge(edge, graph) + ",\n";
+  if (edges.size() != 0) {
+    for (const auto& edge : edges) {
+      graph_json += "\t\t" + print_edge(edge, graph) + ",\n";
+    }
+    graph_json.pop_back();
+    graph_json.pop_back();
   }
-  graph_json.pop_back();
-  graph_json.pop_back();
 
   graph_json += "\n\t]\n}\n";
 
