@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 const int kVerticesCount = 14;
@@ -39,20 +40,16 @@ class Graph {
   void add_vertex() { vertices_.emplace_back(get_new_vertex_id()); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    edges_.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
+    auto edge_id = get_new_edge_id();
+
+    edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id);
+
+    adjacency_list_[from_vertex_id].push_back(edge_id);
+    adjacency_list_[to_vertex_id].push_back(edge_id);
   }
 
-  std::vector<EdgeId> get_vertex_edges_ids(const Graph::Vertex& vertex) const {
-    std::vector<EdgeId> edge_ids;
-
-    for (const auto& edge : edges_) {
-      if (edge.from_vertex_id() == vertex.id() ||
-          edge.to_vertex_id() == vertex.id()) {
-        edge_ids.push_back(edge.id());
-      }
-    }
-
-    return edge_ids;
+  const std::vector<EdgeId>& get_connected_edge_ids(VertexId vertex_id) const {
+    return adjacency_list_.at(vertex_id);
   }
 
   const std::vector<Vertex>& get_vertices() const { return vertices_; }
@@ -68,6 +65,7 @@ class Graph {
   EdgeId next_free_edge_id_ = 0;
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
+  std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
 };
 
 namespace printing {
@@ -76,7 +74,7 @@ namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string vertex_json =
       "{\"id\":" + std::to_string(vertex.id()) + ",\"edge_ids\":[";
-  const auto vertex_edge_ids = graph.get_vertex_edges_ids(vertex);
+  const auto& vertex_edge_ids = graph.get_connected_edge_ids(vertex.id());
 
   for (const auto& edge_id : vertex_edge_ids) {
     vertex_json += std::to_string(edge_id) + ",";
