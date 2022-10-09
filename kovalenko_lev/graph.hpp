@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <set>
 #include <vector>
 
@@ -29,7 +29,7 @@ class Graph {
   Vertex::Id next_vertex_id_ = 0;
   Edge::Id next_edge_id_ = 0;
 
-  std::map<Vertex::Id, Vertex> vertices_;
-  std::map<Edge::Id, Edge> edges_;
-  std::map<Vertex::Id, std::set<Edge::Id>> connetions_;
+  std::unordered_map<Vertex::Id, Vertex> vertices_;
+  std::unordered_map<Edge::Id, Edge> edges_;
+  std::unordered_map<Vertex::Id, std::set<Edge::Id>> connetions_;
 };
