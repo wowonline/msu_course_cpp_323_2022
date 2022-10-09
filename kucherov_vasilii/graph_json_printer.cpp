@@ -55,12 +55,6 @@ class Graph {
     return edge_ids;
   }
 
-  std::vector<VertexId> get_edge_vertices_ids(const Graph::Edge& edge) const {
-    std::vector<VertexId> vertex_ids = {edge.from_vertex_id(),
-                                        edge.to_vertex_id()};
-    return vertex_ids;
-  }
-
   const std::vector<Vertex>& get_vertices() const { return vertices_; }
 
   const std::vector<Edge>& get_edges() const { return edges_; }
@@ -97,13 +91,9 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
   std::string edge_json =
       "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":[";
-  const auto edge_vertices_ids = graph.get_edge_vertices_ids(edge);
 
-  for (const auto& vertex_id : edge_vertices_ids) {
-    edge_json += std::to_string(vertex_id) + ",";
-  }
-
-  edge_json.pop_back();
+  edge_json += std::to_string(edge.from_vertex_id()) + "," +
+               std::to_string(edge.to_vertex_id());
   edge_json += "]}";
 
   return edge_json;
