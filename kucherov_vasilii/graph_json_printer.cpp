@@ -74,13 +74,16 @@ namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string vertex_json =
       "{\"id\":" + std::to_string(vertex.id()) + ",\"edge_ids\":[";
-  const auto& vertex_edge_ids = graph.get_connected_edge_ids(vertex.id());
+  const auto& connected_edge_ids = graph.get_connected_edge_ids(vertex.id());
 
-  for (const auto& edge_id : vertex_edge_ids) {
-    vertex_json += std::to_string(edge_id) + ",";
+  if (connected_edge_ids.size() != 0) {
+    for (const auto& edge_id : connected_edge_ids) {
+      vertex_json += std::to_string(edge_id) + ",";
+    }
+
+    vertex_json.pop_back();
   }
 
-  vertex_json.pop_back();
   vertex_json += "]}";
 
   return vertex_json;
