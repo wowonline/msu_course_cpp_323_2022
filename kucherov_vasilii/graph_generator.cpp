@@ -49,6 +49,11 @@ class Graph {
   }
 
   const std::vector<EdgeId>& get_connected_edge_ids(VertexId vertex_id) const {
+    if (adjacency_list_.find(vertex_id) == adjacency_list_.end()) {
+      static const std::vector<EdgeId> empty_result;
+      return empty_result;
+    }
+
     return adjacency_list_.at(vertex_id);
   }
 
