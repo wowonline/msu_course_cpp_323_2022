@@ -180,7 +180,7 @@ Graph generate_graph(const int& kVerticesCount = 14) {
 
 void write_to_file(const std::string& str, const std::string& filename) {
   std::ofstream out(filename, std::ios::trunc);
-  out << str;
+  out << str << std::endl;
   out.close();
 }
 
