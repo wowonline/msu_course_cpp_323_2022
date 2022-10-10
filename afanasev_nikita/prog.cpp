@@ -38,8 +38,8 @@ class Graph {
   }
 
   bool has_edge(VertexId from_vertex_id, VertexId to_vertex_id) const {
-    assert(!(adjacency_list_.find(from_vertex_id) == adjacency_list_.end() ||
-             adjacency_list_.find(to_vertex_id) == adjacency_list_.end()));
+    assert(adjacency_list_.find(from_vertex_id) != adjacency_list_.end());
+    assert(adjacency_list_.find(to_vertex_id) != adjacency_list_.end());
     const auto& connected_from_edges_ids = adjacency_list_.at(from_vertex_id);
     const auto& connected_to_edges_ids = adjacency_list_.at(to_vertex_id);
     for (auto from_edge_id : connected_from_edges_ids) {
