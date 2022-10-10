@@ -30,21 +30,15 @@ class Graph {
     return vertices_.find(vertex_id) != vertices_.end();
   }
 
-  std::unordered_set<Vertex::Id> get_connected_vertices(
-      Vertex::Id from_vertex_id) {
-    std::unordered_set<Vertex::Id> result;
-    if (connetions_.find(from_vertex_id) == connetions_.end()) {
-      return result;
-    }
-    for (const auto& edge_id : connetions_[from_vertex_id]) {
-      const Edge& edge = edges_.at(edge_id);
-      if (edge.from_vertex_id() == from_vertex_id) {
-        result.insert(edge.to_vertex_id());
-      } else {
-        result.insert(edge.from_vertex_id());
+  bool has_edge(Vertex::Id from_vertex_id, Vertex::Id to_vertex_id) {
+    for (const auto& edge_id_1 : connetions_[from_vertex_id]) {
+      for (const auto& edge_id_2 : connetions_[to_vertex_id]) {
+        if (edge_id_1 == edge_id_2) {
+          return true;
+        }
       }
     }
-    return result;
+    return false;
   }
 
  private:
