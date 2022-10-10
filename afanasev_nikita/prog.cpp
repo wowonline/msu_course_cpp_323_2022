@@ -1,4 +1,6 @@
 #include <cassert>
+#include <map>
+#include <unordered_map>
 #include <vector>
 
 constexpr int kVerticesCount = 14;
@@ -8,44 +10,52 @@ class Graph {
   using VertexId = int;
   using EdgeId = int;
 
-  void add_vertex() { vertices_.emplace_back(next_vertex_id()); }
+  void add_vertex() {
+    const auto vertex_id = next_vertex_id();
+    vertices_.try_emplace(vertex_id, vertex_id);
+    adjacency_list_[vertex_id];
+  }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    assert((void("vertex_presence_check failed"),
-            vertex_presence_check(from_vertex_id)));
-    assert((void("vertex_presence_check failed"),
-            vertex_presence_check(to_vertex_id)));
-    assert((void("edge_presence_check failed"),
-            edge_presence_check(from_vertex_id, to_vertex_id)));
-    edges_.emplace_back(next_edge_id(), from_vertex_id, to_vertex_id);
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
+    assert(!has_edge(from_vertex_id, to_vertex_id));
+    const auto edge_id = next_edge_id();
+    edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id);
+    adjacency_list_[from_vertex_id].push_back(edge_id);
+    adjacency_list_[to_vertex_id].push_back(edge_id);
   }
 
  private:
-  VertexId curr_vertex_id_ = 0;
-  EdgeId curr_edge_id_ = 0;
+  VertexId current_vertex_id_ = 0;
+  EdgeId current_edge_id_ = 0;
 
-  VertexId next_vertex_id() { return curr_vertex_id_++; }
+  VertexId next_vertex_id() { return current_vertex_id_++; }
 
-  EdgeId next_edge_id() { return curr_edge_id_++; }
+  EdgeId next_edge_id() { return current_edge_id_++; }
 
-  bool vertex_presence_check(VertexId vertex_id) const {
-    if (curr_vertex_id_ == 0 || vertex_id < 0 || vertex_id >= curr_vertex_id_) {
+  bool has_vertex(VertexId vertex_id) const {
+    if (vertices_.find(vertex_id) == vertices_.end()) {
       return false;
     }
     return true;
   }
 
-  bool edge_presence_check(VertexId from_vertex_id,
-                           VertexId to_vertex_id) const {
-    for (auto next : edges_) {
-      if (next.from_vertex_id() == from_vertex_id &&
-              next.to_vertex_id() == to_vertex_id ||
-          next.from_vertex_id() == to_vertex_id &&
-              next.to_vertex_id() == from_vertex_id) {
-        return false;
+  bool has_edge(VertexId from_vertex_id, VertexId to_vertex_id) const {
+    if (adjacency_list_.find(from_vertex_id) == adjacency_list_.end() ||
+        adjacency_list_.find(to_vertex_id) == adjacency_list_.end()) {
+      return false;
+    }
+    const auto& connected_from_edges_ids = adjacency_list_.at(from_vertex_id);
+    const auto& connected_to_edges_ids = adjacency_list_.at(to_vertex_id);
+    for (const auto& i : connected_from_edges_ids) {
+      for (const auto& j : connected_to_edges_ids) {
+        if (i == j) {
+          return true;
+        }
       }
     }
-    return true;
+    return false;
   }
 
   struct Vertex {
@@ -74,8 +84,9 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  std::vector<Vertex> vertices_;
+  std::map<VertexId, Vertex> vertices_;
   std::vector<Edge> edges_;
+  std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
 };
 
 int main() {
