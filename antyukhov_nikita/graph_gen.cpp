@@ -52,7 +52,8 @@ class Graph {
 
   const std::vector<Vertex>& get_vertices() const { return vertices_; }
 
-  const std::unordered_map<VertexId, std::vector<EdgeId>>& get_connections() const {
+  const std::unordered_map<VertexId, std::vector<EdgeId>>& get_connections()
+      const {
     return connections_;
   }
 
