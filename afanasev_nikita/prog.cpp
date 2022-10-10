@@ -34,10 +34,7 @@ class Graph {
   EdgeId next_edge_id() { return current_edge_id_++; }
 
   bool has_vertex(VertexId vertex_id) const {
-    if (vertices_.find(vertex_id) == vertices_.end()) {
-      return false;
-    }
-    return true;
+    return vertices_.find(vertex_id) != vertices_.end();
   }
 
   bool has_edge(VertexId from_vertex_id, VertexId to_vertex_id) const {
