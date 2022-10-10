@@ -1,5 +1,4 @@
 #include <cassert>
-#include <map>
 #include <unordered_map>
 #include <vector>
 
@@ -42,15 +41,13 @@ class Graph {
   }
 
   bool has_edge(VertexId from_vertex_id, VertexId to_vertex_id) const {
-    if (adjacency_list_.find(from_vertex_id) == adjacency_list_.end() ||
-        adjacency_list_.find(to_vertex_id) == adjacency_list_.end()) {
-      return false;
-    }
+    assert(!(adjacency_list_.find(from_vertex_id) == adjacency_list_.end() ||
+             adjacency_list_.find(to_vertex_id) == adjacency_list_.end()));
     const auto& connected_from_edges_ids = adjacency_list_.at(from_vertex_id);
     const auto& connected_to_edges_ids = adjacency_list_.at(to_vertex_id);
-    for (const auto& i : connected_from_edges_ids) {
-      for (const auto& j : connected_to_edges_ids) {
-        if (i == j) {
+    for (auto from_edge_id : connected_from_edges_ids) {
+      for (auto to_edge_id : connected_to_edges_ids) {
+        if (from_edge_id == to_edge_id) {
           return true;
         }
       }
@@ -84,7 +81,7 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  std::map<VertexId, Vertex> vertices_;
+  std::unordered_map<VertexId, Vertex> vertices_;
   std::vector<Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
 };
