@@ -19,20 +19,20 @@ class Graph {
   struct Edge {
    public:
     explicit Edge(EdgeId id,
-                  VertexId first_vertex_id,
-                  VertexId second_vertex_id)
+                  VertexId first_vertex_id_,
+                  VertexId second_vertex_id_)
         : id_(id),
-          first_vertex_id(first_vertex_id),
-          second_vertex_id(second_vertex_id){};
+          first_vertex_id_(first_vertex_id_),
+          second_vertex_id_(second_vertex_id_){};
 
     EdgeId id() const { return id_; };
-    VertexId get_first_vertex_id() const { return first_vertex_id; };
-    VertexId get_second_vertex_id() const { return second_vertex_id; };
+    VertexId get_first_vertex_id() const { return first_vertex_id_; };
+    VertexId get_second_vertex_id() const { return second_vertex_id_; };
 
    private:
     EdgeId id_ = 0;
-    VertexId first_vertex_id = 0;
-    VertexId second_vertex_id = 0;
+    VertexId first_vertex_id_ = 0;
+    VertexId second_vertex_id_ = 0;
   };
   void add_vertex() {
     const VertexId new_id = get_new_vertex_id();
@@ -41,18 +41,18 @@ class Graph {
     connections_[new_id] = {};
   };
 
-  void add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {
+  void add_edge(VertexId first_vertex_id_, VertexId second_vertex_id_) {
     const EdgeId new_edge_id = get_new_edge_id();
-    edges_.emplace_back(new_edge_id, first_vertex_id, second_vertex_id);
-    connections_[first_vertex_id].push_back(new_edge_id);
-    connections_[second_vertex_id].push_back(new_edge_id);
+    edges_.emplace_back(new_edge_id, first_vertex_id_, second_vertex_id_);
+    connections_[first_vertex_id_].push_back(new_edge_id);
+    connections_[second_vertex_id_].push_back(new_edge_id);
   };
 
   const std::vector<Edge>& get_edges() const { return edges_; }
 
   const std::vector<Vertex>& get_vertices() const { return vertices_; }
 
-  std::unordered_map<VertexId, std::vector<EdgeId>> get_connections() const {
+  const std::unordered_map<VertexId, std::vector<EdgeId>>& get_connections() const {
     return connections_;
   }
 
