@@ -16,10 +16,8 @@ class Graph {
   }
 
   void add_edge(Vertex::Id from_vertex_id, Vertex::Id to_vertex_id) {
-    assert(from_vertex_id >= 0);
-    assert(from_vertex_id < next_vertex_id_);
-    assert(to_vertex_id >= 0);
-    assert(to_vertex_id < next_vertex_id_);
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
     assert(!has_edge(from_vertex_id, to_vertex_id));
 
     const auto edge_id = generate_edge_id();
@@ -28,9 +26,8 @@ class Graph {
     connetions_[to_vertex_id].insert(edge_id);
   }
 
-  bool has_edge(Vertex::Id from_vertex_id, Vertex::Id to_vertex_id) {
-    const auto to_vertices = get_connected_vertices(from_vertex_id);
-    return to_vertices.find(to_vertex_id) != to_vertices.end();
+  bool has_vertex(Vertex::Id vertex_id) {
+    return vertices_.find(vertex_id) != vertices_.end();
   }
 
   std::unordered_set<Vertex::Id> get_connected_vertices(
