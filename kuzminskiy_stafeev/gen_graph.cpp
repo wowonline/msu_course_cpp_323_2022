@@ -124,8 +124,8 @@ std::string print_graph(const Graph& graph) {
 
   if (!vertices.empty()) {
     std::for_each(vertices.begin(), vertices.end(),
-                  [&](const Graph::Vertex& v) {
-                    graph_json += print_vertex(v, graph) + ",";
+                  [&](const Graph::Vertex& vertex) {
+                    graph_json += print_vertex(vertex, graph) + ",";
                   });
 
     graph_json.pop_back();
@@ -136,8 +136,8 @@ std::string print_graph(const Graph& graph) {
   std::vector<Graph::Edge> edges = graph.set_of_edges();
 
   if (!edges.empty()) {
-    std::for_each(edges.begin(), edges.end(), [&](const Graph::Edge& e) {
-      graph_json += print_edge(e, graph) + ",";
+    std::for_each(edges.begin(), edges.end(), [&](const Graph::Edge& edge) {
+      graph_json += print_edge(edge, graph) + ",";
     });
     graph_json.pop_back();
   }
