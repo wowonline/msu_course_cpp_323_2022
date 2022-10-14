@@ -57,14 +57,4 @@ std::string print_graph(const Graph& graph) {
 }
 };  // namespace json
 
-void write_to_file(const std::string graph_repr, const std::string file_name) {
-  std::ofstream output(file_name);
-  if (output.is_open()) {
-    output << graph_repr;
-    output.close();
-  } else {
-    std::cout << "Unable to open file";
-  }
-}
-
 };  // namespace printing
