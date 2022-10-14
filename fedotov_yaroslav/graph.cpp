@@ -18,7 +18,3 @@ void Graph::add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {
   adjacency_list_[first_vertex_id].emplace_back(new_id);
   adjacency_list_[second_vertex_id].emplace_back(new_id);
 }
-
-bool Graph::has_vertex(VertexId id) const {
-  return vertices_.find(id) != vertices_.end();
-}

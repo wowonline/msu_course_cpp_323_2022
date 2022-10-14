@@ -50,7 +50,9 @@ class Graph {
   };
 
  private:
-  bool has_vertex(VertexId id) const;
+  bool has_vertex(VertexId id) const {
+    return vertices_.find(id) != vertices_.end();
+  };
 
   VertexId get_new_vertex_id() { return last_vertex_id_++; };
 
