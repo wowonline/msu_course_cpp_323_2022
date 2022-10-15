@@ -8,20 +8,15 @@ class Graph {
   using EdgeId = int;
 
   void add_vertex() {
-    auto temp_vertex_id = get_new_vertex_id();
-    vertexes_.insert({temp_vertex_id, Vertex(temp_vertex_id)});
-  }
+    auto new_vertex_id = get_new_vertex_id();
+    vertices_.insert({new_vertex_id, Vertex(new_vertex_id)});
+  };
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    if (vertexes_.find(from_vertex_id) != vertexes_.end() &&
-        vertexes_.find(to_vertex_id) != vertexes_.end()) {
-      auto temp_edge_id = get_new_edge_id();
-      edges_.insert(
-          {temp_edge_id, Edge(temp_edge_id, from_vertex_id, to_vertex_id)});
-    } else {
-      std::cout << "Error: no corresponding vertexes." << std::endl;
-      exit(1);
-    }
+    assert(has_vertex_id(from_vertex_id) == true);
+    assert(has_vertex_id(to_vertex_id) == true);
+    auto temp_edge_id = get_new_edge_id();
+    edges_.insert({temp_edge_id, Edge(temp_edge_id, from_vertex_id, to_vertex_id)});
   }
 
   struct Vertex {
@@ -36,7 +31,7 @@ class Graph {
 
   struct Edge {
    public:
-    Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
+    explicit Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
         : id_(id),
           from_vertex_id_(from_vertex_id),
           to_vertex_id_(to_vertex_id) {}
@@ -56,10 +51,14 @@ class Graph {
   VertexId get_new_vertex_id() { return last_vertex_id_++; }
   EdgeId get_new_edge_id() { return last_edge_id_++; }
 
+  bool has_vertex_id(VertexId vertex_id) const {
+    return vertices_.find(vertex_id) != vertices_.end();
+  }
+
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
 
-  std::unordered_map<VertexId, Vertex> vertexes_;
+  std::unordered_map<VertexId, Vertex> vertices_;
   std::unordered_map<EdgeId, Edge> edges_;
 };
 
