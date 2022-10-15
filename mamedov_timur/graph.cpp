@@ -16,7 +16,8 @@ class Graph {
     assert(has_vertex_id(from_vertex_id) == true);
     assert(has_vertex_id(to_vertex_id) == true);
     auto temp_edge_id = get_new_edge_id();
-    edges_.insert({temp_edge_id, Edge(temp_edge_id, from_vertex_id, to_vertex_id)});
+    edges_.insert(
+        {temp_edge_id, Edge(temp_edge_id, from_vertex_id, to_vertex_id)});
   }
 
   struct Vertex {
