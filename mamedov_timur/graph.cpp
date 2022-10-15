@@ -10,14 +10,14 @@ class Graph {
   void add_vertex() {
     auto new_vertex_id = get_new_vertex_id();
     vertices_.insert({new_vertex_id, Vertex(new_vertex_id)});
-  };
+  }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    assert(has_vertex_id(from_vertex_id) == true);
-    assert(has_vertex_id(to_vertex_id) == true);
-    auto temp_edge_id = get_new_edge_id();
+    assert(has_vertex_id(from_vertex_id));
+    assert(has_vertex_id(to_vertex_id));
+    auto new_edge_id = get_new_edge_id();
     edges_.insert(
-        {temp_edge_id, Edge(temp_edge_id, from_vertex_id, to_vertex_id)});
+        {new_edge_id, Edge(new_edge_id, from_vertex_id, to_vertex_id)});
   }
 
   struct Vertex {
