@@ -7,8 +7,12 @@ Graph::VertexId Graph::Vertex::id() const {
   return id_;
 }
 
-Graph::Edge::Edge(EdgeId id, VertexId first_vertex_id, VertexId second_vertex_id)
-    : id_(id), first_vertex_id_(first_vertex_id), second_vertex_id_(second_vertex_id) {}
+Graph::Edge::Edge(EdgeId id,
+                  VertexId first_vertex_id,
+                  VertexId second_vertex_id)
+    : id_(id),
+      first_vertex_id_(first_vertex_id),
+      second_vertex_id_(second_vertex_id) {}
 
 Graph::EdgeId Graph::Edge::id() const {
   return id_;
@@ -41,11 +45,13 @@ const std::unordered_map<Graph::EdgeId, Graph::Edge>& Graph::get_edges() const {
   return edges_;
 }
 
-const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices() const {
+const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices()
+    const {
   return vertices_;
 }
 
-const std::vector<Graph::EdgeId>& Graph::get_edges_of_vertex(Graph::VertexId vertex_id) const {
+const std::vector<Graph::EdgeId>& Graph::get_edges_of_vertex(
+    Graph::VertexId vertex_id) const {
   return connections_.at(vertex_id);
 }
 
