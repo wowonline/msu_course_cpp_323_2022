@@ -1,59 +1,57 @@
 #include "printing.hpp"
-#include <fstream>
-#include <iostream>
 #include <sstream>
 
 namespace printing {
 namespace json {
 
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
-  std::ostringstream vertex_repr;
+  std::ostringstream result;
   bool is_first = true;
-  auto edges_ids_of_vertex = graph.adjacency_list().at(vertex.id());
-  vertex_repr << "\n{ \"id\": " << vertex.id() << ", \"edges_ids\": [";
-  for (const auto& edge_id : edges_ids_of_vertex) {
+  const auto& edges_ids = graph.connected_edge_ids(vertex.id());
+  result << "\n{ \"id\": " << vertex.id() << ", \"edges_ids\": [";
+  for (const auto edge_id : edges_ids) {
     if (!is_first)
-      vertex_repr << ", " << edge_id;
+      result << ", " << edge_id;
     else {
-      vertex_repr << edge_id;
+      result << edge_id;
       is_first = false;
     }
   }
-  vertex_repr << "] }";
-  return vertex_repr.str();
+  result << "] }";
+  return result.str();
 }
 
 std::string print_edge(const Graph::Edge& edge) {
-  std::ostringstream edge_repr;
-  edge_repr << "\n{\"id\": " << edge.id() << ", \"vertex_ids\": ["
+  std::ostringstream result;
+  result << "\n{\"id\": " << edge.id() << ", \"vertex_ids\": ["
             << edge.from_vertex_id() << ", " << edge.to_vertex_id() << "]}";
-  return edge_repr.str();
+  return result.str();
 }
 
 std::string print_graph(const Graph& graph) {
-  std::string json_string = "{\"vertices\": [";
+  std::string result = "{\"vertices\": [";
   bool is_first = true;
   for (const auto& [_, vertex] : graph.vertices()) {
     if (!is_first) {
-      json_string.append(", ");
+      result.append(", ");
     } else {
       is_first = false;
     }
-    json_string.append(print_vertex(vertex, graph));
+    result.append(print_vertex(vertex, graph));
   }
 
-  json_string.append("],\n\"edges\": [");
+  result.append("],\n\"edges\": [");
   is_first = true;
   for (const auto& [_, edge] : graph.edges()) {
     if (!is_first) {
-      json_string.append(", ");
+      result.append(", ");
     } else {
       is_first = false;
     }
-    json_string.append(print_edge(edge));
+    result.append(print_edge(edge));
   }
-  json_string.append("]}\n");
-  return json_string;
+  result.append("]}\n");
+  return result;
 }
 };  // namespace json
 

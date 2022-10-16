@@ -44,10 +44,9 @@ class Graph {
 
   const std::unordered_map<EdgeId, Edge>& edges() const { return edges_; };
 
-  const std::unordered_map<VertexId, std::vector<EdgeId>>& adjacency_list()
-      const {
-    return adjacency_list_;
-  };
+  const std::vector<EdgeId>& connected_edge_ids(VertexId vertex_id) const {
+    return adjacency_list_.at(vertex_id);
+  } 
 
  private:
   bool has_vertex(VertexId id) const {
