@@ -8,14 +8,14 @@ class Graph {
   using EdgeId = int;
 
   void add_vertex() {
-    auto new_vertex_id = get_new_vertex_id();
+    const auto new_vertex_id = get_new_vertex_id();
     vertices_.insert({new_vertex_id, Vertex(new_vertex_id)});
   }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     assert(has_vertex_id(from_vertex_id));
     assert(has_vertex_id(to_vertex_id));
-    auto new_edge_id = get_new_edge_id();
+    const auto new_edge_id = get_new_edge_id();
     edges_.insert(
         {new_edge_id, Edge(new_edge_id, from_vertex_id, to_vertex_id)});
   }
@@ -32,7 +32,7 @@ class Graph {
 
   struct Edge {
    public:
-    explicit Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
+    Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
         : id_(id),
           from_vertex_id_(from_vertex_id),
           to_vertex_id_(to_vertex_id) {}
