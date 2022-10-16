@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <vector>
 
-constexpr int kVerticesCount = 14;
+int kVerticesCount = 14;
 
 class Graph {
  public:
@@ -12,22 +12,27 @@ class Graph {
   using EdgeId = int;
 
   void add_vertex() {
-    VertexId new_vertex_id = generate_vertex_id();
-    vector_vertices_.emplace_back(new_vertex_id);
+    const VertexId new_vertex_id = generate_vertex_id();
     adjacency_list_[new_vertex_id] = {};
+    vertices_.emplace(new_vertex_id, Vertex(new_vertex_id));
   }
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    EdgeId new_edge_id = generate_edge_id();
+    const EdgeId new_edge_id = generate_edge_id();
     assert(has_vertex(from_vertex_id));
     assert(has_vertex(to_vertex_id));
     assert(!has_edge(from_vertex_id, to_vertex_id));
-    vector_edges_.emplace_back(new_edge_id, from_vertex_id, to_vertex_id);
-    adjacency_list_[from_vertex_id].emplace_back(new_edge_id);
-    adjacency_list_[to_vertex_id].emplace_back(new_edge_id);
+    edges_.emplace(new_edge_id,
+                   Edge(new_edge_id, from_vertex_id, to_vertex_id));
+    if (from_vertex_id != to_vertex_id) {
+      adjacency_list_[from_vertex_id].emplace_back(new_edge_id);
+      adjacency_list_[to_vertex_id].emplace_back(new_edge_id);
+    } else
+      adjacency_list_[from_vertex_id].emplace_back(new_edge_id);
   }
 
   struct Vertex {
    public:
+    Vertex() {}
     explicit Vertex(VertexId id) : id_(id) {}
     VertexId id() const { return id_; }
 
@@ -37,6 +42,7 @@ class Graph {
 
   struct Edge {
    public:
+    Edge() {}
     Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
         : id_(id),
           from_vertex_id_(from_vertex_id),
@@ -51,19 +57,19 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  const std::vector<Vertex>& get_vector_vertices() const {
-    return vector_vertices_;
+  const std::unordered_map<VertexId, Vertex>& get_vertices() const {
+    return vertices_;
   }
 
-  const std::vector<Edge>& get_vector_edges() const { return vector_edges_; }
+  const std::unordered_map<EdgeId, Edge>& get_edges() const { return edges_; }
 
   const std::vector<EdgeId>& get_connected_edge_ids(VertexId vertex_id) const {
     return adjacency_list_.at(vertex_id);
   }
 
  private:
-  std::vector<Vertex> vector_vertices_;
-  std::vector<Edge> vector_edges_;
+  std::unordered_map<VertexId, Vertex> vertices_;
+  std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
 
   VertexId num_vertices_ = 0;
@@ -72,16 +78,14 @@ class Graph {
   VertexId generate_vertex_id() { return num_vertices_++; }
   EdgeId generate_edge_id() { return num_edges_++; }
 
-  bool has_vertex(VertexId id) const {
-    for (const auto& vertex : vector_vertices_)
-      if (vertex.id() == id)
-        return true;
+  bool has_vertex(VertexId vertex_id) const {
+    if (vertices_.count(vertex_id) > 0)
+      return true;
     return false;
   }
-  bool has_edge(VertexId id_from, VertexId id_to) const {
-    for (const auto& edge : vector_edges_) {
-      if (edge.from_vertex_id() == id_from && edge.to_vertex_id() == id_to ||
-          edge.from_vertex_id() == id_to && edge.to_vertex_id() == id_from)
+  bool has_edge(VertexId from_vertex_id, VertexId to_vertex_id) const {
+    for (const auto& edge_id : get_connected_edge_ids(from_vertex_id)) {
+      if (edges_.at(edge_id).to_vertex_id() == to_vertex_id)
         return true;
     }
     return false;
@@ -110,13 +114,14 @@ std::string print_edge(const Graph::Edge& edge) {
 
 std::string print_graph(const Graph& graph) {
   std::string graph_string = "{\n  \"vertices\": [\n";
-  for (const auto& vertex : graph.get_vector_vertices()) {
-    graph_string += "    {" + print_vertex(vertex, graph) + "},\n";
+  for (auto& id_vertex_pair : graph.get_vertices()) {
+    graph_string +=
+        "    {" + print_vertex(id_vertex_pair.second, graph) + "},\n";
   }
   graph_string.erase(graph_string.length() - 2, graph_string.length());
   graph_string += "\n  ],\n  \"edges\": [\n";
-  for (const auto& edge : graph.get_vector_edges()) {
-    graph_string += "    {" + print_edge(edge) + "},\n";
+  for (auto& id_edge_pair : graph.get_edges()) {
+    graph_string += "    {" + print_edge(id_edge_pair.second) + "},\n";
   }
   graph_string.erase(graph_string.length() - 2, graph_string.length());
   return graph_string + "\n  ]\n}\n";
@@ -157,8 +162,6 @@ void write_to_file(const std::string& content, const std::string& file_name) {
   std::ofstream new_file(file_name);
 
   new_file << content;
-
-  new_file.close();
 }
 
 int main() {
