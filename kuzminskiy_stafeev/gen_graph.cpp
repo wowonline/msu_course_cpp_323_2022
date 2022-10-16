@@ -40,8 +40,8 @@ class Graph {
   void add_vertex() {
     const auto vertex_id = gen_new_vertex_id();
     vertices_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
-    std::vector<EdgeId> EdgesInPull_ = {};
-    connections_list_[vertex_id] = EdgesInPull_;
+    std::vector<EdgeId> edges_at_the_vertex_ = {};
+    connections_list_[vertex_id] = edges_at_the_vertex_;
   }
 
   void add_edge(const VertexId& from_vertex_id, const VertexId& to_vertex_id) {
