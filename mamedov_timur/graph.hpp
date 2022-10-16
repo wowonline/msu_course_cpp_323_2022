@@ -19,9 +19,7 @@ class Graph {
 
   struct Edge {
    public:
-    explicit Edge(EdgeId id,
-                  VertexId first_vertex_id_,
-                  VertexId second_vertex_id_);
+    Edge(EdgeId id, VertexId first_vertex_id_, VertexId second_vertex_id_);
 
     EdgeId id() const;
     VertexId get_first_vertex_id() const;

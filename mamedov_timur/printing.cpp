@@ -8,13 +8,15 @@ namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::stringstream json_string;
   json_string << "\n\t\t{ \"id\":" << vertex.id() << ", \"edges_ids\": [";
-  auto connections = graph.get_edges_of_vertex(vertex.id());
+  const auto connections = graph.get_edges_of_vertex(vertex.id());
 
-  for (Graph::EdgeId y : connections) {
-    json_string << y;
-    if (y != connections[connections.size() - 1])
-      json_string << ", ";
+  auto it = connections.begin(), prev_it = it;
+  ++it;
+
+  for (; it != connections.end(); ++it, ++prev_it) {
+    json_string << *prev_it << ", ";
   }
+  json_string << *prev_it;
 
   json_string << "] }";
 
@@ -33,8 +35,8 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
 std::string print_graph(const Graph& graph) {
   std::stringstream json_string;
   json_string << "{\n\t\"vertices\": [";
-  auto vertices = graph.get_vertices();
-  auto edges = graph.get_edges();
+  const auto vertices = graph.get_vertices();
+  const auto edges = graph.get_edges();
 
   auto it_vertices = vertices.begin(), prev_it_vertices = it_vertices;
   ++it_vertices;
@@ -45,6 +47,7 @@ std::string print_graph(const Graph& graph) {
   json_string << print_vertex(prev_it_vertices->second, graph);
 
   json_string << "\n\t],\n\t\"edges\": [";
+
   auto it_edges = edges.begin(), prev_it_edges = it_edges;
   ++it_edges;
 
