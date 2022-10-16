@@ -3,8 +3,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 class Graph {
  public:
@@ -48,25 +48,27 @@ class Graph {
     assert(has_vertex(from_vertex_id));
     assert(has_vertex(to_vertex_id));
     auto edge_id = gen_new_edge_id();
-    edges_.insert(std::make_pair(edge_id, Edge(edge_id, from_vertex_id, to_vertex_id)));
+    edges_.insert(
+        std::make_pair(edge_id, Edge(edge_id, from_vertex_id, to_vertex_id)));
     connections_list_[from_vertex_id].emplace_back(edge_id);
     connections_list_[to_vertex_id].emplace_back(edge_id);
   }
 
-  const std::unordered_map<VertexId, Vertex>& vertices() const { return vertices_; }
+  const std::unordered_map<VertexId, Vertex>& vertices() const {
+    return vertices_;
+  }
   const std::unordered_map<EdgeId, Edge>& edges() const { return edges_; }
-  const std::unordered_map<VertexId, std::vector<EdgeId>>& connections() const { return connections_list_; }
+  const std::unordered_map<VertexId, std::vector<EdgeId>>& connections() const {
+    return connections_list_;
+  }
 
   bool has_vertex(VertexId id) const {
     return vertices_.find(id) != vertices_.end();
   }
 
-  bool has_edge(EdgeId id) const {
-    return edges_.find(id) != edges_.end();
-  }
+  bool has_edge(EdgeId id) const { return edges_.find(id) != edges_.end(); }
 
-private:
-
+ private:
   EdgeId gen_new_edge_id() { return next_edge_id_++; }
 
   VertexId gen_new_vertex_id() { return next_vertex_id_++; }
@@ -82,35 +84,35 @@ namespace printing {
 namespace json {
 
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
-    auto vertex_id = vertex.id();
-    assert(graph.has_vertex(vertex_id));
-    std::string vertex_json =
-        "{\"id\":" + std::to_string(vertex_id) + ",\"edge_ids\":[";
-    bool is_have = false;
-    const auto& connections_list = graph.connections();
+  auto vertex_id = vertex.id();
+  assert(graph.has_vertex(vertex_id));
+  std::string vertex_json =
+      "{\"id\":" + std::to_string(vertex_id) + ",\"edge_ids\":[";
+  bool is_have = false;
+  const auto& connections_list = graph.connections();
 
-    for (const auto& edge_id : connections_list.at(vertex_id)) {
-      is_have = true;
-      vertex_json += std::to_string(edge_id) + ",";
-    }
+  for (const auto& edge_id : connections_list.at(vertex_id)) {
+    is_have = true;
+    vertex_json += std::to_string(edge_id) + ",";
+  }
 
-    if (is_have) {
-      vertex_json.pop_back();
-    }
+  if (is_have) {
+    vertex_json.pop_back();
+  }
 
-    vertex_json += "]}";
+  vertex_json += "]}";
 
-    return vertex_json;
+  return vertex_json;
 }
 
 std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
-    assert(graph.has_edge(edge.id()));
-    std::string edge_json = "{\"id\":" + std::to_string(edge.id()) +
-                            ",\"vertex_ids\":[" +
-                            std::to_string(edge.from_vertex_id()) + "," +
-                            std::to_string(edge.to_vertex_id()) + "]}";
+  assert(graph.has_edge(edge.id()));
+  std::string edge_json = "{\"id\":" + std::to_string(edge.id()) +
+                          ",\"vertex_ids\":[" +
+                          std::to_string(edge.from_vertex_id()) + "," +
+                          std::to_string(edge.to_vertex_id()) + "]}";
 
-    return edge_json;
+  return edge_json;
 }
 
 std::string print_graph(const Graph& graph) {
@@ -118,8 +120,8 @@ std::string print_graph(const Graph& graph) {
   const auto& vertices = graph.vertices();
 
   if (!vertices.empty()) {
-    for (const auto& [vertex_id, vertex]: vertices) {
-        graph_json += print_vertex(vertex, graph) + ",";
+    for (const auto& [vertex_id, vertex] : vertices) {
+      graph_json += print_vertex(vertex, graph) + ",";
     }
 
     graph_json.pop_back();
@@ -130,8 +132,8 @@ std::string print_graph(const Graph& graph) {
   const auto& edges = graph.edges();
 
   if (!edges.empty()) {
-    for (const auto& [edge_id, edge]: edges) {
-        graph_json += print_edge(edge, graph) + ",";
+    for (const auto& [edge_id, edge] : edges) {
+      graph_json += print_edge(edge, graph) + ",";
     }
 
     graph_json.pop_back();
