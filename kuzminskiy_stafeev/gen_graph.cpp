@@ -38,7 +38,7 @@ class Graph {
   };
 
   void add_vertex() {
-    auto vertex_id = gen_new_vertex_id();
+    const auto vertex_id = gen_new_vertex_id();
     vertices_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
     std::vector<EdgeId> EdgesInPull_ = {};
     connections_list_[vertex_id] = EdgesInPull_;
@@ -47,7 +47,7 @@ class Graph {
   void add_edge(const VertexId& from_vertex_id, const VertexId& to_vertex_id) {
     assert(has_vertex(from_vertex_id));
     assert(has_vertex(to_vertex_id));
-    auto edge_id = gen_new_edge_id();
+    const auto edge_id = gen_new_edge_id();
     edges_.insert(
         std::make_pair(edge_id, Edge(edge_id, from_vertex_id, to_vertex_id)));
     connections_list_[from_vertex_id].emplace_back(edge_id);
@@ -84,7 +84,7 @@ namespace printing {
 namespace json {
 
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
-  auto vertex_id = vertex.id();
+  const auto vertex_id = vertex.id();
   assert(graph.has_vertex(vertex_id));
   std::string vertex_json =
       "{\"id\":" + std::to_string(vertex_id) + ",\"edge_ids\":[";
@@ -106,8 +106,9 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 }
 
 std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
-  assert(graph.has_edge(edge.id()));
-  std::string edge_json = "{\"id\":" + std::to_string(edge.id()) +
+  const auto edge_id = edge.id();
+  assert(graph.has_edge(edge_id));
+  std::string edge_json = "{\"id\":" + std::to_string(edge_id) +
                           ",\"vertex_ids\":[" +
                           std::to_string(edge.from_vertex_id()) + "," +
                           std::to_string(edge.to_vertex_id()) + "]}";
