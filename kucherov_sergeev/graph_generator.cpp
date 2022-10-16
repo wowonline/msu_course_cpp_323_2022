@@ -96,7 +96,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   return vertex_json;
 }
 
-std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
+std::string print_edge(const Graph::Edge& edge) {
   std::string edge_json =
       "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":[";
 
