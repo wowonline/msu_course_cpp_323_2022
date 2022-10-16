@@ -84,7 +84,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   const auto& connected_edge_ids = graph.get_connected_edge_ids(vertex.id());
 
   if (connected_edge_ids.size() != 0) {
-    for (const auto& edge_id : connected_edge_ids) {
+    for (const auto edge_id : connected_edge_ids) {
       vertex_json += std::to_string(edge_id) + ",";
     }
 
