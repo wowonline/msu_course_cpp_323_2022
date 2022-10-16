@@ -46,7 +46,7 @@ class Graph {
 
   const std::vector<EdgeId>& connected_edge_ids(VertexId vertex_id) const {
     return adjacency_list_.at(vertex_id);
-  } 
+  }
 
  private:
   bool has_vertex(VertexId id) const {

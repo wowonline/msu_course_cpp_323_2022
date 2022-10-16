@@ -24,7 +24,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 std::string print_edge(const Graph::Edge& edge) {
   std::ostringstream result;
   result << "\n{\"id\": " << edge.id() << ", \"vertex_ids\": ["
-            << edge.from_vertex_id() << ", " << edge.to_vertex_id() << "]}";
+         << edge.from_vertex_id() << ", " << edge.to_vertex_id() << "]}";
   return result.str();
 }
 

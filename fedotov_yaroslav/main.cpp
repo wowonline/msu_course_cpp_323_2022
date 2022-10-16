@@ -5,7 +5,8 @@
 
 constexpr int kVerticesCount = 14;
 
-void write_to_file(const std::string& output_string, const std::string& file_name) {
+void write_to_file(const std::string& output_string,
+                   const std::string& file_name) {
   std::ofstream output(file_name);
   if (output.is_open()) {
     output << output_string;
