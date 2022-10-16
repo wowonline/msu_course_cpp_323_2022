@@ -202,7 +202,6 @@ std::string print_graph(const Graph& graph) {
 void write_to_file(const std::string& string, const std::string& file_name) {
   std::ofstream file(file_name);
   file << string;
-  file.close();
 }
 
 int main() {
