@@ -45,7 +45,9 @@ class Graph {
     edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id);
 
     adjacency_list_[from_vertex_id].push_back(edge_id);
-    adjacency_list_[to_vertex_id].push_back(edge_id);
+    if (to_vertex_id != from_vertex_id) {
+      adjacency_list_[to_vertex_id].push_back(edge_id);
+    }
   }
 
   const std::vector<EdgeId>& get_connected_edge_ids(VertexId vertex_id) const {
