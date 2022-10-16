@@ -125,7 +125,7 @@ std::string print_graph(const Graph& graph) {
 
   if (edges.size() != 0) {
     for (const auto& edge : edges) {
-      graph_json += "\t\t" + print_edge(edge, graph) + ",\n";
+      graph_json += "\t\t" + print_edge(edge) + ",\n";
     }
     graph_json.pop_back();
     graph_json.pop_back();
