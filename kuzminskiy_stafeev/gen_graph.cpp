@@ -4,8 +4,8 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include <vector>
 #include <unordered_set>
+#include <vector>
 
 class Graph {
  public:
@@ -105,10 +105,9 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 
 std::string print_edge(const Graph::Edge& edge) {
   const auto edge_id = edge.id();
-  return "{\"id\":" + std::to_string(edge_id) +
-                          ",\"vertex_ids\":[" +
-                          std::to_string(edge.from_vertex_id()) + "," +
-                          std::to_string(edge.to_vertex_id()) + "]}";
+  return "{\"id\":" + std::to_string(edge_id) + ",\"vertex_ids\":[" +
+         std::to_string(edge.from_vertex_id()) + "," +
+         std::to_string(edge.to_vertex_id()) + "]}";
 }
 
 std::string print_graph(const Graph& graph) {
