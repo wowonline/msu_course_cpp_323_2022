@@ -33,32 +33,25 @@ class Graph {
   };
 
   VertexId add_vertex() {
-    const VertexId newVertexId = generateVertexId();
-    vertices_.emplace(newVertexId, newVertexId);
-    connectivityList_.emplace(newVertexId, std::unordered_set<EdgeId>());
+    const VertexId new_vertex_id = generate_vertex_id();
+    vertices_.emplace(new_vertex_id, new_vertex_id);
 
-    return newVertexId;
+    return new_vertex_id;
   }
 
-  EdgeId add_edge(const VertexId& from_vertex_id,
-                  const VertexId& to_vertex_id) {
-    const EdgeId newEdgeId = generateEdgeId();
+  EdgeId add_edge(const VertexId from_vertex_id, const VertexId to_vertex_id) {
+    const EdgeId new_edge_id = generate_edge_id();
 
-    edges_.emplace(newEdgeId, Edge(newEdgeId, from_vertex_id, to_vertex_id));
-    connectivityList_.at(from_vertex_id).insert(newEdgeId);
+    edges_.emplace(new_edge_id, Edge(new_edge_id, new_edge_id, to_vertex_id));
 
-    if (from_vertex_id != to_vertex_id) {
-      connectivityList_.at(to_vertex_id).insert(newEdgeId);
-    }
-
-    return newEdgeId;
+    return new_edge_id;
   }
 
  private:
-  EdgeId next_edge_id = 0;
-  VertexId next_vertex_id = 0;
-  EdgeId generateEdgeId() { return next_edge_id++; }
-  VertexId generateVertexId() { return next_vertex_id++; }
+  EdgeId next_edge_id_ = 0;
+  VertexId next_vertex_id_ = 0;
+  EdgeId generate_edge_id() { return next_edge_id_++; }
+  VertexId generate_vertex_id() { return next_vertex_id_++; }
 
   std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, Vertex> vertices_;
