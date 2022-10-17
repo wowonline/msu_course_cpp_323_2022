@@ -16,3 +16,4 @@ $(TARGET): $(OBJECT)
 
 clean:
 	rm *.o $(TARGET)
+
