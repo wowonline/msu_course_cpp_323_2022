@@ -76,7 +76,7 @@ class Graph {
   EdgeId generate_edge_id() { return num_edges_++; }
 
   bool has_vertex(VertexId vertex_id) const {
-    if (vertices_.find(vertex_id)!=vertices_.end())
+    if (vertices_.find(vertex_id) != vertices_.end())
       return true;
     return false;
   }
@@ -116,8 +116,7 @@ std::string print_edge(const Graph::Edge& edge) {
 std::string print_graph(const Graph& graph) {
   std::string graph_string = "{\n  \"vertices\": [\n";
   for (const auto& [vertex_id, vertex] : graph.get_vertices()) {
-    graph_string +=
-        "    {" + print_vertex(vertex, graph) + "},\n";
+    graph_string += "    {" + print_vertex(vertex, graph) + "},\n";
   }
   graph_string.erase(graph_string.length() - 2, graph_string.length());
   graph_string += "\n  ],\n  \"edges\": [\n";
