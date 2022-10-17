@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <unordered_set>
 
 class Graph {
  public:
@@ -40,26 +41,26 @@ class Graph {
   void add_vertex() {
     const auto vertex_id = gen_new_vertex_id();
     vertices_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
-    std::vector<EdgeId> edges_at_the_vertex_ = {};
-    connections_list_[vertex_id] = edges_at_the_vertex_;
+    connections_list_[vertex_id] = {};
   }
 
-  void add_edge(const VertexId& from_vertex_id, const VertexId& to_vertex_id) {
+  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     assert(has_vertex(from_vertex_id));
     assert(has_vertex(to_vertex_id));
     const auto edge_id = gen_new_edge_id();
     edges_.insert(
         std::make_pair(edge_id, Edge(edge_id, from_vertex_id, to_vertex_id)));
-    connections_list_[from_vertex_id].emplace_back(edge_id);
-    connections_list_[to_vertex_id].emplace_back(edge_id);
+    connections_list_[from_vertex_id].insert(edge_id);
+    connections_list_[to_vertex_id].insert(edge_id);
   }
 
   const std::unordered_map<VertexId, Vertex>& vertices() const {
     return vertices_;
   }
   const std::unordered_map<EdgeId, Edge>& edges() const { return edges_; }
-  const std::unordered_map<VertexId, std::vector<EdgeId>>& connections() const {
-    return connections_list_;
+  const std::unordered_set<EdgeId>& connections(VertexId vertex_id) const {
+    assert(has_vertex(vertex_id));
+    return connections_list_.at(vertex_id);
   }
 
   bool has_vertex(VertexId id) const {
@@ -77,7 +78,7 @@ class Graph {
   EdgeId next_edge_id_ = 0;
   std::unordered_map<VertexId, Vertex> vertices_;
   std::unordered_map<EdgeId, Edge> edges_;
-  std::unordered_map<VertexId, std::vector<EdgeId>> connections_list_;
+  std::unordered_map<VertexId, std::unordered_set<EdgeId>> connections_list_;
 };
 
 namespace printing {
@@ -85,18 +86,15 @@ namespace json {
 
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   const auto vertex_id = vertex.id();
-  assert(graph.has_vertex(vertex_id));
   std::string vertex_json =
       "{\"id\":" + std::to_string(vertex_id) + ",\"edge_ids\":[";
-  bool is_have = false;
-  const auto& connections_list = graph.connections();
+  const auto& connections = graph.connections(vertex_id);
 
-  for (const auto& edge_id : connections_list.at(vertex_id)) {
-    is_have = true;
+  for (const auto& edge_id : connections) {
     vertex_json += std::to_string(edge_id) + ",";
   }
 
-  if (is_have) {
+  if (!connections.empty()) {
     vertex_json.pop_back();
   }
 
@@ -105,15 +103,12 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   return vertex_json;
 }
 
-std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
+std::string print_edge(const Graph::Edge& edge) {
   const auto edge_id = edge.id();
-  assert(graph.has_edge(edge_id));
-  std::string edge_json = "{\"id\":" + std::to_string(edge_id) +
+  return "{\"id\":" + std::to_string(edge_id) +
                           ",\"vertex_ids\":[" +
                           std::to_string(edge.from_vertex_id()) + "," +
                           std::to_string(edge.to_vertex_id()) + "]}";
-
-  return edge_json;
 }
 
 std::string print_graph(const Graph& graph) {
@@ -134,7 +129,7 @@ std::string print_graph(const Graph& graph) {
 
   if (!edges.empty()) {
     for (const auto& [edge_id, edge] : edges) {
-      graph_json += print_edge(edge, graph) + ",";
+      graph_json += print_edge(edge) + ",";
     }
 
     graph_json.pop_back();
