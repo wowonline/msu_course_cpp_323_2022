@@ -8,22 +8,28 @@ class Graph {
 
   struct Vertex {
    public:
-    const VertexId id = 0;
-    explicit Vertex(const VertexId& _id) : id(_id) {}
+    explicit Vertex(VertexId id) : id_(id) {}
+    VertexId id() const { return id_; }
+
+   private:
+    VertexId id_ = 0;
   };
 
   struct Edge {
    public:
-    const VertexId from_vertex_id = 0;
-    const VertexId to_vertex_id = 0;
-    const EdgeId id = 0;
+    Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
+        : id_(id),
+          from_vertex_id_(from_vertex_id),
+          to_vertex_id_(to_vertex_id) {}
 
-    Edge(const EdgeId& _id,
-         const VertexId& _from_vertex_id,
-         const VertexId& _to_vertex_id)
-        : id(_id),
-          from_vertex_id(_from_vertex_id),
-          to_vertex_id(_to_vertex_id) {}
+    EdgeId id() const { return id_; }
+    VertexId from_vertex_id() const { return from_vertex_id_; }
+    VertexId to_vertex_id() const { return to_vertex_id_; }
+
+   private:
+    EdgeId id_ = 0;
+    VertexId from_vertex_id_ = 0;
+    VertexId to_vertex_id_ = 0;
   };
 
   VertexId add_vertex() {
@@ -49,10 +55,10 @@ class Graph {
   }
 
  private:
-  EdgeId nextEdgeId_ = 0;
-  VertexId nextVertexId_ = 0;
-  EdgeId generateEdgeId() { return nextEdgeId_++; }
-  VertexId generateVertexId() { return nextVertexId_++; }
+  EdgeId next_edge_id = 0;
+  VertexId next_vertex_id = 0;
+  EdgeId generateEdgeId() { return next_edge_id++; }
+  VertexId generateVertexId() { return next_vertex_id++; }
 
   std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, Vertex> vertices_;

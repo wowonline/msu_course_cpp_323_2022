@@ -1,4 +1,3 @@
-#include <iostream>
 #include "graph.hpp"
 
 constexpr int kVerticesCount = 14;
