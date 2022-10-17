@@ -62,7 +62,8 @@ class Graph {
     return vertices_;
   }
   const std::unordered_map<EdgeId, Edge>& edges() const { return edges_; }
-  const std::unordered_set<EdgeId>& connected_edge_ids(VertexId vertex_id) const {
+  const std::unordered_set<EdgeId>& connected_edge_ids(
+      VertexId vertex_id) const {
     assert(has_vertex(vertex_id));
     return connections_list_.at(vertex_id);
   }
