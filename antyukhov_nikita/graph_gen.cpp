@@ -44,8 +44,12 @@ class Graph {
   void add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {
     const EdgeId new_edge_id = get_new_edge_id();
     edges_.emplace_back(new_edge_id, first_vertex_id, second_vertex_id);
-    connections_[first_vertex_id].push_back(new_edge_id);
-    connections_[second_vertex_id].push_back(new_edge_id);
+    if (first_vertex_id == second_vertex_id) {
+      connections_[first_vertex_id].push_back(new_edge_id);
+    } else {
+      connections_[first_vertex_id].push_back(new_edge_id);
+      connections_[second_vertex_id].push_back(new_edge_id);
+    }
   };
 
   const std::vector<Edge>& get_edges() const { return edges_; }
