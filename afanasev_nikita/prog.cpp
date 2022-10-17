@@ -81,8 +81,8 @@ class Graph {
     assert(adjacency_list_.find(to_vertex_id) != adjacency_list_.end());
     const auto& connected_from_edges_ids = adjacency_list_.at(from_vertex_id);
     const auto& connected_to_edges_ids = adjacency_list_.at(to_vertex_id);
-    for (auto from_edge_id : connected_from_edges_ids) {
-      for (auto to_edge_id : connected_to_edges_ids) {
+    for (const auto from_edge_id : connected_from_edges_ids) {
+      for (const auto to_edge_id : connected_to_edges_ids) {
         if (from_edge_id == to_edge_id) {
           return true;
         }
@@ -139,7 +139,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 
   result += "\"edge_ids\":[";
   const auto& temp = graph.connected_edge_ids(vertex.id());
-  for (const auto& edge_id : temp) {
+  for (const auto edge_id : temp) {
     result += std::to_string(edge_id);
     result += ",";
   }
@@ -151,7 +151,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   result += "}";
   return result;
 }
-std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
+std::string print_edge(const Graph::Edge& edge) {
   std::string result = "{";
 
   result += "\"id\":";
@@ -187,7 +187,7 @@ std::string print_graph(const Graph& graph) {
   result += "\"edges\":[";
   const auto& edges = graph.edges();
   for (const auto& edge : edges) {
-    result += print_edge(edge.second, graph);
+    result += print_edge(edge.second);
     result += ",";
   }
   if (!result.empty()) {
