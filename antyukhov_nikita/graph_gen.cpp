@@ -19,11 +19,11 @@ class Graph {
   struct Edge {
    public:
     explicit Edge(EdgeId id,
-                  VertexId first_vertex_id_,
-                  VertexId second_vertex_id_)
+                  VertexId first_vertex_id,
+                  VertexId second_vertex_id)
         : id_(id),
-          first_vertex_id_(first_vertex_id_),
-          second_vertex_id_(second_vertex_id_){};
+          first_vertex_id_(first_vertex_id),
+          second_vertex_id_(second_vertex_id){};
 
     EdgeId id() const { return id_; };
     VertexId get_first_vertex_id() const { return first_vertex_id_; };
@@ -41,11 +41,11 @@ class Graph {
     connections_[new_id] = {};
   };
 
-  void add_edge(VertexId first_vertex_id_, VertexId second_vertex_id_) {
+  void add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {
     const EdgeId new_edge_id = get_new_edge_id();
-    edges_.emplace_back(new_edge_id, first_vertex_id_, second_vertex_id_);
-    connections_[first_vertex_id_].push_back(new_edge_id);
-    connections_[second_vertex_id_].push_back(new_edge_id);
+    edges_.emplace_back(new_edge_id, first_vertex_id, second_vertex_id);
+    connections_[first_vertex_id].push_back(new_edge_id);
+    connections_[second_vertex_id].push_back(new_edge_id);
   };
 
   const std::vector<Edge>& get_edges() const { return edges_; }
