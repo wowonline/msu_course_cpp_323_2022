@@ -80,7 +80,6 @@ class Graph {
 
   void set_vertex_depth(const VertexId& id, const Depth& depth);
 
-  bool is_empty_ = true;
   VertexId next_vertex_id_ = 0;
   EdgeId next_edge_id_ = 0;
   Depth max_depth_ = 0;

@@ -7,13 +7,12 @@ Graph::VertexId Graph::add_vertex() {
   vertices_.insert(std::make_pair(vertex_id, vertex));
 
   Graph::Depth base_depth = 0;
-  if (is_empty_) {
+  if (vertices_of_depth_.empty()) {
     std::vector<VertexId> EmptyVertex_ = {};
     vertices_of_depth_.emplace_back(EmptyVertex_);
     vertices_of_depth_.emplace_back(EmptyVertex_);
     max_depth_ = 1;
     base_depth = 1;
-    is_empty_ = false;
   }
 
   vertices_of_depth_[base_depth].emplace_back(vertex_id);
