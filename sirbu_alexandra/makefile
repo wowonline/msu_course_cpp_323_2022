@@ -5,3 +5,4 @@ all:
 	clang++ main.cpp -o run -std=c++17
 	./run
 
+	

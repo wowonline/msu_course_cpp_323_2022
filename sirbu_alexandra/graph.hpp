@@ -42,7 +42,8 @@ class Graph {
   EdgeId add_edge(const VertexId from_vertex_id, const VertexId to_vertex_id) {
     const EdgeId new_edge_id = generate_edge_id();
 
-    edges_.emplace(new_edge_id, Edge(new_edge_id, new_edge_id, to_vertex_id));
+    edges_.try_emplace(new_edge_id,
+                       Edge(new_edge_id, new_edge_id, to_vertex_id));
 
     return new_edge_id;
   }
