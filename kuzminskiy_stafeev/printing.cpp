@@ -39,9 +39,9 @@ std::string printing::json::print_vertex(const Graph::Vertex& vertex,
 std::string printing::json::print_edge(const Graph::Edge& edge) {
   const auto edge_id = edge.id();
   return "{\"id\":" + std::to_string(edge_id) + ",\"vertex_ids\":[" +
-      std::to_string(edge.from_vertex_id()) + "," +
-      std::to_string(edge.to_vertex_id()) + "],\"color\":\"" +
-      printing::print_edge_color(edge.color()) + "\"}";
+         std::to_string(edge.from_vertex_id()) + "," +
+         std::to_string(edge.to_vertex_id()) + "],\"color\":\"" +
+         printing::print_edge_color(edge.color()) + "\"}";
 }
 
 std::string printing::json::print_graph(const Graph& graph) {

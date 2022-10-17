@@ -4,10 +4,10 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <set>
 #pragma once
 
 class Graph {

@@ -28,8 +28,8 @@ bool Graph::is_connected(const Graph::VertexId& from_vertex_id,
   auto PullEdgesFrom = connections_list_.at(from_vertex_id);
   auto PullEdgesTo = connections_list_.at(to_vertex_id);
 
-  //std::sort(PullEdgesFrom.begin(), PullEdgesFrom.end());
-  //std::sort(PullEdgesTo.begin(), PullEdgesTo.end());
+  // std::sort(PullEdgesFrom.begin(), PullEdgesFrom.end());
+  // std::sort(PullEdgesTo.begin(), PullEdgesTo.end());
 
   std::set<Graph::EdgeId> intersection;
 
