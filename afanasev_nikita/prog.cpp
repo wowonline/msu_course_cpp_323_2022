@@ -101,7 +101,7 @@ const Graph generate_graph() {
 
   auto graph = Graph();
 
-  for (int i = 0; i < kVerticesCount; i++) {
+  for (int i = 0; i < vertices_count; i++) {
     graph.add_vertex();
   }
 
