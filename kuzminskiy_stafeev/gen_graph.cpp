@@ -50,15 +50,19 @@ class Graph {
     const auto edge_id = gen_new_edge_id();
     edges_.insert(
         std::make_pair(edge_id, Edge(edge_id, from_vertex_id, to_vertex_id)));
-    connections_list_[from_vertex_id].insert(edge_id);
-    connections_list_[to_vertex_id].insert(edge_id);
+    if (from_vertex_id == to_vertex_id) {
+      connections_list_[from_vertex_id].insert(edge_id);
+    } else {
+      connections_list_[from_vertex_id].insert(edge_id);
+      connections_list_[to_vertex_id].insert(edge_id);
+    }
   }
 
   const std::unordered_map<VertexId, Vertex>& vertices() const {
     return vertices_;
   }
   const std::unordered_map<EdgeId, Edge>& edges() const { return edges_; }
-  const std::unordered_set<EdgeId>& connections(VertexId vertex_id) const {
+  const std::unordered_set<EdgeId>& connected_edge_ids(VertexId vertex_id) const {
     assert(has_vertex(vertex_id));
     return connections_list_.at(vertex_id);
   }
@@ -88,13 +92,13 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   const auto vertex_id = vertex.id();
   std::string vertex_json =
       "{\"id\":" + std::to_string(vertex_id) + ",\"edge_ids\":[";
-  const auto& connections = graph.connections(vertex_id);
+  const auto& connected_edge_ids = graph.connected_edge_ids(vertex_id);
 
-  for (const auto& edge_id : connections) {
+  for (const auto& edge_id : connected_edge_ids) {
     vertex_json += std::to_string(edge_id) + ",";
   }
 
-  if (!connections.empty()) {
+  if (!connected_edge_ids.empty()) {
     vertex_json.pop_back();
   }
 
