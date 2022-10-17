@@ -1,5 +1,5 @@
 #include <unordered_map>
-#include <unordered_set>
+#include <vector>
 
 class Graph {
  public:
@@ -42,8 +42,7 @@ class Graph {
   EdgeId add_edge(const VertexId from_vertex_id, const VertexId to_vertex_id) {
     const EdgeId new_edge_id = generate_edge_id();
 
-    edges_.try_emplace(new_edge_id,
-                       Edge(new_edge_id, new_edge_id, to_vertex_id));
+    edges_.emplace(new_edge_id, Edge(new_edge_id, new_edge_id, to_vertex_id));
 
     return new_edge_id;
   }
@@ -56,5 +55,5 @@ class Graph {
 
   std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, Vertex> vertices_;
-  std::unordered_map<VertexId, std::unordered_set<EdgeId>> connectivityList_;
+  std::unordered_map<VertexId, std::vector<EdgeId>> connectivityList_;
 };
