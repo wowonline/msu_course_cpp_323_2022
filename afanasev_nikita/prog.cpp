@@ -54,7 +54,7 @@ class Graph {
     }
   }
 
-  const std::vector<EdgeId>& get_edges_ids(const VertexId id) const {
+  const std::vector<EdgeId>& get_edges_ids(VertexId id) const {
     return adjacency_list_.at(id);
   }
 
