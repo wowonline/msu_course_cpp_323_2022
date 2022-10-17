@@ -6,4 +6,3 @@ int main() {
   std::cout << "Мао Юйлун" << std::endl;
   return 0;
 }
-
