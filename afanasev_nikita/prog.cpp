@@ -97,7 +97,7 @@ class Graph {
 };
 
 const Graph generate_graph() {
-  const int kVerticesCount = 14;
+  const int vertices_count = 14;
 
   auto graph = Graph();
 
