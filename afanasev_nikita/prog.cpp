@@ -54,7 +54,7 @@ class Graph {
     }
   }
 
-  const std::vector<EdgeId>& get_edges_ids(VertexId id) const {
+  const std::vector<EdgeId>& connected_edge_ids(VertexId id) const {
     return adjacency_list_.at(id);
   }
 
@@ -130,73 +130,73 @@ const Graph generate_graph() {
 namespace printing {
 namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
-  std::string s = "{";
+  std::string result = "{";
 
-  s += "\"id\":";
-  s += std::to_string(vertex.id());
+  result += "\"id\":";
+  result += std::to_string(vertex.id());
 
-  s += ",";
+  result += ",";
 
-  s += "\"edge_ids\":[";
-  const auto& temp = graph.get_edges_ids(vertex.id());
-  for (const auto& i : temp) {
-    s += std::to_string(i);
-    s += ",";
+  result += "\"edge_ids\":[";
+  const auto& temp = graph.connected_edge_ids(vertex.id());
+  for (const auto& edge_id : temp) {
+    result += std::to_string(edge_id);
+    result += ",";
   }
-  if (!s.empty()) {
-    s.pop_back();
+  if (!result.empty()) {
+    result.pop_back();
   }
-  s += "]";
+  result += "]";
 
-  s += "}";
-  return s;
+  result += "}";
+  return result;
 }
 std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
-  std::string s = "{";
+  std::string result = "{";
 
-  s += "\"id\":";
-  s += std::to_string(edge.id());
+  result += "\"id\":";
+  result += std::to_string(edge.id());
 
-  s += ",";
+  result += ",";
 
-  s += "\"vertex_ids\":[";
-  s += std::to_string(edge.from_vertex_id());
-  s += ",";
-  s += std::to_string(edge.to_vertex_id());
-  s += "]";
+  result += "\"vertex_ids\":[";
+  result += std::to_string(edge.from_vertex_id());
+  result += ",";
+  result += std::to_string(edge.to_vertex_id());
+  result += "]";
 
-  s += "}";
-  return s;
+  result += "}";
+  return result;
 }
 std::string print_graph(const Graph& graph) {
-  std::string s = "{";
+  std::string result = "{";
 
-  s += "\"vertices\":[";
+  result += "\"vertices\":[";
   const auto& vertices = graph.vertices();
-  for (const auto& i : vertices) {
-    s += print_vertex(i.second, graph);
-    s += ",";
+  for (const auto& vertex : vertices) {
+    result += print_vertex(vertex.second, graph);
+    result += ",";
   }
-  if (!s.empty()) {
-    s.pop_back();
+  if (!result.empty()) {
+    result.pop_back();
   }
-  s += "]";
+  result += "]";
 
-  s += ",";
+  result += ",";
 
-  s += "\"edges\":[";
+  result += "\"edges\":[";
   const auto& edges = graph.edges();
-  for (const auto& i : edges) {
-    s += print_edge(i.second, graph);
-    s += ",";
+  for (const auto& edge : edges) {
+    result += print_edge(edge.second, graph);
+    result += ",";
   }
-  if (!s.empty()) {
-    s.pop_back();
+  if (!result.empty()) {
+    result.pop_back();
   }
-  s += "]";
+  result += "]";
 
-  s += "}";
-  return s;
+  result += "}";
+  return result;
 }
 }  // namespace json
 }  // namespace printing
