@@ -195,7 +195,7 @@ std::string print_graph(const Graph& graph) {
   }
   result += "]";
 
-  result += "}";
+  result += "}\n";
   return result;
 }
 }  // namespace json
