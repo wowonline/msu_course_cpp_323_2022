@@ -50,12 +50,11 @@ class Graph {
     const auto edge_id = gen_new_edge_id();
     edges_.insert(
         std::make_pair(edge_id, Edge(edge_id, from_vertex_id, to_vertex_id)));
-    if (from_vertex_id == to_vertex_id) {
+    if (from_vertex_id != to_vertex_id) {
       connections_list_[from_vertex_id].insert(edge_id);
-    } else {
-      connections_list_[from_vertex_id].insert(edge_id);
-      connections_list_[to_vertex_id].insert(edge_id);
     }
+
+    connections_list_[to_vertex_id].insert(edge_id);
   }
 
   const std::unordered_map<VertexId, Vertex>& vertices() const {
