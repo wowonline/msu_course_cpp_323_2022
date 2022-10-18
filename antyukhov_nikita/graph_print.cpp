@@ -4,6 +4,9 @@
 #include <unordered_map>
 #include <vector>
 
+#include <unordered_map>
+#include <vector>
+
 constexpr int kVerticesCount = 14;
 
 class Graph {
@@ -22,11 +25,11 @@ class Graph {
   struct Edge {
    public:
     explicit Edge(EdgeId id,
-                  VertexId first_vertex_id_,
-                  VertexId second_vertex_id_)
+                  VertexId first_vertex_id,
+                  VertexId second_vertex_id)
         : id_(id),
-          first_vertex_id_(first_vertex_id_),
-          second_vertex_id_(second_vertex_id_){};
+          first_vertex_id_(first_vertex_id),
+          second_vertex_id_(second_vertex_id){};
 
     EdgeId id() const { return id_; };
     VertexId get_first_vertex_id() const { return first_vertex_id_; };
@@ -44,11 +47,12 @@ class Graph {
     connections_[new_id] = {};
   };
 
-  void add_edge(VertexId first_vertex_id_, VertexId second_vertex_id_) {
+  void add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {
     const EdgeId new_edge_id = get_new_edge_id();
-    edges_.emplace_back(new_edge_id, first_vertex_id_, second_vertex_id_);
-    connections_[first_vertex_id_].push_back(new_edge_id);
-    connections_[second_vertex_id_].push_back(new_edge_id);
+    edges_.emplace_back(new_edge_id, first_vertex_id, second_vertex_id);
+    connections_[first_vertex_id].push_back(new_edge_id);
+    if (first_vertex_id != second_vertex_id)
+      connections_[second_vertex_id].push_back(new_edge_id);
   };
 
   const std::vector<Edge>& get_edges() const { return edges_; }
@@ -75,7 +79,7 @@ class Graph {
 Graph generate_graph() {
   auto graph = Graph();
 
-  for (int i = 0; i < kVerticesCount; i++) {
+  for (int i = 0; i < kVerticesCount; ++i) {
     graph.add_vertex();
   }
   graph.add_edge(0, 1);
@@ -108,7 +112,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::unordered_map<Graph::VertexId, std::vector<Graph::EdgeId>> set =
       graph.get_connections();
   json_string << "\n\t\t{ \"id\":" << vertex.id() << ", \"edges_ids\": [";
-  std::vector<Graph::EdgeId> connections = set[vertex.id()];
+  const std::vector<Graph::EdgeId> connections = set[vertex.id()];
 
   for (Graph::EdgeId y : connections) {
     json_string << y;
@@ -133,8 +137,8 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
 const std::string print_graph(const Graph& graph) {
   std::stringstream json_string;
   json_string << "{\n\t\"vertices\": [";
-  std::vector<Graph::Vertex> vertices = graph.get_vertices();
-  std::vector<Graph::Edge> edges = graph.get_edges();
+  const std::vector<Graph::Vertex> vertices = graph.get_vertices();
+  const std::vector<Graph::Edge> edges = graph.get_edges();
   for (auto x : vertices) {
     json_string << printing::json::print_vertex(x, graph);
     if (x.id() != vertices[vertices.size() - 1].id())
