@@ -37,8 +37,9 @@ void Graph::add_edge(VertexId first_vertex_id_, VertexId second_vertex_id_) {
   const EdgeId new_edge_id = get_new_edge_id();
   edges_.insert(
       {new_edge_id, Edge(new_edge_id, first_vertex_id_, second_vertex_id_)});
+
+  if (first_vertex_id_ != second_vertex_id_) connections_[second_vertex_id_].emplace_back(new_edge_id);
   connections_[first_vertex_id_].push_back(new_edge_id);
-  connections_[second_vertex_id_].push_back(new_edge_id);
 };
 
 const std::unordered_map<Graph::EdgeId, Graph::Edge>& Graph::get_edges() const {
