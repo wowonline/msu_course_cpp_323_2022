@@ -1,3 +1,3 @@
-# Krymskit Sviatoslav
+# Krymskiy Sviatoslav
 # Крымский Святослав
-![Screenshot](screenshot)
+![Screenshot](screenshot.png)
