@@ -105,11 +105,11 @@ kucherov_sergeev
 fedotov_chuvashov
   - **Федотов Ярослав**
     - Ник: Huszar0
-    - Сданы: `task_01`, `task_02`
+    - Сданы: `task_01`, `task_02`, `task_03`
     - Отнято баллов: `0`
   - **Чувашов Егор**
     - Ник: wowonline
-    - Сданы: `task_01`, `task_02`
+    - Сданы: `task_01`, `task_02`, `task_03`
     - Отнято баллов: `0`
 
 afanasev_nikita
