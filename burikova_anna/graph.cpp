@@ -76,17 +76,14 @@ class Graph {
   EdgeId generate_edge_id() { return num_edges_++; }
 
   bool has_vertex(VertexId vertex_id) const {
-    if (vertices_.find(vertex_id) != vertices_.end())
-      return true;
-    return false;
+    return vertices_.find(vertex_id) != vertices_.end();
   }
   bool has_edge(VertexId from_vertex_id, VertexId to_vertex_id) const {
-    for (const auto& edge_id : get_connected_edge_ids(from_vertex_id)) {
-      if (edges_.at(edge_id).to_vertex_id() == to_vertex_id)
-        return true;
-    }
-    for (const auto& edge_id : get_connected_edge_ids(to_vertex_id)) {
-      if (edges_.at(edge_id).from_vertex_id() == from_vertex_id)
+    for (const auto& [edge_id, edge] : edges_) {
+      if ((edge.from_vertex_id() == from_vertex_id &&
+           edge.to_vertex_id() == to_vertex_id) ||
+          (edge.from_vertex_id() == to_vertex_id &&
+           edge.to_vertex_id() == from_vertex_id))
         return true;
     }
     return false;
