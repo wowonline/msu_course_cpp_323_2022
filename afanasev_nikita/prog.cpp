@@ -143,7 +143,9 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
     result += std::to_string(edge_id);
     result += ",";
   }
-  result.pop_back();
+  if (!edge_ids.empty()) {
+    result.pop_back();
+  }
 
   result += "]";
 
@@ -176,7 +178,9 @@ std::string print_graph(const Graph& graph) {
     result += print_vertex(vertex, graph);
     result += ",";
   }
-  result.pop_back();
+  if (!vertices.empty()) {
+    result.pop_back();
+  }
 
   result += "]";
 
@@ -188,7 +192,9 @@ std::string print_graph(const Graph& graph) {
     result += print_edge(edge);
     result += ",";
   }
-  result.pop_back();
+  if (!edges.empty()) {
+    result.pop_back();
+  }
 
   result += "]";
 
