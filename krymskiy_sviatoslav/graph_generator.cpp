@@ -52,7 +52,6 @@ int main() {
     for (int i = 0; i < kVerticesCount; i++) {
         graph.add_vertex();
     }
-
     graph.add_edge(0, 1);
     graph.add_edge(0, 2);
     graph.add_edge(0, 3);
