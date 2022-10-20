@@ -4,7 +4,6 @@
 #include <iostream>
 #include <random>
 #include <unordered_map>
-#include <vector>
 
 constexpr int kVerticesCount = 14;
 
