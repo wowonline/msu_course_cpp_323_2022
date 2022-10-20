@@ -47,14 +47,18 @@ class Graph {
   };
 
   void add_vertex(Depth depth) {
-    VertexId new_vertex_id = generate_vertex_id();
+    const VertexId new_vertex_id = generate_vertex_id();
     adjacency_list_[new_vertex_id] = {};
-    map_vertices_.emplace(new_vertex_id, Vertex(new_vertex_id, depth));
+    vertices_.emplace(new_vertex_id, Vertex(new_vertex_id, depth));
   }
+
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
+    assert(!has_edge(from_vertex_id, to_vertex_id));
     Edge::Color color;
-    switch (map_vertices_[to_vertex_id].depth() -
-            map_vertices_[from_vertex_id].depth()) {
+    switch (vertices_.at(to_vertex_id).depth() -
+            vertices_.at(from_vertex_id).depth()) {
       case 2:
         color = Edge::Color::Red;
         break;
@@ -68,21 +72,20 @@ class Graph {
         color = Edge::Color::Green;
         break;
     }
-    EdgeId new_edge_id = generate_edge_id();
-    assert(has_vertex(from_vertex_id));
-    assert(has_vertex(to_vertex_id));
-    assert(!has_edge(from_vertex_id, to_vertex_id));
-    vector_edges_.emplace_back(new_edge_id, from_vertex_id, to_vertex_id,
-                               color);
+    const EdgeId new_edge_id = generate_edge_id();
+    edges_.emplace(new_edge_id,
+                   Edge(new_edge_id, from_vertex_id, to_vertex_id, color));
     adjacency_list_[from_vertex_id].emplace_back(new_edge_id);
-    adjacency_list_[to_vertex_id].emplace_back(new_edge_id);
+    if (from_vertex_id != to_vertex_id) {
+      adjacency_list_[to_vertex_id].emplace_back(new_edge_id);
+    }
   }
 
-  const std::unordered_map<VertexId, Vertex>& get_map_vertices() const {
-    return map_vertices_;
+  const std::unordered_map<VertexId, Vertex>& get_vertices() const {
+    return vertices_;
   }
 
-  const std::vector<Edge>& get_vector_edges() const { return vector_edges_; }
+  const std::unordered_map<EdgeId, Edge>& get_edges() const { return edges_; }
 
   const std::vector<EdgeId>& get_connected_edge_ids(VertexId vertex_id) const {
     return adjacency_list_.at(vertex_id);
@@ -98,26 +101,25 @@ class Graph {
 
   VertexId get_last_vertex_id() const { return last_vertex_id_; }
 
-  bool has_vertex(VertexId id) const {
-    if (map_vertices_.find(id) == map_vertices_.end())
-      return false;
-    return true;
+  bool has_vertex(VertexId vertex_id) const {
+    return vertices_.find(vertex_id) != vertices_.end();
   }
-
-  bool has_edge(VertexId id_from, VertexId id_to) const {
-    for (const auto& edge : vector_edges_) {
-      if (edge.from_vertex_id() == id_from && edge.to_vertex_id() == id_to ||
-          edge.from_vertex_id() == id_to && edge.to_vertex_id() == id_from)
+  bool has_edge(VertexId from_vertex_id, VertexId to_vertex_id) const {
+    for (const auto& [edge_id, edge] : edges_) {
+      if ((edge.from_vertex_id() == from_vertex_id &&
+           edge.to_vertex_id() == to_vertex_id) ||
+          (edge.from_vertex_id() == to_vertex_id &&
+           edge.to_vertex_id() == from_vertex_id))
         return true;
     }
     return false;
   }
 
  private:
-  std::vector<Edge> vector_edges_;
+  std::unordered_map<VertexId, Vertex> vertices_;
+  std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
   std::unordered_map<Depth, std::vector<VertexId>> vertices_on_depth_;
-  std::unordered_map<VertexId, Vertex> map_vertices_;
 
   VertexId num_vertices_ = 0;
   VertexId last_vertex_id_ = -1;
@@ -187,9 +189,9 @@ void GraphGenerator::generate_green_edges(Graph& graph) const {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::bernoulli_distribution d(0.1);
-  for (auto& id_vertex_pair : graph.get_map_vertices())
+  for (const auto& [vertex_id, vertex] : graph.get_vertices())
     if (d(gen))
-      graph.add_edge(id_vertex_pair.second.id(), id_vertex_pair.second.id());
+      graph.add_edge(vertex.id(), vertex.id());
 }
 
 void GraphGenerator::generate_yellow_edges(Graph& graph) const {
@@ -209,13 +211,10 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
       for (const Graph::EdgeId edge_id :
            graph.get_connected_edge_ids(from_vertex_id)) {
         Graph::VertexId connected_vertex_id;
-        if (from_vertex_id ==
-            graph.get_vector_edges()[edge_id].from_vertex_id())
-          connected_vertex_id =
-              graph.get_vector_edges()[edge_id].to_vertex_id();
+        if (from_vertex_id == graph.get_edges().at(edge_id).from_vertex_id())
+          connected_vertex_id = graph.get_edges().at(edge_id).to_vertex_id();
         else
-          connected_vertex_id =
-              graph.get_vector_edges()[edge_id].from_vertex_id();
+          connected_vertex_id = graph.get_edges().at(edge_id).from_vertex_id();
         auto iterator = not_connected_vertex_ids.begin();
         while (iterator != not_connected_vertex_ids.end()) {
           if (*iterator == connected_vertex_id) {
@@ -296,13 +295,12 @@ std::string print_edge(const Graph::Edge& edge) {
 
 std::string print_graph(const Graph& graph) {
   std::string graph_string = "{\n  \"vertices\": [\n";
-  for (auto& id_vertex_pair : graph.get_map_vertices()) {
-    graph_string +=
-        "    {" + print_vertex(id_vertex_pair.second, graph) + "},\n";
+  for (const auto& [vertex_id, vertex] : graph.get_vertices()) {
+    graph_string += "    {" + print_vertex(vertex, graph) + "},\n";
   }
   graph_string.erase(graph_string.length() - 2, graph_string.length());
   graph_string += "\n  ],\n  \"edges\": [\n";
-  for (const auto& edge : graph.get_vector_edges()) {
+  for (const auto& [edge_id, edge] : graph.get_edges()) {
     graph_string += "    {" + print_edge(edge) + "},\n";
   }
   graph_string.erase(graph_string.length() - 2, graph_string.length());
