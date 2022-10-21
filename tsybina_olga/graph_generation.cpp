@@ -157,7 +157,7 @@ Graph generate_graph() {
 void write_to_file(const std::string& data, const std::string& file_path) {
   std::ofstream out;
   out.open(file_path, std::ios::out | std::ios::trunc);
-  out << data;
+  out << data << "\n";
   out.close();
 }
 
