@@ -1,5 +1,7 @@
 #include "graph.hpp"
 
+#include <iostream>
+
 Graph::Vertex::Vertex(VertexId id) : id_(id) {}
 
 Graph::VertexId Graph::Vertex::id() const {
@@ -38,22 +40,42 @@ Graph::VertexId Graph::add_vertex() {
   return new_vertex_id;
 }
 
-Graph::EdgeId Graph::add_edge(VertexId first_vertex_id_,
-                              VertexId second_vertex_id_) {
-  assert(has_vertex_id(first_vertex_id_));
-  assert(has_vertex_id(second_vertex_id_));
+Graph::EdgeId Graph::add_edge(VertexId first_vertex_id,
+                              VertexId second_vertex_id) {
+  assert(has_vertex_id(first_vertex_id));
+  assert(has_vertex_id(second_vertex_id));
+
+  if (!has_edge(first_vertex_id, second_vertex_id)) {
+    if (vertices_depth_.empty()) {
+      vertices_depth_.insert({0, std::vector<VertexId>{first_vertex_id}});
+      vertices_depth_.insert({1, std::vector<VertexId>{second_vertex_id}});
+    } else {
+      for (auto it = vertices_depth_.begin(); it != vertices_depth_.end();
+           ++it) {
+        if (std::find(it->second.begin(), it->second.end(), first_vertex_id) !=
+            it->second.end()) {
+          if ((it->first + 1) < vertices_depth_.size())
+            vertices_depth_.at(it->first + 1).emplace_back(second_vertex_id);
+          else
+            vertices_depth_.insert(
+                {it->first + 1, std::vector<VertexId>{second_vertex_id}});
+          break;
+        }
+      }
+    }
+  }
 
   const EdgeId new_edge_id = get_new_edge_id();
   auto color = Graph::Edge::Color::Green;
 
-  if (first_vertex_id_ != second_vertex_id_) {
-    connections_[second_vertex_id_].emplace_back(new_edge_id);
+  if (first_vertex_id != second_vertex_id) {
+    connections_[second_vertex_id].emplace_back(new_edge_id);
     color = Graph::Edge::Color::Grey;
   }
-  connections_[first_vertex_id_].push_back(new_edge_id);
+  connections_[first_vertex_id].push_back(new_edge_id);
 
-  edges_.insert({new_edge_id, Edge(new_edge_id, first_vertex_id_,
-                                   second_vertex_id_, color)});
+  edges_.insert({new_edge_id, Edge(new_edge_id, first_vertex_id,
+                                   second_vertex_id, color)});
 
   return new_edge_id;
 };
@@ -71,13 +93,26 @@ const std::vector<Graph::EdgeId>& Graph::get_edges_of_vertex(
   return connections_.at(vertex_id);
 }
 
-const std::vector<std::vector<Graph::VertexId>>& Graph::get_vertices_depth()
-    const {
+const std::unordered_map<Graph::Depth, std::vector<Graph::VertexId>>& Graph::get_vertices_depth() const{
   return vertices_depth_;
 }
 
 bool Graph::has_vertex_id(VertexId vertex_id) const {
   return vertices_.find(vertex_id) != vertices_.end();
+}
+
+bool Graph::has_edge(VertexId first_vertex_id, VertexId second_vertex_id) const{
+  if (connections_.find(first_vertex_id) == connections_.end())
+    return false;
+  if (connections_.find(second_vertex_id) == connections_.end())
+    return false;
+
+  const auto first_vertex_edges = get_edges_of_vertex(first_vertex_id);
+  const auto second_vertex_edges = get_edges_of_vertex(second_vertex_id);
+  return std::find_first_of(
+             first_vertex_edges.begin(), first_vertex_edges.end(),
+             second_vertex_edges.begin(),
+             second_vertex_edges.end()) != first_vertex_edges.end();
 }
 
 Graph::VertexId Graph::get_new_vertex_id() {
@@ -150,4 +185,14 @@ void GraphGenerator::generate_green_edges(Graph& graph) const {
       graph.add_edge(vertex.first, vertex.first);
     }
   }
+}
+
+void GraphGenerator::generate_yellow_edges(Graph& graph) const {
+  const auto max_depth = params_.depth() - 1;
+  double probability = 1.0;
+  double step = 1.0 / max_depth;
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+
 }
