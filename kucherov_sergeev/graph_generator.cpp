@@ -10,6 +10,7 @@ class Graph {
  public:
   using VertexId = int;
   using EdgeId = int;
+  using Depth = int;
 
   struct Edge {
    public:
