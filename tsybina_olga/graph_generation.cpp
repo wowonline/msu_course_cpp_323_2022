@@ -22,6 +22,8 @@ class Graph {
 
   const auto& edges() const { return edges_; }
 
+  const auto& connections() const { return connections_; }
+
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -67,12 +69,9 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   stream << R"("edge_ids":[)";
   std::string separator = "";
 
-  for (const auto& edge : graph.edges()) {
-    if (edge.from_vertex_id() == vertex.id() ||
-        edge.to_vertex_id() == vertex.id()) {
-      stream << separator << edge.id();
-      separator = ",";
-    }
+  for (const auto& edge_id : graph.connections().at(vertex.id())) {
+    stream << separator << edge_id;
+    separator = ",";
   }
 
   stream << "]";
