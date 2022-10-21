@@ -14,13 +14,9 @@ class Graph {
     edges_.emplace_back(Edge(get_new_edge_id(), from_vertex_id, to_vertex_id));
   };
 
-  auto vertices_begin() const { return vertices_.begin(); }
+  const auto& vertices() const { return vertices_; }
 
-  auto vertices_end() const { return vertices_.end(); }
-
-  auto edges_begin() const { return edges_.begin(); }
-
-  auto edges_end() const { return edges_.end(); }
+  const auto& edges() const { return edges_; }
 
   struct Vertex {
    public:
@@ -66,13 +62,13 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   stream << R"("edge_ids":[)";
   std::string separator = "";
 
-  std::for_each(graph.edges_begin(), graph.edges_end(), [&](const auto& edge) {
+  for (const auto& edge : graph.edges()) {
     if (edge.from_vertex_id() == vertex.id() ||
         edge.to_vertex_id() == vertex.id()) {
       stream << separator << edge.id();
       separator = ",";
     }
-  });
+  }
 
   stream << "]";
   stream << "}";
@@ -99,21 +95,20 @@ std::string print_graph(const Graph& graph) {
 
   std::string separator = "";
 
-  std::for_each(graph.vertices_begin(), graph.vertices_end(),
-                [&](const auto& vertex) {
-                  stream << separator << print_vertex(vertex, graph);
-                  separator = ",";
-                });
+  for (const auto& vertex : graph.vertices()) {
+    stream << separator << print_vertex(vertex, graph);
+    separator = ",";
+  }
 
   stream << "],"
          << R"("edges":)"
          << "[";
   separator = "";
 
-  std::for_each(graph.edges_begin(), graph.edges_end(), [&](const auto& edge) {
+  for (const auto& edge : graph.edges()) {
     stream << separator << print_edge(edge);
     separator = ",";
-  });
+  }
 
   stream << "]";
   stream << "}";
