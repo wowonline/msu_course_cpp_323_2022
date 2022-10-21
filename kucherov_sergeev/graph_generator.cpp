@@ -147,6 +147,33 @@ void write_to_file(const std::string& graph_json,
   json_file.close();
 }
 
+int handle_depth_input() {
+  const std::string init_message = "Type graph depth: ";
+  const std::string err_format_message =
+      "The depth must be a non-negative integer. Try again";
+  const std::string err_fatal_message =
+      "Occurred fatal error in handle_depth_input";
+  int depth;
+  int correct_input = false;
+
+  std::cout << init_message << std::endl;
+
+  while (correct_input == false) {
+    if (std::cin >> depth && depth >= 0) {
+      correct_input = true;
+    } else if (std::cin.fail()) {
+      std::cout << err_format_message << std::endl;
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    } else {
+      std::cerr << err_fatal_message << std::endl;
+      exit(1);
+    }
+  }
+
+  return depth;
+}
+
 int main() {
   return 0;
 }
