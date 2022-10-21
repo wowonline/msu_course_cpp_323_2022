@@ -174,6 +174,33 @@ int handle_depth_input() {
   return depth;
 }
 
+int handle_new_vertices_count_input() {
+  const std::string init_message = "Type new vertices count: ";
+  const std::string err_format_message =
+      "Vertices count must be a non-negative integer. Try again";
+  const std::string err_fatal_message =
+      "Occurred fatal error in handle_new_vertices_count_input";
+  int new_vertices_count;
+  int correct_input = false;
+
+  std::cout << init_message << std::endl;
+
+  while (correct_input == false) {
+    if (std::cin >> new_vertices_count && new_vertices_count >= 0) {
+      correct_input = true;
+    } else if (std::cin.fail()) {
+      std::cout << err_format_message << std::endl;
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    } else {
+      std::cerr << err_fatal_message << std::endl;
+      exit(1);
+    }
+  }
+
+  return new_vertices_count;
+}
+
 int main() {
   return 0;
 }
