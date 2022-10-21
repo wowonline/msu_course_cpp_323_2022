@@ -14,8 +14,8 @@ class Graph {
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     const auto edge_id = get_new_edge_id();
     edges_.emplace_back(Edge(edge_id, from_vertex_id, to_vertex_id));
-    connetions_[from_vertex_id].push_back(edge_id);
-    connetions_[to_vertex_id].push_back(edge_id);
+    connections_[from_vertex_id].push_back(edge_id);
+    connections_[to_vertex_id].push_back(edge_id);
   };
 
   const auto& vertices() const { return vertices_; }
@@ -47,7 +47,7 @@ class Graph {
   };
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
-  std::unordered_map<VertexId, std::vector<EdgeId>> connetions_;
+  std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
 
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
