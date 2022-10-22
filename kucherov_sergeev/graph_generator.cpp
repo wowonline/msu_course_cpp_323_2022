@@ -32,8 +32,7 @@ int handle_depth_input() {
   const std::string init_message = "Type graph depth: ";
   const std::string err_format_message =
       "The depth must be a non-negative integer. Try again";
-  const std::string err_fatal_message =
-      "Occurred fatal error in handle_depth_input";
+
   int depth;
   int correct_input = false;
 
@@ -47,8 +46,7 @@ int handle_depth_input() {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     } else {
-      std::cerr << err_fatal_message << std::endl;
-      exit(1);
+      throw std::runtime_error("Failed to get depth from user");
     }
   }
 
@@ -59,8 +57,6 @@ int handle_new_vertices_count_input() {
   const std::string init_message = "Type new vertices count: ";
   const std::string err_format_message =
       "Vertices count must be a non-negative integer. Try again";
-  const std::string err_fatal_message =
-      "Occurred fatal error in handle_new_vertices_count_input";
   int new_vertices_count;
   int correct_input = false;
 
@@ -74,8 +70,7 @@ int handle_new_vertices_count_input() {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     } else {
-      std::cerr << err_fatal_message << std::endl;
-      exit(1);
+      throw std::runtime_error("Failed to get new vertices count from user");
     }
   }
 
