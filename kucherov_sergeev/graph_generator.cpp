@@ -53,6 +53,10 @@ class Graph {
     const auto edge_id = get_new_edge_id();
     const auto edge_color = determine_edge_color(from_vertex_id, to_vertex_id);
 
+    if (edge_color == Edge::Color::Grey) {
+      set_vertex_depth(to_vertex_id, get_vertex_depth(from_vertex_id) + 1);
+    }
+
     edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, edge_color);
 
     adjacency_list_[from_vertex_id].push_back(edge_id);
