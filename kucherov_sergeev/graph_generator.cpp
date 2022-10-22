@@ -123,12 +123,13 @@ class Graph {
   }
 
   EdgeId add_edge(const VertexId from_vertex_id, const VertexId to_vertex_id) {
-    const auto edge_id = get_new_edge_id();
-    const auto edge_color = determine_edge_color(from_vertex_id, to_vertex_id);
-
-    if (edge_color == Edge::Color::Grey) {
+    if (adjacency_list_.find(to_vertex_id) == adjacency_list_.end() ||
+        adjacency_list_.at(to_vertex_id).empty()) {
       set_vertex_depth(to_vertex_id, get_vertex_depth(from_vertex_id) + 1);
     }
+
+    const auto edge_id = get_new_edge_id();
+    const auto edge_color = determine_edge_color(from_vertex_id, to_vertex_id);
 
     edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, edge_color);
 
@@ -140,8 +141,7 @@ class Graph {
     return edge_id;
   }
 
-  const std::vector<Graph::VertexId>& get_depth_vertex_ids(
-      Graph::Depth depth) const {
+  const std::vector<VertexId>& get_depth_vertex_ids(Depth depth) const {
     if (depth_vertices_list_.find(depth) == depth_vertices_list_.end()) {
       static const std::vector<VertexId> empty_result;
       return empty_result;
@@ -207,10 +207,10 @@ class Graph {
   void set_vertex_depth(const VertexId vertex_id, const Depth depth) {
     if (vertex_depths_list_.find(vertex_id) != vertex_depths_list_.end()) {
       const Depth previous_depth = get_vertex_depth(vertex_id);
-      depth_vertices_list_[depth].erase(
-          std::remove(depth_vertices_list_[depth].begin(),
-                      depth_vertices_list_[depth].end(), vertex_id),
-          depth_vertices_list_[depth].end());
+      depth_vertices_list_[previous_depth].erase(
+          std::remove(depth_vertices_list_[previous_depth].begin(),
+                      depth_vertices_list_[previous_depth].end(), vertex_id),
+          depth_vertices_list_[previous_depth].end());
     }
 
     depth_vertices_list_[depth].push_back(vertex_id);
@@ -307,7 +307,7 @@ class GraphGenerator {
 
           if (acceptable_vertex_ids.size() != 0) {
             const auto to_vertex_id = acceptable_vertex_ids[get_random_int(
-                0, acceptable_vertex_ids.size())];
+                0, acceptable_vertex_ids.size() - 1)];
             graph.add_edge(vertex_id, to_vertex_id);
           }
         }
@@ -326,8 +326,8 @@ class GraphGenerator {
 
       for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
         if (get_random_bool(red_edge_probability_)) {
-          const auto to_vertex_id =
-              to_vertex_ids[get_random_int(0, to_vertex_ids.size())];
+          int pos = get_random_int(0, to_vertex_ids.size() - 1);
+          const auto to_vertex_id = to_vertex_ids[pos];
           graph.add_edge(vertex_id, to_vertex_id);
         }
       }
