@@ -5,7 +5,6 @@
 #include <random>
 #include <unordered_map>
 
-
 constexpr int kVerticesCount = 14;
 
 class Graph {
@@ -284,26 +283,26 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
          ",\"edge_ids\":" + edges_ids_string + "]" +
          ",\"depth\":" + std::to_string(vertex.depth());
 
-std::string print_edge(const Graph::Edge& edge) {
-  return "\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
-         std::to_string(edge.from_vertex_id()) + "," +
-         std::to_string(edge.to_vertex_id()) + "],\"color\":\"" +
-         printing::color_to_string(edge.color()) + "\"";
-}
+  std::string print_edge(const Graph::Edge& edge) {
+    return "\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
+           std::to_string(edge.from_vertex_id()) + "," +
+           std::to_string(edge.to_vertex_id()) + "],\"color\":\"" +
+           printing::color_to_string(edge.color()) + "\"";
+  }
 
-std::string print_graph(const Graph& graph) {
-  std::string graph_string = "{\n  \"vertices\": [\n";
-  for (const auto& [vertex_id, vertex] : graph.get_vertices()) {
-    graph_string += "    {" + print_vertex(vertex, graph) + "},\n";
+  std::string print_graph(const Graph& graph) {
+    std::string graph_string = "{\n  \"vertices\": [\n";
+    for (const auto& [vertex_id, vertex] : graph.get_vertices()) {
+      graph_string += "    {" + print_vertex(vertex, graph) + "},\n";
+    }
+    graph_string.erase(graph_string.length() - 2, graph_string.length());
+    graph_string += "\n  ],\n  \"edges\": [\n";
+    for (const auto& [edge_id, edge] : graph.get_edges()) {
+      graph_string += "    {" + print_edge(edge) + "},\n";
+    }
+    graph_string.erase(graph_string.length() - 2, graph_string.length());
+    return graph_string + "\n  ]\n}\n";
   }
-  graph_string.erase(graph_string.length() - 2, graph_string.length());
-  graph_string += "\n  ],\n  \"edges\": [\n";
-  for (const auto& [edge_id, edge] : graph.get_edges()) {
-    graph_string += "    {" + print_edge(edge) + "},\n";
-  }
-  graph_string.erase(graph_string.length() - 2, graph_string.length());
-  return graph_string + "\n  ]\n}\n";
-}
 }  // namespace json
 }  // namespace printing
 
