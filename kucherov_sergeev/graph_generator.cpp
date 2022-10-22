@@ -14,10 +14,13 @@ class Graph {
 
   struct Edge {
    public:
-    Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
+    enum class Color { Grey, Green, Yellow, Red };
+
+    Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id, Color color)
         : id_(id),
           from_vertex_id_(from_vertex_id),
-          to_vertex_id_(to_vertex_id) {}
+          to_vertex_id_(to_vertex_id),
+          color_(color) {}
 
     EdgeId id() const { return id_; }
     VertexId from_vertex_id() const { return from_vertex_id_; }
@@ -27,6 +30,7 @@ class Graph {
     EdgeId id_ = 0;
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
+    Color color_ = Color::Grey;
   };
 
   struct Vertex {
@@ -45,10 +49,11 @@ class Graph {
     set_vertex_depth(new_vertex_id, 1);
   }
 
-  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+  void add_edge(const VertexId from_vertex_id, const VertexId to_vertex_id) {
     const auto edge_id = get_new_edge_id();
+    const auto edge_color = determine_edge_color(from_vertex_id, to_vertex_id);
 
-    edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id);
+    edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, edge_color);
 
     adjacency_list_[from_vertex_id].push_back(edge_id);
     if (to_vertex_id != from_vertex_id) {
@@ -73,6 +78,38 @@ class Graph {
   VertexId get_new_vertex_id() { return next_free_vertex_id_++; }
 
   EdgeId get_new_edge_id() { return next_free_edge_id_++; }
+
+  Edge::Color determine_edge_color(const VertexId from_vertex_id,
+                                   const VertexId to_vertex_id) const {
+    const auto from_vertex_depth = get_vertex_depth(from_vertex_id);
+    const auto to_vertex_depth = get_vertex_depth(to_vertex_id);
+
+    if (from_vertex_id == to_vertex_id) {
+      return Edge::Color::Green;
+    }
+    if (get_connected_edge_ids(to_vertex_id).size() == 0) {
+      return Edge::Color::Grey;
+    }
+    if (to_vertex_depth - from_vertex_depth == 1 &&
+        !is_connected(from_vertex_id, to_vertex_id)) {
+      return Edge::Color::Yellow;
+    }
+    if (to_vertex_depth - from_vertex_depth == 2) {
+      return Edge::Color::Red;
+    }
+
+    throw std::runtime_error("Failed to determine color");
+  }
+
+  int is_connected(const VertexId first_vertex_id,
+                   const VertexId second_vertex_id) const {
+    return std::find_first_of(
+               adjacency_list_.find(first_vertex_id)->second.begin(),
+               adjacency_list_.find(first_vertex_id)->second.end(),
+               adjacency_list_.find(second_vertex_id)->second.begin(),
+               adjacency_list_.find(second_vertex_id)->second.end()) !=
+           adjacency_list_.find(first_vertex_id)->second.end();
+  }
 
   Depth get_vertex_depth(const VertexId vertex_id) const {
     return vertex_depths_list_.at(vertex_id);
