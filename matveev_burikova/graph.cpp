@@ -5,6 +5,7 @@
 #include <random>
 #include <unordered_map>
 
+
 constexpr int kVerticesCount = 14;
 
 class Graph {
@@ -79,7 +80,6 @@ class Graph {
       adjacency_list_[to_vertex_id].emplace_back(new_edge_id);
     }
   }
-
   const std::unordered_map<VertexId, Vertex>& get_vertices() const {
     return vertices_;
   }
@@ -283,7 +283,6 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   return "\"id\":" + std::to_string(vertex.id()) +
          ",\"edge_ids\":" + edges_ids_string + "]" +
          ",\"depth\":" + std::to_string(vertex.depth());
-}
 
 std::string print_edge(const Graph::Edge& edge) {
   return "\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
