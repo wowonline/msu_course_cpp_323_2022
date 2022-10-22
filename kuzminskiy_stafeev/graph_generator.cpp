@@ -1,20 +1,23 @@
 #include "graph_generator.hpp"
 
 bool check_probability(const float prob) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::bernoulli_distribution d(prob);
-    return d(gen);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::bernoulli_distribution d(prob);
+  return d(gen);
 }
 
-std::vector<Graph::VertexId> unconnected_vertices_ids_on_depth(Graph& graph, Graph::VertexId vertex_id, Graph::Depth depth) {
-    std::vector<Graph::VertexId> unconnected_vertices = {};
-    for (const auto cur_vertex_id: graph.vertices_of_depth(depth)) {
-        if (graph.is_connected(vertex_id, cur_vertex_id)) {
-            unconnected_vertices.emplace_back(cur_vertex_id);
-        }
+std::vector<Graph::VertexId> unconnected_vertices_ids_on_depth(
+    Graph& graph,
+    Graph::VertexId vertex_id,
+    Graph::Depth depth) {
+  std::vector<Graph::VertexId> unconnected_vertices = {};
+  for (const auto cur_vertex_id : graph.vertices_of_depth(depth)) {
+    if (graph.is_connected(vertex_id, cur_vertex_id)) {
+      unconnected_vertices.emplace_back(cur_vertex_id);
     }
-    return unconnected_vertices;
+  }
+  return unconnected_vertices;
 }
 
 Graph GraphGenerator::generate() const {
@@ -65,16 +68,18 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
 
     std::srand(std::time(0));
     for (const auto from_vertex_id : graph.vertices_of_depth(cur_depth)) {
-            if (check_probability(prob)) {
-                const auto& unconnected_vertices_ids = unconnected_vertices_ids_on_depth(graph, from_vertex_id, cur_depth + 1);
-                if (!unconnected_vertices_ids.empty()) {
-                    const auto rand_pos = std::rand() % unconnected_vertices_ids.size();
-                    const auto to_vertex_id = unconnected_vertices_ids[rand_pos];
-                    graph.add_edge(from_vertex_id, to_vertex_id);
-                }
-            }
+      if (check_probability(prob)) {
+        const auto& unconnected_vertices_ids =
+            unconnected_vertices_ids_on_depth(graph, from_vertex_id,
+                                              cur_depth + 1);
+        if (!unconnected_vertices_ids.empty()) {
+          const auto rand_pos = std::rand() % unconnected_vertices_ids.size();
+          const auto to_vertex_id = unconnected_vertices_ids[rand_pos];
+          graph.add_edge(from_vertex_id, to_vertex_id);
         }
+      }
     }
+  }
 }
 
 void GraphGenerator::generate_red_edges(Graph& graph) const {

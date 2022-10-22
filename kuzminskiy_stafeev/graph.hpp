@@ -1,7 +1,7 @@
-#include <iostream>
-#include <cassert>
-#include <set>
 #include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -85,4 +85,3 @@ class Graph {
   std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, std::set<EdgeId>> connections_list_;
 };
-

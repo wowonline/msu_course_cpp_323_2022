@@ -40,7 +40,7 @@ void Graph::set_vertex_depth(const VertexId id, const Depth depth) {
 
   if (depth > graph_depth) {
     for (Graph::Depth i = graph_depth; i < depth; i++) {
-        std::vector<VertexId> EmptyVertex = {};
+      std::vector<VertexId> EmptyVertex = {};
       vertices_of_depth_.emplace_back(EmptyVertex);
     }
   }
@@ -83,4 +83,3 @@ void Graph::add_edge(const VertexId& from_vertex_id,
 
   connections_list_[to_vertex_id].insert(edge_id);
 }
-
