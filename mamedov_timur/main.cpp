@@ -26,6 +26,5 @@ int main() {
   const auto graph = generate_graph();
   const auto graph_json = printing::json::print_graph(graph);
   write_to_file(graph_json, "graph.json");
-
   return 0;
 }

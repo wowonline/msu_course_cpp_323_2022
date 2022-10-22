@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <map>
 
 class Graph {
  public:
@@ -45,13 +46,15 @@ class Graph {
 
   EdgeId add_edge(VertexId first_vertex_id, VertexId second_vertex_id);
 
+  bool has_edge(VertexId first_vertex_id, VertexId second_vertex_id) const;
+
   const std::unordered_map<EdgeId, Edge>& get_edges() const;
 
   const std::unordered_map<VertexId, Vertex>& get_vertices() const;
 
   const std::vector<EdgeId>& get_edges_of_vertex(VertexId vertex_id) const;
 
-  const std::unordered_map<Depth, std::vector<VertexId>>& get_vertices_depth()
+  const std::map<Depth, std::vector<VertexId>>& get_vertices_depth()
       const;
 
  private:
@@ -61,14 +64,14 @@ class Graph {
 
   bool has_vertex_id(VertexId vertex_id) const;
 
-  bool has_edge(VertexId first_vertex_id, VertexId second_vertex_id) const;
+  Depth vertex_depth(VertexId vertex_id) const;
 
   std::unordered_map<VertexId, Vertex> vertices_ = {};
   std::unordered_map<EdgeId, Edge> edges_ = {};
 
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_ = {};
 
-  std::unordered_map<Depth, std::vector<VertexId>> vertices_depth_ = {};
+  std::map<Depth, std::vector<VertexId>> vertices_depth_ = {};
 
   std::vector<int> vetices_dep_;
   VertexId last_vertex_id_ = 0;
