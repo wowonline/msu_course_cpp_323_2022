@@ -38,7 +38,12 @@ class Graph {
     VertexId id_ = 0;
   };
 
-  void add_vertex() { vertices_.emplace_back(get_new_vertex_id()); }
+  void add_vertex() {
+    const VertexId new_vertex_id = get_new_vertex_id();
+
+    vertices_.emplace_back(new_vertex_id);
+    set_vertex_depth(new_vertex_id, 1);
+  }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     const auto edge_id = get_new_edge_id();
@@ -69,11 +74,30 @@ class Graph {
 
   EdgeId get_new_edge_id() { return next_free_edge_id_++; }
 
+  Depth get_vertex_depth(const VertexId vertex_id) const {
+    return vertex_depths_list_.at(vertex_id);
+  }
+
+  void set_vertex_depth(const VertexId vertex_id, const Depth depth) {
+    if (vertex_depths_list_.find(vertex_id) != vertex_depths_list_.end()) {
+      const Depth previous_depth = get_vertex_depth(vertex_id);
+      depth_vertices_list_[depth].erase(
+          std::remove(depth_vertices_list_[depth].begin(),
+                      depth_vertices_list_[depth].end(), vertex_id),
+          depth_vertices_list_[depth].end());
+    }
+
+    depth_vertices_list_[depth].push_back(vertex_id);
+    vertex_depths_list_[vertex_id] = depth;
+  }
+
   VertexId next_free_vertex_id_ = 0;
   EdgeId next_free_edge_id_ = 0;
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
+  std::unordered_map<VertexId, Depth> vertex_depths_list_;
+  std::unordered_map<Depth, std::vector<VertexId>> depth_vertices_list_;
 };
 
 class GraphGenerator {
@@ -100,9 +124,19 @@ class GraphGenerator {
     generate_green_edges(graph);
     generate_yellow_edges(graph);
     generate_red_edges(graph);
+
+    return graph;
   }
 
  private:
+  void generate_grey_edges(Graph& graph) const {}
+
+  void generate_green_edges(Graph& graph) const {}
+
+  void generate_yellow_edges(Graph& graph) const {}
+
+  void generate_red_edges(Graph& graph) const {}
+
   Params params_ = Params(0, 0);
 };
 
