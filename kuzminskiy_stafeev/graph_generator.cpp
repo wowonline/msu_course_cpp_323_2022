@@ -20,7 +20,7 @@ std::vector<Graph::VertexId> unconnected_vertices_ids_on_depth(
     const Graph::Depth depth) {
   std::vector<Graph::VertexId> unconnected_vertices = {};
   for (const auto cur_vertex_id : graph.vertices_of_depth(depth)) {
-    if (graph.is_connected(vertex_id, cur_vertex_id)) {
+    if (!graph.is_connected(vertex_id, cur_vertex_id)) {
       unconnected_vertices.emplace_back(cur_vertex_id);
     }
   }
@@ -73,7 +73,6 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
   for (Graph::Depth cur_depth = 2; cur_depth <= depth - 1; cur_depth++) {
     float prob = (float)(step * (cur_depth - 1));
 
-    std::srand(std::time(0));
     for (const auto from_vertex_id : graph.vertices_of_depth(cur_depth)) {
       if (check_probability(prob)) {
         const auto& unconnected_vertices_ids =
