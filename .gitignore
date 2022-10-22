@@ -49,3 +49,5 @@ Thumbs.db
 *.exe
 *.o
 *.so
+
+# Temp, add here your `temp` folders
