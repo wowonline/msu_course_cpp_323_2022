@@ -16,8 +16,8 @@ bool check_probability(const float prob) {
 
 std::vector<Graph::VertexId> unconnected_vertices_ids_on_depth(
     const Graph& graph,
-    Graph::VertexId vertex_id,
-    Graph::Depth depth) {
+    const Graph::VertexId vertex_id,
+    const Graph::Depth depth) {
   std::vector<Graph::VertexId> unconnected_vertices = {};
   for (const auto cur_vertex_id : graph.vertices_of_depth(depth)) {
     if (graph.is_connected(vertex_id, cur_vertex_id)) {
