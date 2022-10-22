@@ -281,7 +281,7 @@ class GraphGenerator {
   }
 
   void generate_green_edges(Graph& graph) const {
-    for (Graph::Depth current_depth = 1; current_depth < params_.depth();
+    for (Graph::Depth current_depth = 1; current_depth <= params_.depth();
          current_depth++) {
       for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
         if (get_random_bool(green_edge_probability_)) {
@@ -294,25 +294,24 @@ class GraphGenerator {
   void generate_yellow_edges(Graph& graph) const {
     for (Graph::Depth current_depth = 2; current_depth < params_.depth();
          current_depth++) {
-      float new_edge_probability =
-          (current_depth - 1.f) / (params_.depth() - 1.f);
+      float new_edge_probability = current_depth / (params_.depth() - 1.f);
       const auto& next_depth_vertex_ids =
           graph.get_depth_vertex_ids(current_depth + 1);
 
       for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
         if (get_random_bool(new_edge_probability)) {
-          std::vector<Graph::VertexId> acceptable_vertex_ids = {};
+          std::vector<Graph::VertexId> to_vertex_ids = {};
           for (const auto next_depth_vertex_id :
                graph.get_depth_vertex_ids(current_depth + 1)) {
             if (graph.is_vertices_connected(vertex_id, next_depth_vertex_id) ==
                 false) {
-              acceptable_vertex_ids.push_back(next_depth_vertex_id);
+              to_vertex_ids.push_back(next_depth_vertex_id);
             }
           }
 
-          if (acceptable_vertex_ids.size() != 0) {
-            const auto to_vertex_id = acceptable_vertex_ids[get_random_int(
-                0, acceptable_vertex_ids.size() - 1)];
+          if (to_vertex_ids.size() != 0) {
+            const auto to_vertex_id =
+                to_vertex_ids[get_random_int(0, to_vertex_ids.size() - 1)];
             graph.add_edge(vertex_id, to_vertex_id);
           }
         }
