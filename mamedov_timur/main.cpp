@@ -4,10 +4,12 @@
 #include "graph.hpp"
 #include "printing.hpp"
 
+constexpr int kVerticesCount = 14;
+
 Graph generate_graph() {
   auto graph = Graph();
 
-  for (int i = 0; i < 14; i++) {
+  for (int i = 0; i < kVerticesCount; ++i) {
     graph.add_vertex();
   }
 
@@ -33,16 +35,19 @@ Graph generate_graph() {
   return graph;
 }
 
-void write_to_file(const std::string& graph_str, const std::string& file_name) {
-  std::ofstream fout;
-  fout.open(file_name);
-  fout << graph_str;
-  fout.close();
+void write_to_file(const std::string& output_string,
+                   const std::string& file_name) {
+  std::ofstream output(file_name);
+  if (output.is_open())
+    output << output_string;
+  else
+    std::cout << "File is not accessible!\n";
 }
 
 int main() {
   const auto graph = generate_graph();
   const auto graph_json = printing::json::print_graph(graph);
+  std::cout << graph_json << std::endl;
   write_to_file(graph_json, "graph.json");
   return 0;
 }

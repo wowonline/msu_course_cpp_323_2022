@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <unordered_map>
 #include <vector>
 
@@ -10,8 +11,8 @@ class Graph {
 
   struct Vertex {
    public:
-    explicit Vertex(VertexId id);
-    VertexId id() const;
+    explicit Vertex(VertexId id) : id_(id) {}
+    VertexId id() const { return id_; }
 
    private:
     VertexId id_ = 0;
@@ -19,11 +20,14 @@ class Graph {
 
   struct Edge {
    public:
-    Edge(EdgeId id, VertexId first_vertex_id_, VertexId second_vertex_id_);
+    Edge(EdgeId id, VertexId first_vertex_id, VertexId second_vertex_id)
+        : id_(id),
+          first_vertex_id_(first_vertex_id),
+          second_vertex_id_(second_vertex_id) {}
 
-    EdgeId id() const;
-    VertexId get_first_vertex_id() const;
-    VertexId get_second_vertex_id() const;
+    EdgeId id() const { return id_; }
+    VertexId get_first_vertex_id() const { return first_vertex_id_; }
+    VertexId get_second_vertex_id() const { return second_vertex_id_; }
 
    private:
     EdgeId id_ = 0;
@@ -33,20 +37,26 @@ class Graph {
 
   void add_vertex();
 
-  void add_edge(VertexId first_vertex_id_, VertexId second_vertex_id_);
+  void add_edge(VertexId first_vertex_id, VertexId second_vertex_id);
 
-  const std::unordered_map<EdgeId, Edge>& get_edges() const;
+  const std::unordered_map<EdgeId, Edge>& get_edges() const { return edges_; }
 
-  const std::unordered_map<VertexId, Vertex>& get_vertices() const;
+  const std::unordered_map<VertexId, Vertex>& get_vertices() const {
+    return vertices_;
+  }
 
-  const std::vector<EdgeId>& get_edges_of_vertex(VertexId vertex_id) const;
+  const std::vector<EdgeId>& get_connected_edge_ids(VertexId vertex_id) const {
+    return connections_.at(vertex_id);
+  }
 
  private:
-  VertexId get_new_vertex_id();
+  VertexId get_new_vertex_id() { return last_vertex_id_++; }
 
-  EdgeId get_new_edge_id();
+  EdgeId get_new_edge_id() { return last_edge_id_++; };
 
-  bool has_vertex_id(VertexId vertex_id) const;
+  bool has_vertex_id(VertexId vertex_id) const {
+    return vertices_.find(vertex_id) != vertices_.end();
+  }
 
   std::unordered_map<VertexId, Vertex> vertices_ = {};
   std::unordered_map<EdgeId, Edge> edges_ = {};
