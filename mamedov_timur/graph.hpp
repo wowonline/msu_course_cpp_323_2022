@@ -1,11 +1,11 @@
 #pragma once
 
+#include <algorithm>
 #include <cassert>
+#include <map>
 #include <random>
 #include <unordered_map>
 #include <vector>
-#include <algorithm>
-#include <map>
 
 class Graph {
  public:
@@ -48,14 +48,15 @@ class Graph {
 
   bool has_edge(VertexId first_vertex_id, VertexId second_vertex_id) const;
 
+  Depth depth() const { return vertices_depth_.size(); }
+
   const std::unordered_map<EdgeId, Edge>& get_edges() const;
 
   const std::unordered_map<VertexId, Vertex>& get_vertices() const;
 
   const std::vector<EdgeId>& get_edges_of_vertex(VertexId vertex_id) const;
 
-  const std::map<Depth, std::vector<VertexId>>& get_vertices_depth()
-      const;
+  const std::map<Depth, std::vector<VertexId>>& get_vertices_depth() const;
 
  private:
   VertexId get_new_vertex_id();
