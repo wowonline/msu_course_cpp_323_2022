@@ -7,6 +7,7 @@ void Graph::add_vertex() {
   const VertexId new_id = get_new_vertex_id();
   vertices_.emplace(new_id, new_id);
   adjacency_list_.emplace(new_id, std::vector<EdgeId>{});
+  
 }
 
 void Graph::add_edge(VertexId first_vertex_id, VertexId second_vertex_id) {

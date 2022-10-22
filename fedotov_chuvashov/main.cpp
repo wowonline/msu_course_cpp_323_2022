@@ -2,8 +2,8 @@
 #include <iostream>
 #include "graph.hpp"
 #include "printing.hpp"
+#include "graph_generator.hpp"
 
-constexpr int kVerticesCount = 14;
 
 void write_to_file(const std::string& output_string,
                    const std::string& file_name) {
@@ -15,33 +15,37 @@ void write_to_file(const std::string& output_string,
   }
 }
 
-int main() {
-  auto graph = Graph();
-
-  for (int i = 0; i < kVerticesCount; i++) {
-    graph.add_vertex();
+int handle_depth_input() {
+  int depth;
+  while (std::cin >> depth) {
+    if (depth >= 0) {
+      return depth;
+    }
+    std::cout << "Invalid depth. Please, try again." << std::endl;
   }
+}
 
-  graph.add_edge(0, 1);
-  graph.add_edge(0, 2);
-  graph.add_edge(0, 3);
-  graph.add_edge(1, 4);
-  graph.add_edge(1, 5);
-  graph.add_edge(1, 6);
-  graph.add_edge(2, 7);
-  graph.add_edge(2, 8);
-  graph.add_edge(3, 9);
-  graph.add_edge(4, 10);
-  graph.add_edge(5, 10);
-  graph.add_edge(6, 10);
-  graph.add_edge(7, 11);
-  graph.add_edge(8, 11);
-  graph.add_edge(9, 12);
-  graph.add_edge(10, 13);
-  graph.add_edge(11, 13);
-  graph.add_edge(12, 13);
+int handle_new_vertices_count_input() {
+  int new_vertices_count;
+  while (std::cin >> new_vertices_count) {
+    if (new_vertices_count >= 0) {
+      return new_vertices_count;
+    }
+    std::cout << "Invalid depth. Please, try again." << std::endl;
+  }
+}
+
+int main() {
+  const int depth = handle_depth_input();
+  const int new_vertices_count = handle_new_vertices_count_input();
+
+  auto params = GraphGenerator::Params(depth, new_vertices_count);
+  const auto generator = GraphGenerator(std::move(params));
+  const auto graph = generator.generate();
 
   const auto graph_json = printing::json::print_graph(graph);
   std::cout << graph_json << std::endl;
   write_to_file(graph_json, "graph.json");
+
+  return 0;
 }

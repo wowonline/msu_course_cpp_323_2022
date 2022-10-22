@@ -4,6 +4,7 @@
 
 class Graph {
  public:
+  using Depth = int;
   using VertexId = int;
   using EdgeId = int;
 
