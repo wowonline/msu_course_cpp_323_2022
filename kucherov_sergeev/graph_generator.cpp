@@ -8,13 +8,15 @@
 const int kVerticesCount = 14;
 
 bool get_random_bool(const float true_probability = 0.5) {
-  std::default_random_engine generator;
+  std::random_device random_device;
+  std::mt19937 generator(random_device());
   std::bernoulli_distribution bernoulli_distribution(true_probability);
   return bernoulli_distribution(generator);
 }
 
 bool get_random_int(const int start, const int end) {
-  std::default_random_engine generator;
+  std::random_device random_device;
+  std::mt19937 generator(random_device());
   std::uniform_int_distribution<> uniform_int_distribution(start, end);
   return uniform_int_distribution(generator);
 }
@@ -266,7 +268,7 @@ class GraphGenerator {
       float new_vertex_probability =
           1.f - (current_depth - 1.f) / (params_.depth() - 1.f);
 
-      for (const auto& vertex_id : graph.get_depth_vertex_ids(current_depth)) {
+      for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
         for (int attempt = 0; attempt < params_.new_vertices_count();
              attempt++) {
           if (get_random_bool(new_vertex_probability)) {
@@ -281,7 +283,7 @@ class GraphGenerator {
   void generate_green_edges(Graph& graph) const {
     for (Graph::Depth current_depth = 1; current_depth < params_.depth();
          current_depth++) {
-      for (const auto& vertex_id : graph.get_depth_vertex_ids(current_depth)) {
+      for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
         if (get_random_bool(green_edge_probability_)) {
           graph.add_edge(vertex_id, vertex_id);
         }
@@ -290,7 +292,7 @@ class GraphGenerator {
   }
 
   void generate_yellow_edges(Graph& graph) const {
-    for (Graph::Depth current_depth = 2; current_depth < params_.depth() - 1;
+    for (Graph::Depth current_depth = 2; current_depth < params_.depth();
          current_depth++) {
       float new_edge_probability =
           (current_depth - 1.f) / (params_.depth() - 1.f);
@@ -319,7 +321,7 @@ class GraphGenerator {
   }
 
   void generate_red_edges(Graph& graph) const {
-    for (Graph::Depth current_depth = 1; current_depth < params_.depth() - 2;
+    for (Graph::Depth current_depth = 1; current_depth < params_.depth() - 1;
          current_depth++) {
       const auto& to_vertex_ids = graph.get_depth_vertex_ids(current_depth + 2);
 
