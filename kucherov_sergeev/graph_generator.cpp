@@ -96,6 +96,7 @@ class Graph {
     EdgeId id() const { return id_; }
     VertexId from_vertex_id() const { return from_vertex_id_; }
     VertexId to_vertex_id() const { return to_vertex_id_; }
+    Color color() const { return color_; }
 
    private:
     EdgeId id_ = 0;
@@ -140,6 +141,8 @@ class Graph {
 
     return edge_id;
   }
+
+  Depth get_depth() const { return depth_vertices_list_.size(); }
 
   const std::vector<VertexId>& get_depth_vertex_ids(Depth depth) const {
     if (depth_vertices_list_.find(depth) == depth_vertices_list_.end()) {
@@ -355,9 +358,27 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
     vertex_json.pop_back();
   }
 
-  vertex_json += "]}";
+  vertex_json +=
+      "],\"depth\":" + std::to_string(graph.get_vertex_depth(vertex.id()));
+
+  vertex_json += "}";
 
   return vertex_json;
+}
+
+std::string print_edge_color(const Graph::Edge::Color& color) {
+  switch (color) {
+    case Graph::Edge::Color::Grey:
+      return "\"grey\"";
+    case Graph::Edge::Color::Green:
+      return "\"green\"";
+    case Graph::Edge::Color::Yellow:
+      return "\"yellow\"";
+    case Graph::Edge::Color::Red:
+      return "\"red\"";
+    default:
+      return "\"invalid color\"";
+  }
 }
 
 std::string print_edge(const Graph::Edge& edge) {
@@ -366,7 +387,8 @@ std::string print_edge(const Graph::Edge& edge) {
 
   edge_json += std::to_string(edge.from_vertex_id()) + "," +
                std::to_string(edge.to_vertex_id());
-  edge_json += "]}";
+  edge_json += "],\"color\":" + print_edge_color(edge.color());
+  edge_json += "}";
 
   return edge_json;
 }
@@ -375,8 +397,10 @@ std::string print_graph(const Graph& graph) {
   const auto& vertices = graph.get_vertices();
   const auto& edges = graph.get_edges();
 
-  std::string graph_json = "{\n\t\"vertices\": [\n";
+  std::string graph_json =
+      "\n\t\"depth\":" + std::to_string(graph.get_depth()) + ",";
 
+  graph_json += "\n\t\"vertices\": [\n";
   if (vertices.size() != 0) {
     for (const auto& vertex : vertices) {
       graph_json += "\t\t" + print_vertex(vertex, graph) + ",\n";
