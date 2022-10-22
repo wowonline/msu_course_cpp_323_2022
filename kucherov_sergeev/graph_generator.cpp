@@ -398,7 +398,7 @@ std::string print_graph(const Graph& graph) {
   const auto& edges = graph.get_edges();
 
   std::string graph_json =
-      "\n\t\"depth\":" + std::to_string(graph.get_depth()) + ",";
+      "{\n\t\"depth\":" + std::to_string(graph.get_depth()) + ",";
 
   graph_json += "\n\t\"vertices\": [\n";
   if (vertices.size() != 0) {
