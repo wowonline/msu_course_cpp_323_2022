@@ -2,7 +2,7 @@ CC=clang++
 
 LFLAGS = -std=c++17 -Werror
 CFLAGS = -std=c++17 -Werror
-OBJ = classes.o printing.o main.o
+OBJ = graph.o graph_generator.o printing.o main.o
 
 all: prog
 
@@ -12,7 +12,7 @@ prog: $(OBJ)
 .cpp.o:
 	${CC} -g ${CFLAGS} -c $< -o $@
 
-main.o: classes.hpp printing.hpp
+main.o: printing.hpp graph.hpp graph_generator.hpp
 
 clean:
 	rm -rf *.o prog

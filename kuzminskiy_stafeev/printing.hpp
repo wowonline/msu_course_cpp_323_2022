@@ -1,4 +1,4 @@
-#include "classes.hpp"
+#include "graph.hpp"
 
 namespace printing {
 std::string print_edge_color(const Graph::Edge::Color& color);

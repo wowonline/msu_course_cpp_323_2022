@@ -1,5 +1,7 @@
-#include "classes.hpp"
+#include "graph.hpp"
+#include "graph_generator.hpp"
 #include "printing.hpp"
+#include <fstream>
 
 void write_to_file(const std::string& str, const std::string& filename) {
   std::ofstream out(filename);
