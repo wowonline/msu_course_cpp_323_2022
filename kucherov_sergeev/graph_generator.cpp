@@ -27,8 +27,6 @@ void write_to_file(const std::string& graph_json,
   std::ofstream json_file(file_name);
 
   json_file << graph_json;
-
-  json_file.close();
 }
 
 int handle_depth_input() {
