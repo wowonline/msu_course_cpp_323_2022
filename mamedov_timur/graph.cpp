@@ -1,4 +1,5 @@
 #include "graph.hpp"
+#include <cassert>
 
 void Graph::add_vertex() {
   const VertexId new_vertex_id = get_new_vertex_id();

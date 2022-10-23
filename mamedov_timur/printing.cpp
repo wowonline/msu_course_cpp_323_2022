@@ -11,15 +11,11 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   const auto& edge_ids = graph.get_connected_edge_ids(vertex.id());
 
   if (!edge_ids.empty()) {
-    auto it = edge_ids.begin();
-    ++it;
-
-    for (; it != edge_ids.end(); ++it) {
-      json_string << *std::prev(it) << ", ";
+    for (auto it = edge_ids.cbegin(); it != edge_ids.cend() - 1; ++it) {
+      json_string << *it << ", ";
     }
-    json_string << *std::prev(it);
+    json_string << *(edge_ids.cend() - 1);
   }
-
   json_string << "] }";
 
   return json_string.str();
@@ -41,27 +37,28 @@ std::string print_graph(const Graph& graph) {
   const auto& edges = graph.get_edges();
 
   if (!vertices.empty()) {
-    auto it_vertices = vertices.begin();
-    auto prev_it_vertices = it_vertices;
-    ++it_vertices;
-
-    for (; it_vertices != vertices.end(); ++it_vertices, ++prev_it_vertices) {
-      json_string << print_vertex(prev_it_vertices->second, graph) << ",";
+    bool is_first_iteration = true;
+    for (auto it = vertices.cbegin(); it != vertices.cend(); ++it) {
+      if (!is_first_iteration) {
+        json_string << ",";
+      }
+      json_string << print_vertex(it->second, graph);
+      is_first_iteration = false;
     }
-    json_string << print_vertex(prev_it_vertices->second, graph);
   }
-
   json_string << "\n\t],\n\t\"edges\": [";
 
   if (!edges.empty()) {
-    auto it_edges = edges.begin();
-    auto prev_it_edges = it_edges;
-    ++it_edges;
+    bool is_first_iteration = true;
 
-    for (; it_edges != edges.end(); ++it_edges, ++prev_it_edges) {
-      json_string << print_edge(prev_it_edges->second, graph) << ",";
+    for (auto it_edges = edges.cbegin(); it_edges != edges.cend(); ++it_edges) {
+      if (!is_first_iteration) {
+        json_string << ",";
+      }
+      json_string << print_edge(it_edges->second, graph);
+      is_first_iteration = false;
     }
-    json_string << print_edge(prev_it_edges->second, graph) << "\n\t]\n}\n";
+    json_string << "\n\t]\n}\n";
   }
   return json_string.str();
 }
