@@ -1,8 +1,5 @@
-#include <algorithm>
 #include <cassert>
-#include <iostream>
 #include <set>
-#include <string>
 #include <unordered_map>
 #include <vector>
 #pragma once
@@ -44,10 +41,10 @@ class Graph {
     Color color_ = Color::Grey;
   };
 
-  bool is_connected(const VertexId, const VertexId) const;
+  bool is_connected(VertexId, VertexId) const;
   VertexId add_vertex();
 
-  void add_edge(const VertexId& from_vertex_id, const VertexId& to_vertex_id);
+  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
   Depth get_graph_depth() const { return vertices_of_depth_.size() - 1; }
   Depth get_vertex_depth(VertexId id) const {
@@ -58,7 +55,7 @@ class Graph {
   const std::unordered_map<VertexId, Vertex>& vertices() const {
     return vertices_;
   }
-  const std::vector<VertexId>& vertices_of_depth(const Depth& depth) const {
+  const std::vector<VertexId>& vertices_of_depth(Depth depth) const {
     return vertices_of_depth_[depth];
   }
   const std::unordered_map<EdgeId, Edge>& edges() const { return edges_; }
@@ -75,7 +72,7 @@ class Graph {
   EdgeId gen_new_edge_id() { return next_edge_id_++; }
   VertexId gen_new_vertex_id() { return next_vertex_id_++; }
 
-  void set_vertex_depth(const VertexId id, const Depth depth);
+  void set_vertex_depth(VertexId id, Depth depth);
 
   VertexId next_vertex_id_ = 0;
   EdgeId next_edge_id_ = 0;

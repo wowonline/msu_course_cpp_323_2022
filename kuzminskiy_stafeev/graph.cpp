@@ -1,9 +1,10 @@
 #include "graph.hpp"
+#include <algorithm>
+#include <iostream>
 
 Graph::VertexId Graph::add_vertex() {
   const auto vertex_id = gen_new_vertex_id();
-  const auto& vertex = Vertex(vertex_id);
-  vertices_.insert(std::make_pair(vertex_id, vertex));
+  vertices_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
 
   Graph::Depth base_depth = 0;
   if (vertices_of_depth_.empty()) {
@@ -20,8 +21,8 @@ Graph::VertexId Graph::add_vertex() {
   return vertex_id;
 }
 
-bool Graph::is_connected(const Graph::VertexId from_vertex_id,
-                         const Graph::VertexId to_vertex_id) const {
+bool Graph::is_connected(Graph::VertexId from_vertex_id,
+                         Graph::VertexId to_vertex_id) const {
   const auto PullEdgesFrom = connections_list_.at(from_vertex_id);
   const auto PullEdgesTo = connections_list_.at(to_vertex_id);
 
@@ -34,7 +35,7 @@ bool Graph::is_connected(const Graph::VertexId from_vertex_id,
   return !intersection.empty();
 }
 
-void Graph::set_vertex_depth(const VertexId id, const Depth depth) {
+void Graph::set_vertex_depth(VertexId id, Depth depth) {
   const auto cur_depth = get_vertex_depth(id);
   const auto graph_depth = get_graph_depth();
 
@@ -52,8 +53,7 @@ void Graph::set_vertex_depth(const VertexId id, const Depth depth) {
                   vertices_of_depth_[cur_depth].end(), id));
 }
 
-void Graph::add_edge(const VertexId& from_vertex_id,
-                     const VertexId& to_vertex_id) {
+void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   assert(has_vertex(from_vertex_id));
   assert(has_vertex(to_vertex_id));
   const auto edge_id = gen_new_edge_id();

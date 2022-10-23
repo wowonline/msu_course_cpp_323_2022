@@ -1,13 +1,14 @@
 #include "graph_generator.hpp"
+#include <random>
 
-int random(const int a, const int b) {
+int random(int a, int b) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> dis(a, b);
   return dis(gen);
 }
 
-bool check_probability(const float prob) {
+bool check_probability(float prob) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::bernoulli_distribution d(prob);
