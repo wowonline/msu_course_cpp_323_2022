@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <fstream>
 #include <iomanip>
@@ -137,7 +138,6 @@ class Graph {
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
   std::unordered_map<Depth, std::vector<VertexId>> vertices_on_depth_;
 
-  VertexId num_vertices_ = 0;
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
 
@@ -159,19 +159,10 @@ class Graph {
   }
 
   void remove_vertex_id_from_depth(Depth depth, VertexId vertex_id) {
-    for (const Graph::EdgeId edge_id : vertices_on_depth_[depth]) {
-      auto iterator = vertices_on_depth_[depth].begin();
-      while (iterator != vertices_on_depth_[depth].end()) {
-        if (*iterator == vertex_id) {
-          vertices_on_depth_[depth].erase(iterator);
-          return;
-        } else
-          ++iterator;
-      }
-    }
-    printf("Tried to remove not included id %d on depth %d!\n", vertex_id,
-           depth);
-    assert(false);
+    auto iterator = find(vertices_on_depth_[depth].begin(),
+                         vertices_on_depth_[depth].end(), vertex_id);
+    assert(iterator != vertices_on_depth_[depth].end());
+    vertices_on_depth_[depth].erase(iterator);
   }
 };
 
