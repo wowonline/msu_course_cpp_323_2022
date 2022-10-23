@@ -1,9 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include "graph.hpp"
-#include "printing.hpp"
 #include "graph_generator.hpp"
-
+#include "printing.hpp"
 
 void write_to_file(const std::string& output_string,
                    const std::string& file_name) {
@@ -23,6 +22,8 @@ int handle_depth_input() {
     }
     std::cout << "Invalid depth. Please, try again." << std::endl;
   }
+
+  throw std::runtime_error("Invalid input");
 }
 
 int handle_new_vertices_count_input() {
@@ -31,8 +32,10 @@ int handle_new_vertices_count_input() {
     if (new_vertices_count >= 0) {
       return new_vertices_count;
     }
-    std::cout << "Invalid depth. Please, try again." << std::endl;
+    std::cout << "Invalid new vertices count. Please, try again." << std::endl;
   }
+
+  throw std::runtime_error("Invalid input");
 }
 
 int main() {
