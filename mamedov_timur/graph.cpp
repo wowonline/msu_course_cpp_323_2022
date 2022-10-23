@@ -28,8 +28,8 @@ Graph::EdgeId Graph::add_edge(VertexId first_vertex_id,
     return new_edge_id;
   }
 
-  auto first_vertex_depth = vertex_depth(first_vertex_id);
-  auto second_vertex_depth = vertex_depth(second_vertex_id);
+  auto first_vertex_depth = get_vertex_depth(first_vertex_id);
+  auto second_vertex_depth = get_vertex_depth(second_vertex_id);
 
   if (second_vertex_depth == -1) {
     color = Graph::Edge::Color::Grey;
@@ -60,7 +60,7 @@ Graph::EdgeId Graph::add_edge(VertexId first_vertex_id,
   return new_edge_id;
 };
 
-Graph::Depth Graph::vertex_depth(VertexId vertex_id) const {
+Graph::Depth Graph::get_vertex_depth(VertexId vertex_id) const {
   for (auto it = vertices_depth_.begin(); it != vertices_depth_.end(); ++it) {
     if (std::find(it->second.begin(), it->second.end(), vertex_id) !=
         it->second.end())

@@ -64,6 +64,8 @@ class Graph {
     return vertices_depth_;
   };
 
+  Depth get_vertex_depth(VertexId vertex_id) const;
+
  private:
   VertexId get_new_vertex_id() { return last_vertex_id_++; }
 
@@ -72,8 +74,6 @@ class Graph {
   bool has_vertex_id(VertexId vertex_id) const {
     return vertices_.find(vertex_id) != vertices_.end();
   }
-
-  Depth vertex_depth(VertexId vertex_id) const;
 
   std::unordered_map<VertexId, Vertex> vertices_ = {};
   std::unordered_map<EdgeId, Edge> edges_ = {};
