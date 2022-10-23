@@ -10,14 +10,14 @@ const int kVerticesCount = 14;
 static constexpr float kEdgeGreenProbability = 0.1;
 static constexpr float kEdgeRedProbability = 0.33;
 
-bool get_random_bool(const float true_probability = 0.5) {
+bool get_random_bool(float true_probability) {
   std::random_device random_device;
   std::mt19937 generator(random_device());
   std::bernoulli_distribution bernoulli_distribution(true_probability);
   return bernoulli_distribution(generator);
 }
 
-bool get_random_int(const int start, const int end) {
+bool get_random_int(int start, int end) {
   std::random_device random_device;
   std::mt19937 generator(random_device());
   std::uniform_int_distribution<> uniform_int_distribution(start, end);
@@ -126,7 +126,7 @@ class Graph {
     return vertex_id;
   }
 
-  EdgeId add_edge(const VertexId from_vertex_id, const VertexId to_vertex_id) {
+  EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     if (adjacency_list_.find(to_vertex_id) == adjacency_list_.end() ||
         adjacency_list_.at(to_vertex_id).empty()) {
       set_vertex_depth(to_vertex_id, get_vertex_depth(from_vertex_id) + 1);
@@ -165,8 +165,8 @@ class Graph {
     return adjacency_list_.at(vertex_id);
   }
 
-  bool is_vertices_connected(const VertexId first_vertex_id,
-                             const VertexId second_vertex_id) const {
+  bool is_vertices_connected(VertexId first_vertex_id,
+                             VertexId second_vertex_id) const {
     return std::find_first_of(
                adjacency_list_.find(first_vertex_id)->second.begin(),
                adjacency_list_.find(first_vertex_id)->second.end(),
@@ -175,7 +175,7 @@ class Graph {
            adjacency_list_.find(first_vertex_id)->second.end();
   }
 
-  Depth get_vertex_depth(const VertexId vertex_id) const {
+  Depth get_vertex_depth(VertexId vertex_id) const {
     return vertex_depths_list_.at(vertex_id);
   }
 
@@ -188,8 +188,8 @@ class Graph {
 
   EdgeId get_new_edge_id() { return next_free_edge_id_++; }
 
-  Edge::Color determine_edge_color(const VertexId from_vertex_id,
-                                   const VertexId to_vertex_id) const {
+  Edge::Color determine_edge_color(VertexId from_vertex_id,
+                                   VertexId to_vertex_id) const {
     const auto from_vertex_depth = get_vertex_depth(from_vertex_id);
     const auto to_vertex_depth = get_vertex_depth(to_vertex_id);
 
@@ -210,7 +210,7 @@ class Graph {
     throw std::runtime_error("Failed to determine color");
   }
 
-  void set_vertex_depth(const VertexId vertex_id, const Depth depth) {
+  void set_vertex_depth(VertexId vertex_id, Depth depth) {
     if (vertex_depths_list_.find(vertex_id) != vertex_depths_list_.end()) {
       const Depth previous_depth = get_vertex_depth(vertex_id);
       depth_vertices_list_[previous_depth].erase(
@@ -366,7 +366,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   return vertex_json;
 }
 
-std::string print_edge_color(const Graph::Edge::Color& color) {
+std::string print_edge_color(const Graph::Edge::Color color) {
   switch (color) {
     case Graph::Edge::Color::Grey:
       return "\"grey\"";
