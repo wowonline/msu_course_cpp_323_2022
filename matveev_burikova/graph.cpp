@@ -325,8 +325,6 @@ void write_to_file(const std::string& content, const std::string& file_name) {
   std::ofstream new_file(file_name);
 
   new_file << content;
-
-  new_file.close();
 }
 
 const int handle_new_vertices_count_input() {
