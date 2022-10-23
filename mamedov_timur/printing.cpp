@@ -17,16 +17,14 @@ namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::stringstream json_string;
   json_string << "\n\t\t{ \"id\":" << vertex.id() << ", \"edges_ids\": [";
-  const auto connections = graph.get_edges_of_vertex(vertex.id());
+  const auto& edge_ids = graph.get_connected_edge_ids(vertex.id());
 
-  auto it = connections.begin(), prev_it = it;
-  ++it;
-
-  for (; it != connections.end(); ++it, ++prev_it) {
-    json_string << *prev_it << ", ";
+  if (!edge_ids.empty()) {
+    for (auto it = edge_ids.cbegin(); it != edge_ids.cend() - 1; ++it) {
+      json_string << *it << ", ";
+    }
+    json_string << *(edge_ids.cend() - 1);
   }
-  json_string << *prev_it;
-
   json_string << "] }";
 
   return json_string.str();
@@ -44,29 +42,34 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
 
 std::string print_graph(const Graph& graph) {
   std::stringstream json_string;
-  json_string << "{\n\t\"depth\": " << graph.depth() << ",";
-  json_string << "\n\t\"vertices\": [";
-  const auto vertices = graph.get_vertices();
-  const auto edges = graph.get_edges();
+  json_string << "{\n\t\"vertices\": [";
+  const auto& vertices = graph.get_vertices();
+  const auto& edges = graph.get_edges();
 
-  auto it_vertices = vertices.begin(), prev_it_vertices = it_vertices;
-  ++it_vertices;
-
-  for (; it_vertices != vertices.end(); ++it_vertices, ++prev_it_vertices) {
-    json_string << print_vertex(prev_it_vertices->second, graph) << ",";
+  if (!vertices.empty()) {
+    bool is_first_iteration = true;
+    for (auto it = vertices.cbegin(); it != vertices.cend(); ++it) {
+      if (!is_first_iteration) {
+        json_string << ",";
+      }
+      json_string << print_vertex(it->second, graph);
+      is_first_iteration = false;
+    }
   }
-  json_string << print_vertex(prev_it_vertices->second, graph);
-
   json_string << "\n\t],\n\t\"edges\": [";
 
-  auto it_edges = edges.begin(), prev_it_edges = it_edges;
-  ++it_edges;
+  if (!edges.empty()) {
+    bool is_first_iteration = true;
 
-  for (; it_edges != edges.end(); ++it_edges, ++prev_it_edges) {
-    json_string << print_edge(prev_it_edges->second, graph) << ",";
+    for (auto it_edges = edges.cbegin(); it_edges != edges.cend(); ++it_edges) {
+      if (!is_first_iteration) {
+        json_string << ",";
+      }
+      json_string << print_edge(it_edges->second, graph);
+      is_first_iteration = false;
+    }
+    json_string << "\n\t]\n}\n";
   }
-  json_string << print_edge(prev_it_edges->second, graph) << "\n\t]\n}";
-
   return json_string.str();
 }
 }  // namespace json

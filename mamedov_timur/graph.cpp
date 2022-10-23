@@ -1,36 +1,7 @@
 #include "graph.hpp"
-
-#include <iostream>
-
-Graph::Vertex::Vertex(VertexId id) : id_(id) {}
-
-Graph::VertexId Graph::Vertex::id() const {
-  return id_;
-}
-
-Graph::Edge::Edge(EdgeId id,
-                  VertexId first_vertex_id,
-                  VertexId second_vertex_id,
-                  Edge::Color color)
-    : id_(id),
-      first_vertex_id_(first_vertex_id),
-      second_vertex_id_(second_vertex_id),
-      color_(color) {}
-
-Graph::EdgeId Graph::Edge::id() const {
-  return id_;
-}
-
-Graph::VertexId Graph::Edge::get_first_vertex_id() const {
-  return first_vertex_id_;
-}
-Graph::VertexId Graph::Edge::get_second_vertex_id() const {
-  return second_vertex_id_;
-}
-
-Graph::Edge::Color Graph::Edge::color() const {
-  return color_;
-}
+#include <algorithm>
+#include <cassert>
+#include <random>
 
 Graph::VertexId Graph::add_vertex() {
   const VertexId new_vertex_id = get_new_vertex_id();
@@ -89,28 +60,6 @@ Graph::EdgeId Graph::add_edge(VertexId first_vertex_id,
   return new_edge_id;
 };
 
-const std::unordered_map<Graph::EdgeId, Graph::Edge>& Graph::get_edges() const {
-  return edges_;
-}
-const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices()
-    const {
-  return vertices_;
-}
-
-const std::vector<Graph::EdgeId>& Graph::get_edges_of_vertex(
-    Graph::VertexId vertex_id) const {
-  return connections_.at(vertex_id);
-}
-
-const std::map<Graph::Depth, std::vector<Graph::VertexId>>&
-Graph::get_vertices_depth() const {
-  return vertices_depth_;
-}
-
-bool Graph::has_vertex_id(VertexId vertex_id) const {
-  return vertices_.find(vertex_id) != vertices_.end();
-}
-
 Graph::Depth Graph::vertex_depth(VertexId vertex_id) const {
   for (auto it = vertices_depth_.begin(); it != vertices_depth_.end(); ++it) {
     if (std::find(it->second.begin(), it->second.end(), vertex_id) !=
@@ -127,36 +76,15 @@ bool Graph::has_edge(VertexId first_vertex_id,
   if (connections_.find(second_vertex_id) == connections_.end())
     return false;
 
-  const auto first_vertex_edges = get_edges_of_vertex(first_vertex_id);
-  const auto second_vertex_edges = get_edges_of_vertex(second_vertex_id);
+  const auto first_vertex_edges = get_connected_edge_ids(first_vertex_id);
+  const auto second_vertex_edges = get_connected_edge_ids(second_vertex_id);
   return std::find_first_of(
              first_vertex_edges.begin(), first_vertex_edges.end(),
              second_vertex_edges.begin(),
              second_vertex_edges.end()) != first_vertex_edges.end();
 }
 
-Graph::VertexId Graph::get_new_vertex_id() {
-  return last_vertex_id_++;
-};
-
-Graph::EdgeId Graph::get_new_edge_id() {
-  return last_edge_id_++;
-};
-
 // GraphGenerator's interface
-
-GraphGenerator::Params::Params(Graph::Depth depth, int new_vertices_count)
-    : depth_(depth), new_vertices_count_(new_vertices_count) {}
-
-Graph::Depth GraphGenerator::Params::depth() const {
-  return depth_;
-}
-
-int GraphGenerator::Params::new_vertices_count() const {
-  return new_vertices_count_;
-}
-
-GraphGenerator::GraphGenerator(Params&& params) : params_(std::move(params)) {}
 
 Graph GraphGenerator::generate() const {
   auto graph = Graph();
