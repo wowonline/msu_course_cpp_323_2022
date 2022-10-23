@@ -25,7 +25,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
     }
     json_string << *(edge_ids.cend() - 1);
   }
-  json_string << "], \"depth\": " << graph.get_vertex_depth(vertex.id())
+  json_string << "], \"depth\": " << graph.get_vertex_depth(vertex.id()) + 1
               << " }";
 
   return json_string.str();
