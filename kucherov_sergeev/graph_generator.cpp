@@ -7,6 +7,8 @@
 #include <vector>
 
 const int kVerticesCount = 14;
+static constexpr float kEdgeGreenProbability = 0.1;
+static constexpr float kEdgeRedProbability = 0.33;
 
 bool get_random_bool(const float true_probability = 0.5) {
   std::random_device random_device;
@@ -283,7 +285,7 @@ class GraphGenerator {
     for (Graph::Depth current_depth = 1; current_depth <= params_.depth();
          current_depth++) {
       for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
-        if (get_random_bool(green_edge_probability_)) {
+        if (get_random_bool(kEdgeGreenProbability)) {
           graph.add_edge(vertex_id, vertex_id);
         }
       }
@@ -328,7 +330,7 @@ class GraphGenerator {
       }
 
       for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
-        if (get_random_bool(red_edge_probability_)) {
+        if (get_random_bool(kEdgeRedProbability)) {
           int pos = get_random_int(0, to_vertex_ids.size() - 1);
           const auto to_vertex_id = to_vertex_ids[pos];
           graph.add_edge(vertex_id, to_vertex_id);
@@ -338,8 +340,6 @@ class GraphGenerator {
   }
 
   Params params_ = Params(0, 0);
-  const float green_edge_probability_ = 0.1;
-  const float red_edge_probability_ = 0.33;
 };
 
 namespace printing {
