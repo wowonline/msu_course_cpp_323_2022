@@ -75,6 +75,12 @@ class Graph {
     return vertices_.find(vertex_id) != vertices_.end();
   }
 
+  void set_vertex_depth(VertexId vertex_id, Depth vertex_depth);
+
+  void set_new_vertex_depth(VertexId vertex_id,
+                            Depth old_vertex_depth,
+                            Depth new_vertex_depth);
+
   std::unordered_map<VertexId, Vertex> vertices_ = {};
   std::unordered_map<EdgeId, Edge> edges_ = {};
 

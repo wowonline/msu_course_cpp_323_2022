@@ -1,6 +1,7 @@
 #include "graph.hpp"
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 #include <random>
 
 Graph::VertexId Graph::add_vertex() {
@@ -31,24 +32,23 @@ Graph::EdgeId Graph::add_edge(VertexId first_vertex_id,
   auto first_vertex_depth = get_vertex_depth(first_vertex_id);
   auto second_vertex_depth = get_vertex_depth(second_vertex_id);
 
-  if (second_vertex_depth == -1) {
+  if (!second_vertex_depth) {
     color = Graph::Edge::Color::Grey;
-    if (first_vertex_depth == -1) {
-      vertices_depth_.insert({0, std::vector<VertexId>{first_vertex_id}});
-      vertices_depth_.insert({1, std::vector<VertexId>{second_vertex_id}});
+    if (!first_vertex_depth) {
+      set_vertex_depth(first_vertex_id, 1);
+      set_vertex_depth(second_vertex_id, 2);
     } else {
-      if ((first_vertex_depth + 1) < vertices_depth_.size())
-        vertices_depth_.at(first_vertex_depth + 1)
-            .emplace_back(second_vertex_id);
-      else
-        vertices_depth_.insert(
-            {first_vertex_depth + 1, std::vector<VertexId>{second_vertex_id}});
+      set_vertex_depth(second_vertex_id, first_vertex_depth + 1);
     }
   } else {
     if (second_vertex_depth - first_vertex_depth == 1)
       color = Graph::Edge::Color::Yellow;
-    else if (second_vertex_depth - first_vertex_depth == 2)
+    else if (second_vertex_depth - first_vertex_depth == 2) {
       color = Graph::Edge::Color::Red;
+      set_new_vertex_depth(second_vertex_id, second_vertex_depth,
+                           first_vertex_depth + 1);
+    } else
+      std::runtime_error("Failed to determine color");
   }
 
   connections_[first_vertex_id].push_back(new_edge_id);
@@ -64,9 +64,27 @@ Graph::Depth Graph::get_vertex_depth(VertexId vertex_id) const {
   for (auto it = vertices_depth_.begin(); it != vertices_depth_.end(); ++it) {
     if (std::find(it->second.begin(), it->second.end(), vertex_id) !=
         it->second.end())
-      return it->first;
+      return it->first + 1;
   }
-  return -1;
+  return 0;
+}
+
+void Graph::set_new_vertex_depth(VertexId vertex_id,
+                                 Depth old_vertex_depth,
+                                 Depth new_vertex_depth) {
+  --old_vertex_depth;
+  vertices_depth_[old_vertex_depth].erase(
+      std::find(vertices_depth_[old_vertex_depth].begin(),
+                vertices_depth_[old_vertex_depth].end(), vertex_id));
+  set_vertex_depth(vertex_id, new_vertex_depth);
+}
+
+void Graph::set_vertex_depth(VertexId vertex_id, Depth vertex_depth) {
+  --vertex_depth;
+  if (vertex_depth < vertices_depth_.size())
+    vertices_depth_.at(vertex_depth).emplace_back(vertex_id);
+  else
+    vertices_depth_.insert({vertex_depth, std::vector<VertexId>{vertex_id}});
 }
 
 bool Graph::has_edge(VertexId first_vertex_id,
