@@ -6,6 +6,7 @@
 
 int handle_depth_input() {
   int output;
+  std::cout << "Enter the estimated depth of the graph:" << std::endl;
   while (std::cin >> output) {
     if (output >= 0) {
       return output;
@@ -19,6 +20,7 @@ int handle_depth_input() {
 
 int handle_new_vertices_count_input() {
   int output;
+  std::cout << "Enter the estimated number of new vertices:" << std::endl;
   while (std::cin >> output) {
     if (output >= 0) {
       return output;
