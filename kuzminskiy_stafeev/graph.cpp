@@ -51,8 +51,15 @@ Graph::VertexId Graph::add_vertex() {
 bool Graph::is_connected(Graph::VertexId from_vertex_id,
                          Graph::VertexId to_vertex_id) const {
   if (from_vertex_id == to_vertex_id) {
-    return true;
+    for (const auto& edge_id : connections_list_.at(from_vertex_id)) {
+      if (edges_.at(edge_id).color() == Edge::Color::Green) {
+        return true;
+      }
+    }
+
+    return false;
   }
+
   const auto PullEdgesFrom = connections_list_.at(from_vertex_id);
   const auto PullEdgesTo = connections_list_.at(to_vertex_id);
 
