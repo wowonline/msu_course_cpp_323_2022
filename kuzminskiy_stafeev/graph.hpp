@@ -1,4 +1,3 @@
-#include <cassert>
 #include <set>
 #include <unordered_map>
 #include <vector>
@@ -47,10 +46,11 @@ class Graph {
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
   Depth get_graph_depth() const { return vertices_of_depth_.size() - 1; }
-  Depth get_vertex_depth(VertexId id) const {
-    assert(has_vertex(id));
-    return depth_of_vertices_.at(id);
-  }
+  Depth get_vertex_depth(VertexId id) const;
+
+  std::vector<VertexId> get_unconnected_vertex_ids(
+      VertexId,
+      const std::vector<VertexId>&) const;
 
   const std::unordered_map<VertexId, Vertex>& vertices() const {
     return vertices_;
@@ -72,6 +72,7 @@ class Graph {
   EdgeId gen_new_edge_id() { return next_edge_id_++; }
   VertexId gen_new_vertex_id() { return next_vertex_id_++; }
 
+  Edge::Color define_color(VertexId from_vertex_id, VertexId to_vertex_id);
   void set_vertex_depth(VertexId id, Depth depth);
 
   VertexId next_vertex_id_ = 0;

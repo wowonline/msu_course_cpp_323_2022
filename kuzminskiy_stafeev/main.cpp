@@ -1,5 +1,7 @@
+#include <exception>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include "graph.hpp"
 #include "graph_generator.hpp"
 #include "graph_json_printing.hpp"
@@ -12,37 +14,48 @@ void write_to_file(const std::string& str, const std::string& filename) {
 
 int handle_depth_input() {
   int input;
+  std::cout << "Input depth of graph: ";
   while (std::cin >> input) {
     if (input >= 0) {
       return input;
     }
 
     std::cout << "Incorrect depth" << std::endl;
+    std::cout << "Input depth of graph: ";
   }
 
-  std::runtime_error("Bad input depth!");
+  throw std::runtime_error("Bad input depth!");
 
   return input;
 }
 
 int handle_new_vertices_count_input() {
   int input;
+  std::cout << "Input new_vertices_count: ";
   while (std::cin >> input) {
     if (input >= 0) {
       return input;
     }
 
     std::cout << "Incorrect new_vertices_count" << std::endl;
+    std::cout << "Input new_vertices_count: ";
   }
 
-  std::runtime_error("Bad input new_vertices_count!");
+  throw std::runtime_error("Bad input new_vertices_count!");
 
   return input;
 }
 
 int main() {
-  const int depth = handle_depth_input();
-  const int new_vertices_count = handle_new_vertices_count_input();
+  int depth;
+  int new_vertices_count;
+  try {
+    depth = handle_depth_input();
+    new_vertices_count = handle_new_vertices_count_input();
+  } catch (const std::bad_exception& e) {
+    std::cerr << "Caught " << e.what() << std::endl;
+    return 1;
+  }
 
   auto params = GraphGenerator::Params(depth, new_vertices_count);
   const auto generator = GraphGenerator(std::move(params));
