@@ -45,7 +45,9 @@ class Graph {
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
-  Depth get_graph_depth() const { return vertices_of_depth_.size() - 1; }
+  Depth get_graph_depth() const {
+    return vertices_of_depth_.size() ? vertices_of_depth_.size() - 1 : 0;
+  }
   Depth get_vertex_depth(VertexId id) const;
 
   std::vector<VertexId> get_unconnected_vertex_ids(

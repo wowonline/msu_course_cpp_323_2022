@@ -17,11 +17,13 @@ bool check_probability(float prob) {
 
 Graph GraphGenerator::generate() const {
   auto graph = Graph();
-  graph.add_vertex();
-  generate_grey_edges(graph);
-  generate_green_edges(graph);
-  generate_yellow_edges(graph);
-  generate_red_edges(graph);
+  if (params_.depth()) {
+    graph.add_vertex();
+    generate_grey_edges(graph);
+    generate_green_edges(graph);
+    generate_yellow_edges(graph);
+    generate_red_edges(graph);
+  }
 
   return graph;
 }
