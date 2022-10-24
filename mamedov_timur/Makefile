@@ -19,4 +19,4 @@ delete: clean
 
 clang-format:
 	clang-format -i -style=Chromium $(PROGS.CPP) $(PROGS.HPP)
-	
+
