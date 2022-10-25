@@ -7,6 +7,7 @@ class Graph {
  public:
   using VertexId = int;
   using EdgeId = int;
+  using Depth = int;
   void add_vertex() { vertices_.emplace_back(Vertex(get_new_vertex_id())); };
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
