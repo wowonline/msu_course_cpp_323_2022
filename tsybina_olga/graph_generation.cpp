@@ -69,7 +69,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   stream << R"("edge_ids":[)";
   std::string separator = "";
 
-  for (const auto& edge_id : graph.connections().at(vertex.id())) {
+  for (auto edge_id : graph.connections().at(vertex.id())) {
     stream << separator << edge_id;
     separator = ",";
   }
