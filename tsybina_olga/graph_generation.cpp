@@ -15,7 +15,9 @@ class Graph {
     const auto edge_id = get_new_edge_id();
     edges_.emplace_back(Edge(edge_id, from_vertex_id, to_vertex_id));
     connections_[from_vertex_id].push_back(edge_id);
-    connections_[to_vertex_id].push_back(edge_id);
+    if (to_vertex_id != from_vertex_id) {
+      connections_[to_vertex_id].push_back(edge_id);
+    }
   };
 
   const auto& vertices() const { return vertices_; }
