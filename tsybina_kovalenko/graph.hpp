@@ -8,7 +8,11 @@ class Graph {
   using VertexId = int;
   using EdgeId = int;
   using Depth = int;
-  void add_vertex() { vertices_.emplace_back(Vertex(get_new_vertex_id())); };
+  void add_vertex() {
+    VertexId new_vertex_id = get_new_vertex_id();
+    vertices_.emplace_back(new_vertex_id);
+    connections_[new_vertex_id] = {};
+  };
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     const auto edge_id = get_new_edge_id();
