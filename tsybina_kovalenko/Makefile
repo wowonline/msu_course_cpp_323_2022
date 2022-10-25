@@ -9,8 +9,8 @@ all: $(TARGET)
 clean:
 	rm -rf $(TARGET) $(BIN)/*.o
 
-graph_generation.o: graph_generation.cpp
-	clang++ $(FLAGS) -c -o $(BIN)/graph_generation.o graph_generation.cpp
+main.o: main.cpp
+	clang++ $(FLAGS) -c -o $(BIN)/main.o main.cpp
 
-$(TARGET): graph_generation.o
-	clang++ $(FLAGS) -o run $(BIN)/graph_generation.o
+$(TARGET): main.o
+	clang++ $(FLAGS) -o run $(BIN)/main.o
