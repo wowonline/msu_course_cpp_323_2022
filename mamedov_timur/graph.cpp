@@ -1,42 +1,29 @@
-#include <algorithm>
 #include <cassert>
 #include <iostream>
-#include <vector>
+#include <unordered_map>
 
 class Graph {
  public:
   using VertexId = int;
   using EdgeId = int;
-  void add_vertex() { vertices_.emplace_back(Vertex(gen_new_vertex_id())); }
+
+  void add_vertex() {
+    const auto new_vertex_id = get_new_vertex_id();
+    vertices_.insert({new_vertex_id, Vertex(new_vertex_id)});
+  }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    assert(has_vertex(from_vertex_id));
-    assert(has_vertex(to_vertex_id));
-    edges_.emplace_back(
-        (Edge(gen_new_edge_id(), from_vertex_id, to_vertex_id)));
+    assert(has_vertex_id(from_vertex_id));
+    assert(has_vertex_id(to_vertex_id));
+    const auto new_edge_id = get_new_edge_id();
+    edges_.insert(
+        {new_edge_id, Edge(new_edge_id, from_vertex_id, to_vertex_id)});
   }
-
-  void show_graph() const {
-    for (const auto& edge : edges_) {
-      std::cout << edge.id() << " : " << edge.from_vertex_id() << " --> "
-                << edge.to_vertex_id() << std::endl;
-    }
-  }
-
- private:
-  bool has_vertex(VertexId id) const {
-    return std::any_of(
-        vertices_.begin(), vertices_.end(),
-        [id](const Vertex& vertex) { return vertex.id() == id; });
-  }
-
-  EdgeId gen_new_edge_id() { return next_edge_id_++; }
-
-  VertexId gen_new_vertex_id() { return next_vertex_id_++; }
 
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
+
     VertexId id() const { return id_; }
 
    private:
@@ -56,22 +43,32 @@ class Graph {
 
    private:
     EdgeId id_ = 0;
+
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
   };
 
-  VertexId next_vertex_id_ = 0;
-  EdgeId next_edge_id_ = 0;
-  std::vector<Edge> edges_;
-  std::vector<Vertex> vertices_;
+ private:
+  VertexId get_new_vertex_id() { return last_vertex_id_++; }
+  EdgeId get_new_edge_id() { return last_edge_id_++; }
+
+  bool has_vertex_id(VertexId vertex_id) const {
+    return vertices_.find(vertex_id) != vertices_.end();
+  }
+
+  VertexId last_vertex_id_ = 0;
+  EdgeId last_edge_id_ = 0;
+
+  std::unordered_map<VertexId, Vertex> vertices_;
+  std::unordered_map<EdgeId, Edge> edges_;
 };
 
-static constexpr int kVerticesCount = 14;
+constexpr int kVertexesCount = 14;
 
 int main() {
   auto graph = Graph();
 
-  for (int i = 0; i < kVerticesCount; i++) {
+  for (int i = 0; i < kVertexesCount; i++) {
     graph.add_vertex();
   }
 
@@ -93,8 +90,6 @@ int main() {
   graph.add_edge(10, 13);
   graph.add_edge(11, 13);
   graph.add_edge(12, 13);
-
-  graph.show_graph();
 
   return 0;
 }
