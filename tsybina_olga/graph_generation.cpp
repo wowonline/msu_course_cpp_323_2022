@@ -49,6 +49,8 @@ class Graph {
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
   };
+
+ private:
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
