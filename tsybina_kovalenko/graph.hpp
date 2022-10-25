@@ -12,7 +12,7 @@ class Graph {
     VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(new_vertex_id);
     connections_[new_vertex_id] = {};
-  };
+  }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     const auto edge_id = get_new_edge_id();
@@ -21,7 +21,7 @@ class Graph {
     if (to_vertex_id != from_vertex_id) {
       connections_[to_vertex_id].push_back(edge_id);
     }
-  };
+  }
 
   const auto& vertices() const { return vertices_; }
 
@@ -32,7 +32,7 @@ class Graph {
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
-    VertexId id() const { return id_; };
+    VertexId id() const { return id_; }
 
    private:
     VertexId id_ = 0;
