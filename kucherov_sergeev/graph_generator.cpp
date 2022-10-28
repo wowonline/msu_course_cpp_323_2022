@@ -238,17 +238,17 @@ class Graph {
   const Depth default_vertex_depth_ = 1;
 };
 
-Graph::VertexId get_random_vertex_id(std::vector<Graph::Vertex> vertex_list) {
-  if (vertex_list.empty()) {
-    throw std::runtime_error("Can't pick random vertex id from empy list");
+Graph::VertexId get_random_vertex_id(std::vector<Graph::VertexId> vertex_ids) {
+  if (vertex_ids.empty()) {
+    throw std::runtime_error("Can't pick random vertex id from empty list");
   }
 
   std::random_device random_device;
   std::mt19937 generator(random_device());
   std::uniform_int_distribution<> uniform_int_distribution(
-      0, vertex_list.size() - 1);
+      0, vertex_ids.size() - 1);
 
-  return vertex_list[uniform_int_distribution(generator)].id();
+  return vertex_ids[uniform_int_distribution(generator)];
 }
 
 class GraphGenerator {
@@ -326,8 +326,7 @@ class GraphGenerator {
           }
 
           if (to_vertex_ids.size() != 0) {
-            const auto to_vertex_id =
-                to_vertex_ids[get_random_vertex_id(graph.get_vertices())];
+            const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
             graph.add_edge(vertex_id, to_vertex_id);
           }
         }
@@ -346,8 +345,7 @@ class GraphGenerator {
 
       for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
         if (get_random_bool(kEdgeRedProbability)) {
-          int pos = get_random_vertex_id(graph.get_vertices());
-          const auto to_vertex_id = to_vertex_ids[pos];
+          const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
           graph.add_edge(vertex_id, to_vertex_id);
         }
       }
