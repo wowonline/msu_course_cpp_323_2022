@@ -384,15 +384,15 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 std::string print_edge_color(const Graph::Edge::Color color) {
   switch (color) {
     case Graph::Edge::Color::Grey:
-      return "\"grey\"";
+      return "grey";
     case Graph::Edge::Color::Green:
-      return "\"green\"";
+      return "green";
     case Graph::Edge::Color::Yellow:
-      return "\"yellow\"";
+      return "yellow";
     case Graph::Edge::Color::Red:
-      return "\"red\"";
+      return "red";
     default:
-      return "\"invalid color\"";
+      return "invalid color";
   }
 }
 
@@ -402,7 +402,7 @@ std::string print_edge(const Graph::Edge& edge) {
 
   edge_json += std::to_string(edge.from_vertex_id()) + "," +
                std::to_string(edge.to_vertex_id());
-  edge_json += "],\"color\":" + print_edge_color(edge.color());
+  edge_json += "],\"color\":\"" + print_edge_color(edge.color()) + "\"";
   edge_json += "}";
 
   return edge_json;
