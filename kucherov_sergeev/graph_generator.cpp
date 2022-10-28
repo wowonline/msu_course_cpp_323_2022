@@ -37,7 +37,7 @@ int handle_depth_input() {
   while (correct_input == false) {
     if (std::cin >> depth && depth >= 0) {
       correct_input = true;
-    } else if (std::cin.fail()) {
+    } else if (std::cin.fail() || depth < 0) {
       std::cout << err_format_message << std::endl;
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -61,7 +61,7 @@ int handle_new_vertices_count_input() {
   while (correct_input == false) {
     if (std::cin >> new_vertices_count && new_vertices_count >= 0) {
       correct_input = true;
-    } else if (std::cin.fail()) {
+    } else if (std::cin.fail() || new_vertices_count < 0) {
       std::cout << err_format_message << std::endl;
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -239,6 +239,10 @@ class Graph {
 };
 
 Graph::VertexId get_random_vertex_id(std::vector<Graph::Vertex> vertex_list) {
+  if (vertex_list.empty()) {
+    throw std::runtime_error("Can't pick random vertex id from empy list");
+  }
+
   std::random_device random_device;
   std::mt19937 generator(random_device());
   std::uniform_int_distribution<> uniform_int_distribution(
