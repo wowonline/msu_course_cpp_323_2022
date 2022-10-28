@@ -167,12 +167,17 @@ class Graph {
 
   bool is_vertices_connected(VertexId first_vertex_id,
                              VertexId second_vertex_id) const {
-    return std::find_first_of(
-               adjacency_list_.find(first_vertex_id)->second.begin(),
-               adjacency_list_.find(first_vertex_id)->second.end(),
-               adjacency_list_.find(second_vertex_id)->second.begin(),
-               adjacency_list_.find(second_vertex_id)->second.end()) !=
-           adjacency_list_.find(first_vertex_id)->second.end();
+    const auto& connected_edge_ids = get_connected_edge_ids(first_vertex_id);
+
+    for (const auto& edge_id : connected_edge_ids) {
+      const auto& current_edge = edges_[edge_id];
+      if ((current_edge.from_vertex_id() ^ current_edge.to_vertex_id() ^
+           first_vertex_id) == second_vertex_id) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   Depth get_vertex_depth(VertexId vertex_id) const {
