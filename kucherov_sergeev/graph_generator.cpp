@@ -307,8 +307,6 @@ class GraphGenerator {
     for (Graph::Depth current_depth = 2; current_depth < params_.depth();
          current_depth++) {
       float new_edge_probability = current_depth / (params_.depth() - 1.f);
-      const auto& next_depth_vertex_ids =
-          graph.get_depth_vertex_ids(current_depth + 1);
 
       for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
         if (get_random_bool(new_edge_probability)) {
