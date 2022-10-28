@@ -48,7 +48,7 @@ class Graph {
 
   bool has_edge(VertexId first_vertex_id, VertexId second_vertex_id) const;
 
-  Depth depth() const { return vertices_depth_.size(); }
+  Depth depth() const { return depth_levels_.size(); }
 
   const std::unordered_map<EdgeId, Edge>& get_edges() const { return edges_; }
 
@@ -60,8 +60,8 @@ class Graph {
     return connections_.at(vertex_id);
   }
 
-  const std::map<Depth, std::vector<VertexId>>& get_vertices_depth() const {
-    return vertices_depth_;
+  const std::map<Depth, std::vector<VertexId>>& get_depth_levels() const {
+    return depth_levels_;
   };
 
   Depth get_vertex_depth(VertexId vertex_id) const;
@@ -71,22 +71,22 @@ class Graph {
 
   EdgeId get_new_edge_id() { return last_edge_id_++; };
 
+  Depth get_vertex_depth_in_basis(VertexId vertex_id) const;
+
   bool has_vertex_id(VertexId vertex_id) const {
     return vertices_.find(vertex_id) != vertices_.end();
   }
 
   void set_vertex_depth(VertexId vertex_id, Depth vertex_depth);
 
-  void set_new_vertex_depth(VertexId vertex_id,
-                            Depth old_vertex_depth,
-                            Depth new_vertex_depth);
-
   std::unordered_map<VertexId, Vertex> vertices_ = {};
   std::unordered_map<EdgeId, Edge> edges_ = {};
 
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_ = {};
 
-  std::map<Depth, std::vector<VertexId>> vertices_depth_ = {};
+  std::map<Depth, std::vector<VertexId>> depth_levels_ = {};
+
+  std::unordered_map<VertexId, std::pair<Depth, Depth>> vertices_depth_ = {};
 
   std::vector<int> vetices_dep_;
   VertexId last_vertex_id_ = 0;

@@ -7,10 +7,13 @@ RES = main
 GRAPH = graph.json
 
 all: $(PROGS.O)
-	$(CC) $(PROGS.O) -o $(RES) $(FLAGS) && ./$(RES)
+	$(CC) $(PROGS.O) -o $(RES) $(FLAGS)
 
 %.o : %.cpp
 	$(CC) -c $< $(CFLAGS)
+
+run:
+	./$(RES)
 
 clean:
 	rm -f $(PROGS.O)
