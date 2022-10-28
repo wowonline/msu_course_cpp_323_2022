@@ -145,10 +145,10 @@ class Graph {
     return edge_id;
   }
 
-  Depth get_depth() const { return depth_vertices_list_.size(); }
+  Depth get_depth() const { return (depth_vertices_list_.size() - 1); }
 
   const std::vector<VertexId>& get_depth_vertex_ids(Depth depth) const {
-    if (depth_vertices_list_.find(depth) == depth_vertices_list_.end()) {
+    if (depth > get_depth()) {
       static const std::vector<VertexId> empty_result;
       return empty_result;
     }
@@ -211,12 +211,18 @@ class Graph {
   }
 
   void set_vertex_depth(VertexId vertex_id, Depth depth) {
+    while (get_depth() < depth) {
+      depth_vertices_list_.push_back({});
+    }
+
     if (vertex_depths_list_.find(vertex_id) != vertex_depths_list_.end()) {
       const Depth previous_depth = get_vertex_depth(vertex_id);
-      depth_vertices_list_[previous_depth].erase(
-          std::remove(depth_vertices_list_[previous_depth].begin(),
-                      depth_vertices_list_[previous_depth].end(), vertex_id),
-          depth_vertices_list_[previous_depth].end());
+
+      auto& previous_depth_vertices_list = depth_vertices_list_[previous_depth];
+      previous_depth_vertices_list.erase(
+          std::remove(previous_depth_vertices_list.begin(),
+                      previous_depth_vertices_list.end(), vertex_id),
+          previous_depth_vertices_list.end());
     }
 
     depth_vertices_list_[depth].push_back(vertex_id);
@@ -229,7 +235,7 @@ class Graph {
   std::vector<Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
   std::unordered_map<VertexId, Depth> vertex_depths_list_;
-  std::unordered_map<Depth, std::vector<VertexId>> depth_vertices_list_;
+  std::vector<std::vector<VertexId>> depth_vertices_list_;
 
   const Depth default_vertex_depth_ = 1;
 };
