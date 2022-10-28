@@ -251,6 +251,20 @@ Graph::VertexId get_random_vertex_id(std::vector<Graph::VertexId> vertex_ids) {
   return vertex_ids[uniform_int_distribution(generator)];
 }
 
+std::vector<Graph::VertexId> get_unconnected_vertex_ids(
+    const Graph& graph,
+    Graph::VertexId vertex_id) {
+  std::vector<Graph::VertexId> unconnected_vertex_ids = {};
+  for (const auto next_depth_vertex_id :
+       graph.get_depth_vertex_ids(graph.get_vertex_depth(vertex_id) + 1)) {
+    if (graph.is_vertices_connected(vertex_id, next_depth_vertex_id) == false) {
+      unconnected_vertex_ids.push_back(next_depth_vertex_id);
+    }
+  }
+
+  return unconnected_vertex_ids;
+}
+
 class GraphGenerator {
  public:
   struct Params {
@@ -316,14 +330,8 @@ class GraphGenerator {
 
       for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
         if (get_random_bool(new_edge_probability)) {
-          std::vector<Graph::VertexId> to_vertex_ids = {};
-          for (const auto next_depth_vertex_id :
-               graph.get_depth_vertex_ids(current_depth + 1)) {
-            if (graph.is_vertices_connected(vertex_id, next_depth_vertex_id) ==
-                false) {
-              to_vertex_ids.push_back(next_depth_vertex_id);
-            }
-          }
+          const auto& to_vertex_ids =
+              get_unconnected_vertex_ids(graph, vertex_id);
 
           if (to_vertex_ids.size() != 0) {
             const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
