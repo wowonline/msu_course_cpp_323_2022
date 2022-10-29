@@ -11,11 +11,12 @@ class Graph {
   using EdgeId = int;
   using Depth = int;
 
-  void add_vertex() {
+  VertexId add_vertex() {
     VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(new_vertex_id);
     connections_[new_vertex_id] = {};
     vertex_depths_[new_vertex_id] = 1;
+    return new_vertex_id;
   }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
