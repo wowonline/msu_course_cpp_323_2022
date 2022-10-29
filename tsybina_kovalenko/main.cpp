@@ -45,9 +45,9 @@ int main() {
     std::cout << vertex_id << ": " << graph.vertex_depths().at(vertex_id)
               << std::endl;
   }
-  // const auto graph_json = printing::json::print_graph(graph);
-  // std::cout << graph_json << std::endl;
-  // write_to_file(graph_json, "graph.json");
+  const auto graph_json = printing::json::print_graph(graph);
+  std::cout << graph_json << std::endl;
+  write_to_file(graph_json, "graph.json");
 
   return 0;
 }
