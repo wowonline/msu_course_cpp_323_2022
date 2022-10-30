@@ -7,8 +7,6 @@
 #include <vector>
 
 const int kVerticesCount = 14;
-static constexpr float kEdgeGreenProbability = 0.1;
-static constexpr float kEdgeRedProbability = 0.33;
 
 bool get_random_bool(float true_probability) {
   std::random_device random_device;
@@ -138,15 +136,17 @@ class Graph {
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
   std::unordered_map<VertexId, Depth> vertex_depths_list_;
   std::vector<std::vector<VertexId>> depth_vertices_list_;
-
-  const Depth default_vertex_depth_ = 1;
 };
+
+static constexpr Graph::Depth kGraphDefaultDepth = 1;
+static constexpr float kEdgeGreenProbability = 0.1;
+static constexpr float kEdgeRedProbability = 0.33;
 
 Graph::VertexId Graph::add_vertex() {
   const VertexId vertex_id = get_new_vertex_id();
 
   vertices_.emplace_back(vertex_id);
-  set_vertex_depth(vertex_id, default_vertex_depth_);
+  set_vertex_depth(vertex_id, kGraphDefaultDepth);
 
   return vertex_id;
 }
