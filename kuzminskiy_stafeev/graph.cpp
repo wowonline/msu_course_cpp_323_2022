@@ -3,7 +3,7 @@
 #include <cassert>
 #include <iostream>
 
-const Graph::Depth BASE_DEPTH = 1;
+const Graph::Depth kBaseDepth = 1;
 
 Graph::Depth Graph::get_vertex_depth(Graph::VertexId id) const {
   assert(has_vertex(id));
@@ -41,8 +41,8 @@ Graph::VertexId Graph::add_vertex() {
     vertices_of_depth_.emplace_back(EmptyVertex_);
   }
 
-  vertices_of_depth_[BASE_DEPTH].emplace_back(vertex_id);
-  depth_of_vertices_[vertex_id] = BASE_DEPTH;
+  vertices_of_depth_[kBaseDepth].emplace_back(vertex_id);
+  depth_of_vertices_[vertex_id] = kBaseDepth;
   connections_list_[vertex_id] = {};
 
   return vertex_id;
