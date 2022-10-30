@@ -11,7 +11,7 @@ void write_to_file(const std::string& data, const std::string& file_path) {
   out.close();
 }
 
-GraphGenerator::Params ask_params() {
+GraphGenerator::Params handle_params_input() {
   Graph::Depth depth;
   bool is_depth_correct = false;
   do {
@@ -38,13 +38,9 @@ GraphGenerator::Params ask_params() {
 }
 
 int main() {
-  auto params = ask_params();
+  auto params = handle_params_input();
 
   const auto graph = GraphGenerator(std::move(params)).generate();
-  for (int vertex_id = 0; vertex_id < graph.vertices().size(); ++vertex_id) {
-    std::cout << vertex_id << ": " << graph.vertex_depths().at(vertex_id)
-              << std::endl;
-  }
   const auto graph_json = printing::json::print_graph(graph);
   std::cout << graph_json << std::endl;
   write_to_file(graph_json, "graph.json");
