@@ -49,5 +49,3 @@ Graph::Edge::Color Graph::get_edge_color(EdgeId from_vertex_id,
   }
   return Edge::Color::Grey;
 }
-
-
