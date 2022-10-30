@@ -7,7 +7,7 @@
 namespace printing {
 namespace json {
 
-// return json like {"id":0,"edge_ids":[0,1,2]}
+// return json like {"id":0,"edge_ids":[0,1,2],"depth":1}
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::ostringstream stream;
   stream << "{";
@@ -55,6 +55,7 @@ std::string print_edge(const Graph::Edge& edge) {
   return stream.str();
 }
 
+// return json like {"depth":6,"vertices":[...],"edges":[...]}
 std::string print_graph(const Graph& graph) {
   std::ostringstream stream;
   stream << "{";
