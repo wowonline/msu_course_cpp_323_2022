@@ -1,5 +1,3 @@
-#include <ctime>
-#include <random>
 #include "graph.hpp"
 #pragma once
 

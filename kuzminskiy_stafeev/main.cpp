@@ -1,7 +1,10 @@
 #include <fstream>
+#include <iostream>
+#include <stdexcept>
 #include "graph.hpp"
 #include "graph_generator.hpp"
-#include "printing.hpp"
+#include "graph_json_printing.hpp"
+#include "graph_printing.hpp"
 
 void write_to_file(const std::string& str, const std::string& filename) {
   std::ofstream out(filename);
@@ -9,33 +12,44 @@ void write_to_file(const std::string& str, const std::string& filename) {
 }
 
 int handle_depth_input() {
-  int input;
-  while (std::cin >> input) {
-    if (input >= 0) {
-      return input;
+  try {
+    int input;
+    std::cout << "Input depth of graph: ";
+    while (std::cin >> input) {
+      if (input >= 0) {
+        return input;
+      }
+
+      std::cout << "Incorrect depth" << std::endl;
+      std::cout << "Input depth of graph: ";
     }
 
-    std::cout << "Incorrect depth" << std::endl;
+    throw std::runtime_error("Bad input depth!");
+
+  } catch (const std::bad_exception& e) {
+    std::cerr << "Caught " << e.what() << std::endl;
+    return 1;
   }
-
-  std::runtime_error("Bad input depth!");
-
-  return input;
 }
 
 int handle_new_vertices_count_input() {
-  int input;
-  while (std::cin >> input) {
-    if (input >= 0) {
-      return input;
+  try {
+    int input;
+    std::cout << "Input new_vertices_count: ";
+    while (std::cin >> input) {
+      if (input >= 0) {
+        return input;
+      }
+
+      std::cout << "Incorrect new_vertices_count" << std::endl;
+      std::cout << "Input new_vertices_count: ";
     }
 
-    std::cout << "Incorrect new_vertices_count" << std::endl;
+    throw std::runtime_error("Bad input new_vertices_count!");
+  } catch (const std::bad_exception& e) {
+    std::cerr << "Caught " << e.what() << std::endl;
+    return 1;
   }
-
-  std::runtime_error("Bad input new_vertices_count!");
-
-  return input;
 }
 
 int main() {
