@@ -46,7 +46,7 @@ class GraphGenerator {
     while (!queue.empty()) {
       const auto vertex_id = queue.front();
       queue.pop();
-      const auto depth = graph.vertex_depths().at(vertex_id);
+      const auto depth = graph.depth_of(vertex_id);
       if (depth < params_.depth()) {
         const float success_chance =
             1.f - static_cast<float>(depth - 1) / (params_.depth() - 1);

@@ -26,7 +26,7 @@ class Graph {
     // component. In other words, at any moment graph must be connected except
     // for isolated vertices.
     assert(from_vertex_id == 0 || to_vertex_id == 0 ||
-           !(depth(from_vertex_id) == 1 && depth(to_vertex_id) == 1));
+           !(depth_of(from_vertex_id) == 1 && depth_of(to_vertex_id) == 1));
 
     const auto edge_id = get_new_edge_id();
     edges_.emplace_back(Edge(edge_id, from_vertex_id, to_vertex_id));
@@ -48,9 +48,9 @@ class Graph {
 
   const auto& vertex_depths() const { return vertex_depths_; }
 
-  const auto& graph_depth() const { return depth_; }
+  const auto& max_depth() const { return max_depth_; }
 
-  const Depth depth(VertexId vertex_id) const {
+  const Depth depth_of(VertexId vertex_id) const {
     return vertex_depths_.at(vertex_id);
   }
 
@@ -85,7 +85,7 @@ class Graph {
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
 
-  Depth depth_ = 0;
+  Depth max_depth_ = 0;
 
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
@@ -95,7 +95,7 @@ class Graph {
 
   void set_depth(VertexId vertex_id, Depth depth) {
     vertex_depths_[vertex_id] = depth;
-    depth_ = std::max(depth_, depth);
+    max_depth_ = std::max(max_depth_, depth);
   }
 
   void update_vertex_depth(VertexId from_vertex_id, VertexId to_vertex_id) {
@@ -104,10 +104,10 @@ class Graph {
       if (non_root_id != 0) {
         set_depth(non_root_id, 2);
       }
-    } else if (depth(from_vertex_id) == 1) {
-      set_depth(from_vertex_id, depth(to_vertex_id) + 1);
-    } else if (depth(to_vertex_id) == 1) {
-      set_depth(to_vertex_id, depth(from_vertex_id) + 1);
+    } else if (depth_of(from_vertex_id) == 1) {
+      set_depth(from_vertex_id, depth_of(to_vertex_id) + 1);
+    } else if (depth_of(to_vertex_id) == 1) {
+      set_depth(to_vertex_id, depth_of(from_vertex_id) + 1);
     }
   }
 };
