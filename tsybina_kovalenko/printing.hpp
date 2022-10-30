@@ -28,13 +28,29 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   return stream.str();
 }
 
-// return json like {"id":0,"vertex_ids":[0,1]}
+std::string color_name_of(Graph::Edge::Color edge_color) {
+  switch (edge_color) {
+    case Graph::Edge::Color::Grey:
+      return "grey";
+    case Graph::Edge::Color::Green:
+      return "green";
+    case Graph::Edge::Color::Yellow:
+      return "yellow";
+    case Graph::Edge::Color::Red:
+      return "red";
+    default:
+      throw std::runtime_error("Failed to determine color name");
+  }
+}
+
+// return json like {"id":0,"vertex_ids":[0,1],"color":"grey"}
 std::string print_edge(const Graph::Edge& edge) {
   std::ostringstream stream;
   stream << "{";
   stream << R"("id":)" << edge.id() << ",";
   stream << R"("vertex_ids":[)" << edge.from_vertex_id() << ","
-         << edge.to_vertex_id() << "]";
+         << edge.to_vertex_id() << "],";
+  stream << R"("color":")" << color_name_of(edge.color()) << "\"";
   stream << "}";
   return stream.str();
 }
