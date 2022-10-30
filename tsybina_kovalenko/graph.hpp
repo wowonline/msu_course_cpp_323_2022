@@ -29,15 +29,17 @@ class Graph {
            !(depth_of(from_vertex_id) == 1 && depth_of(to_vertex_id) == 1));
 
     const auto edge_id = get_new_edge_id();
-    edges_.emplace_back(Edge(edge_id, from_vertex_id, to_vertex_id));
+    const auto edge_color = Edge::Color::Grey;  // TODO add color determination
+    edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, edge_color);
 
     connections_[from_vertex_id].push_back(edge_id);
     if (to_vertex_id != from_vertex_id) {
       connections_[to_vertex_id].push_back(edge_id);
     }
 
-    update_vertex_depth(from_vertex_id,
-                        to_vertex_id);  // TODO run only in case of grey edge
+    if (edge_color == Edge::Color::Grey) {
+      update_vertex_depth(from_vertex_id, to_vertex_id);
+    }
   }
 
   const auto& vertices() const { return vertices_; }
@@ -65,18 +67,27 @@ class Graph {
 
   struct Edge {
    public:
-    explicit Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
+    enum class Color { Grey, Green, Yellow, Red };
+
+    explicit Edge(EdgeId id,
+                  VertexId from_vertex_id,
+                  VertexId to_vertex_id,
+                  Color color)
         : id_(id),
           from_vertex_id_(from_vertex_id),
-          to_vertex_id_(to_vertex_id) {}
+          to_vertex_id_(to_vertex_id),
+          color_(color) {}
+
     EdgeId id() const { return id_; }
-    VertexId from_vertex_id() const { return from_vertex_id_; };
-    VertexId to_vertex_id() const { return to_vertex_id_; };
+    VertexId from_vertex_id() const { return from_vertex_id_; }
+    VertexId to_vertex_id() const { return to_vertex_id_; }
+    Color color() const { return color_; }
 
    private:
     EdgeId id_ = 0;
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
+    Color color_;
   };
 
  private:
