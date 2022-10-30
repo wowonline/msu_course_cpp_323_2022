@@ -16,7 +16,7 @@ class Graph {
     vertices_.emplace_back(new_vertex_id);
     connections_[new_vertex_id] = {};
     set_depth(new_vertex_id, 1);
-    parents_.emplace_back(-1);
+    parents_.push_back(-1);
     return new_vertex_id;
   }
 
@@ -40,7 +40,7 @@ class Graph {
 
     if (edge_color == Edge::Color::Grey) {
       update_vertex_depth(from_vertex_id, to_vertex_id);
-      if (parents_[from_vertex_id] == -1) {
+      if (from_vertex_id != 0 && parents_[from_vertex_id] == -1) {
         parents_[from_vertex_id] = to_vertex_id;
       } else {
         parents_[to_vertex_id] = from_vertex_id;
@@ -66,10 +66,41 @@ class Graph {
     return parents_.at(vertex_id);
   }
 
+  VertexId other_end_of(EdgeId edge_id, VertexId vertex_id) const {
+    const Edge& edge = edges().at(edge_id);
+    if (edge.from_vertex_id() == vertex_id) {
+      return edge.to_vertex_id();
+    }
+    return edge.from_vertex_id();
+  }
+
+  std::vector<VertexId> children_of(VertexId vertex_id) const {
+    std::vector<VertexId> result;
+    for (EdgeId edge_id : connections_.at(vertex_id)) {
+      if (edges().at(edge_id).color() == Edge::Color::Grey) {
+        VertexId other_vertex_id = other_end_of(edge_id, vertex_id);
+        if (other_vertex_id != parent_of(vertex_id)) {
+          result.push_back(other_vertex_id);
+        }
+      }
+    }
+    return result;
+  }
+
+  std::vector<VertexId> connected_vertices(VertexId vertex_id) const {
+    std::vector<VertexId> result;
+    result.reserve(connections_.at(vertex_id).size());
+    for (EdgeId edge_id : connections_.at(vertex_id)) {
+      result.push_back(other_end_of(edge_id, vertex_id));
+    }
+    return result;
+  }
+
   bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
-    const auto& from_connections = connections_.at(from_vertex_id);
-    return std::find(from_connections.begin(), from_connections.end(),
-                     to_vertex_id) != from_connections.end();
+    const std::vector<VertexId>& from_vertex_ids =
+        connected_vertices(from_vertex_id);
+    return std::find(from_vertex_ids.begin(), from_vertex_ids.end(),
+                     to_vertex_id) != from_vertex_ids.end();
   }
 
   struct Vertex {

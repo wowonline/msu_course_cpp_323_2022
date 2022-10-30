@@ -75,8 +75,37 @@ class GraphGenerator {
     }
   }
 
-  void generate_yellow_edges(Graph& graph) const { /* TODO */
+  void generate_yellow_edges(Graph& graph) const {
+    for (const auto& vertex : graph.vertices()) {
+      auto vertex_depth = graph.depth_of(vertex.id());
+      if (vertex_depth != 1 && vertex_depth != params_.depth()) {
+        const float success_chance =
+            static_cast<float>(vertex_depth - 1) / (params_.depth() - 2);
+        std::bernoulli_distribution distribution(success_chance);
+        if (distribution(generator_)) {
+          std::cout << "add from " << vertex.id() << std::endl;
+          add_yellow_edge(graph, vertex.id());
+        }
+      }
+    }
   }
+
+  void add_yellow_edge(Graph& graph, Graph::VertexId from_vertex_id) const {
+    std::vector<Graph::VertexId> probable_vertices;
+    for (const Graph::Vertex& vertex : graph.vertices()) {
+      if (graph.depth_of(vertex.id()) == graph.depth_of(from_vertex_id) + 1 &&
+          !graph.is_connected(from_vertex_id, vertex.id())) {
+        probable_vertices.push_back(vertex.id());
+      }
+    }
+    if (probable_vertices.size() > 0) {
+      std::uniform_int_distribution<> distribution(
+          0, probable_vertices.size() - 1);
+      auto to_vertex_id = probable_vertices[distribution(generator_)];
+      graph.add_edge(from_vertex_id, to_vertex_id);
+    }
+  }
+
   void generate_red_edges(Graph& graph) const { /* TODO */
   }
 };
