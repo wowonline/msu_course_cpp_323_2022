@@ -36,6 +36,7 @@ class GraphGenerator {
   }
 
  private:
+  static constexpr float GREEN_EDGE_GENERATION_CHANCE = 0.1f;
   Params params_ = Params(0, 0);
 
   mutable std::mt19937 generator_;
@@ -64,8 +65,16 @@ class GraphGenerator {
       }
     }
   }
-  void generate_green_edges(Graph& graph) const { /* TODO */
+
+  void generate_green_edges(Graph& graph) const {
+    std::bernoulli_distribution distribution(GREEN_EDGE_GENERATION_CHANCE);
+    for (const auto& vertex : graph.vertices()) {
+      if (distribution(generator_)) {
+        graph.add_edge(vertex.id(), vertex.id());
+      }
+    }
   }
+
   void generate_yellow_edges(Graph& graph) const { /* TODO */
   }
   void generate_red_edges(Graph& graph) const { /* TODO */
