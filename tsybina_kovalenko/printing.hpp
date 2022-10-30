@@ -19,8 +19,10 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
     stream << separator << edge_id;
     separator = ",";
   }
+  stream << "],";
 
-  stream << "]";
+  stream << R"("depth":)" << graph.depth_of(vertex.id());
+
   stream << "}";
 
   return stream.str();
