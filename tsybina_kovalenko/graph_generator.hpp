@@ -44,15 +44,15 @@ class GraphGenerator {
     std::queue<Graph::VertexId> queue;
     queue.push(0);
     while (!queue.empty()) {
-      auto vertex_id = queue.front();
+      const auto vertex_id = queue.front();
       queue.pop();
-      auto depth = graph.vertex_depths().at(vertex_id);
+      const auto depth = graph.vertex_depths().at(vertex_id);
       if (depth < params_.depth()) {
-        float success_chance =
+        const float success_chance =
             1.f - static_cast<float>(depth - 1) / (params_.depth() - 1);
         std::bernoulli_distribution distribution(success_chance);
         std::random_device device;
-        std::mt19937 generator(device());
+        const std::mt19937 generator(device());
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
           if (distribution(generator)) {
             auto new_vertex_id = graph.add_vertex();

@@ -12,7 +12,7 @@ class Graph {
   using Depth = int;
 
   VertexId add_vertex() {
-    VertexId new_vertex_id = get_new_vertex_id();
+    const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(new_vertex_id);
     connections_[new_vertex_id] = {};
     vertex_depths_[new_vertex_id] = 1;
@@ -88,7 +88,7 @@ class Graph {
 
   void update_vertex_depth(VertexId from_vertex_id, VertexId to_vertex_id) {
     if (from_vertex_id == 0 || to_vertex_id == 0) {
-      auto non_root_id = std::max(from_vertex_id, to_vertex_id);
+      const auto non_root_id = std::max(from_vertex_id, to_vertex_id);
       if (non_root_id != 0) {
         vertex_depths_[non_root_id] = 2;
       }
