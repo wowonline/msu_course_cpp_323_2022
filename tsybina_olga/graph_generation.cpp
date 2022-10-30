@@ -10,7 +10,7 @@ class Graph {
   using VertexId = int;
   using EdgeId = int;
   void add_vertex() {
-    VertexId new_vertex_id = get_new_vertex_id();
+    const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(Vertex(new_vertex_id));
     connections_[new_vertex_id] = {};
   };
