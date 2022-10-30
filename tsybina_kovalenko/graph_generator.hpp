@@ -37,6 +37,7 @@ class GraphGenerator {
 
  private:
   static constexpr float GREEN_EDGE_GENERATION_CHANCE = 0.1f;
+  static constexpr float RED_EDGE_GENERATION_CHANCE = 0.33f;
   Params params_ = Params(0, 0);
 
   mutable std::mt19937 generator_;
@@ -75,6 +76,13 @@ class GraphGenerator {
     }
   }
 
+  Graph::VertexId select_random_vertex(
+      const std::vector<Graph::VertexId>& probable_vertices) const {
+    std::uniform_int_distribution<> distribution(0,
+                                                 probable_vertices.size() - 1);
+    return probable_vertices.at(distribution(generator_));
+  }
+
   void generate_yellow_edges(Graph& graph) const {
     for (const auto& vertex : graph.vertices()) {
       auto vertex_depth = graph.depth_of(vertex.id());
@@ -83,7 +91,6 @@ class GraphGenerator {
             static_cast<float>(vertex_depth - 1) / (params_.depth() - 2);
         std::bernoulli_distribution distribution(success_chance);
         if (distribution(generator_)) {
-          std::cout << "add from " << vertex.id() << std::endl;
           add_yellow_edge(graph, vertex.id());
         }
       }
@@ -99,13 +106,31 @@ class GraphGenerator {
       }
     }
     if (probable_vertices.size() > 0) {
-      std::uniform_int_distribution<> distribution(
-          0, probable_vertices.size() - 1);
-      auto to_vertex_id = probable_vertices[distribution(generator_)];
-      graph.add_edge(from_vertex_id, to_vertex_id);
+      graph.add_edge(from_vertex_id, select_random_vertex(probable_vertices));
     }
   }
 
-  void generate_red_edges(Graph& graph) const { /* TODO */
+  void generate_red_edges(Graph& graph) const {
+    for (const auto& vertex : graph.vertices()) {
+      auto vertex_depth = graph.depth_of(vertex.id());
+      if (vertex_depth <= params_.depth() - 2) {
+        std::bernoulli_distribution distribution(RED_EDGE_GENERATION_CHANCE);
+        if (distribution(generator_)) {
+          add_red_edge(graph, vertex.id());
+        }
+      }
+    }
+  }
+
+  void add_red_edge(Graph& graph, Graph::VertexId from_vertex_id) const {
+    std::vector<Graph::VertexId> probable_vertices;
+    for (const Graph::Vertex& vertex : graph.vertices()) {
+      if (graph.depth_of(vertex.id()) == graph.depth_of(from_vertex_id) + 2) {
+        probable_vertices.push_back(vertex.id());
+      }
+    }
+    if (probable_vertices.size() > 0) {
+      graph.add_edge(from_vertex_id, select_random_vertex(probable_vertices));
+    }
   }
 };
