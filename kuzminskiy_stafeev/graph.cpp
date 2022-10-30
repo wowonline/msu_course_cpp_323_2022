@@ -88,18 +88,6 @@ void Graph::set_vertex_depth(VertexId id, Depth depth) {
                   vertices_of_depth_[cur_depth].end(), id));
 }
 
-std::vector<Graph::VertexId> Graph::get_unconnected_vertex_ids(
-    Graph::VertexId vertex_id,
-    const std::vector<Graph::VertexId>& vertex_ids_on_depth) const {
-  std::vector<Graph::VertexId> unconnected_vertices = {};
-  for (const auto cur_vertex_id : vertex_ids_on_depth) {
-    if (!is_connected(vertex_id, cur_vertex_id)) {
-      unconnected_vertices.emplace_back(cur_vertex_id);
-    }
-  }
-  return unconnected_vertices;
-}
-
 void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   assert(has_vertex(from_vertex_id));
   assert(has_vertex(to_vertex_id));

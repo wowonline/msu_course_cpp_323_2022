@@ -50,10 +50,6 @@ class Graph {
   }
   Depth get_vertex_depth(VertexId id) const;
 
-  std::vector<VertexId> get_unconnected_vertex_ids(
-      VertexId,
-      const std::vector<VertexId>&) const;
-
   const std::unordered_map<VertexId, Vertex>& vertices() const {
     return vertices_;
   }

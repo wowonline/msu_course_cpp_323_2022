@@ -1,6 +1,19 @@
 #include "graph_generator.hpp"
 #include <random>
 
+std::vector<Graph::VertexId> get_unconnected_vertex_ids(
+    const Graph& graph,
+    Graph::VertexId vertex_id,
+    const std::vector<Graph::VertexId>& vertex_ids_on_depth) {
+  std::vector<Graph::VertexId> unconnected_vertices = {};
+  for (const auto cur_vertex_id : vertex_ids_on_depth) {
+    if (!graph.is_connected(vertex_id, cur_vertex_id)) {
+      unconnected_vertices.emplace_back(cur_vertex_id);
+    }
+  }
+  return unconnected_vertices;
+}
+
 int get_random_vertex(const std::vector<Graph::VertexId>& vertex_ids) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -65,8 +78,8 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
 
     for (const auto from_vertex_id : graph.vertices_of_depth(cur_depth)) {
       if (check_probability(prob)) {
-        const auto unconnected_vertices_ids = graph.get_unconnected_vertex_ids(
-            from_vertex_id, graph.vertices_of_depth(cur_depth + 1));
+        const auto unconnected_vertices_ids = get_unconnected_vertex_ids(
+            graph, from_vertex_id, graph.vertices_of_depth(cur_depth + 1));
         if (!unconnected_vertices_ids.empty()) {
           const auto to_vertex_id = get_random_vertex(unconnected_vertices_ids);
           graph.add_edge(from_vertex_id, to_vertex_id);
