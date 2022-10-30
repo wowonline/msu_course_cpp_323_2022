@@ -39,7 +39,7 @@ class Graph {
     return new_vertex_id;
   }
 
-  EdgeId add_edge(const VertexId from_vertex_id, const VertexId to_vertex_id) {
+  EdgeId add_edge(const VertexId from_vertex_id, VertexId to_vertex_id) {
     const EdgeId new_edge_id = generate_edge_id();
 
     edges_.emplace(new_edge_id, Edge(new_edge_id, new_edge_id, to_vertex_id));
@@ -55,5 +55,4 @@ class Graph {
 
   std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, Vertex> vertices_;
-  std::unordered_map<VertexId, std::vector<EdgeId>> connectivityList_;
 };
