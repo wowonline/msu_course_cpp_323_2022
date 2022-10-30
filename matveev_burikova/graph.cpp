@@ -6,13 +6,13 @@
 #include <random>
 #include <unordered_map>
 
-constexpr int kInitialDepth = 1;
-
 class Graph {
  public:
   using VertexId = int;
   using EdgeId = int;
   using Depth = int;
+
+  static constexpr Graph::Depth kInitialDepth = 1;
 
   struct Vertex {
    public:
@@ -170,7 +170,11 @@ class GraphGenerator {
   void generate_red_edges(Graph& graph) const;
   Graph generate() const {
     auto graph = Graph();
+    if (params_.depth() == 0)
+      return graph;
     graph.add_vertex();
+    if (params_.new_vertices_count() == 0)
+      return graph;
     generate_grey_edges(graph);
     generate_green_edges(graph);
     generate_yellow_edges(graph);
@@ -204,11 +208,12 @@ bool check_probability(double probability) {
   return d(gen);
 }
 
-int get_random_number(int minimum, int maximum) {
+Graph::VertexId get_random_vertex_id(
+    const std::vector<Graph::VertexId>& vertex_ids_list) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distrib(minimum, maximum);
-  return distrib(gen);
+  std::uniform_int_distribution<> distrib(0, vertex_ids_list.size() - 1);
+  return vertex_ids_list[distrib(gen)];
 }
 
 void GraphGenerator::generate_grey_edges(Graph& graph) const {
@@ -246,10 +251,8 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
                 graph.get_vertex_ids_on_depth(current_depth + 1));
         if (not_connected_vertex_ids.size() == 0)
           continue;
-        const auto new_to_vertex_number =
-            get_random_number(0, not_connected_vertex_ids.size() - 1);
         const auto to_vertex_id =
-            not_connected_vertex_ids[new_to_vertex_number];
+            get_random_vertex_id(not_connected_vertex_ids);
         graph.add_edge(from_vertex_id, to_vertex_id);
       }
     }
@@ -267,10 +270,8 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
         graph.get_vertex_ids_on_depth(current_depth + 2);
 
     for (const auto from_vertex_id : vertex_ids_on_current_depth) {
-      const auto new_to_vertex_number =
-          get_random_number(0, vertex_ids_on_following_depth.size() - 1);
       const auto to_vertex_id =
-          vertex_ids_on_following_depth[new_to_vertex_number];
+          get_random_vertex_id(vertex_ids_on_following_depth);
       if (check_probability(probability)) {
         graph.add_edge(from_vertex_id, to_vertex_id);
       }
@@ -298,8 +299,9 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
        graph.get_connected_edge_ids(vertex.id())) {
     edges_ids_string += std::to_string(edge_id) + ',';
   }
-  edges_ids_string.erase(edges_ids_string.length() - 1,
-                         edges_ids_string.length());
+  if (graph.get_connected_edge_ids(vertex.id()).size() != 0)
+    edges_ids_string.erase(edges_ids_string.length() - 1,
+                           edges_ids_string.length());
   return "\"id\":" + std::to_string(vertex.id()) +
          ",\"edge_ids\":" + edges_ids_string + "]" +
          ",\"depth\":" + std::to_string(vertex.depth);
@@ -319,27 +321,40 @@ std::string print_graph(const Graph& graph) {
   for (const auto& [vertex_id, vertex] : graph.get_vertices()) {
     graph_string += "    {" + print_vertex(vertex, graph) + "},\n";
   }
-  graph_string.erase(graph_string.length() - 2, graph_string.length());
+  if (graph.get_vertices().size() != 0)
+    graph_string.erase(graph_string.length() - 2, graph_string.length());
   graph_string += "\n  ],\n  \"edges\": [\n";
   for (const auto& [edge_id, edge] : graph.get_edges()) {
     graph_string += "    {" + print_edge(edge) + "},\n";
   }
-  graph_string.erase(graph_string.length() - 2, graph_string.length());
+  if (graph.get_edges().size() != 0)
+    graph_string.erase(graph_string.length() - 2, graph_string.length());
   return graph_string + "\n  ]\n}\n";
 }
 }  // namespace json
 }  // namespace printing
 
-int handle_depth_input() {
-  int depth_tmp;
+Graph::Depth handle_depth_input() {
+  std::string input_string;
+  Graph::Depth depth_tmp;
+  bool is_alpha_flag = false;
   while (true) {
     std::cout << "Enter depth: ";
-    std::cin >> depth_tmp;
+    std::cin >> input_string;
     std::cout << std::endl;
-    if (depth_tmp < 0)
-      std::cout << "Incorrect data. Enter depth one more time: ";
-    else
-      break;
+    for (char next_symbol : input_string) {
+      if (!isdigit(next_symbol)) {
+        is_alpha_flag = true;
+        break;
+      }
+    }
+    if (is_alpha_flag) {
+      std::cout << "Incorrect data, depth must be not negative integer.\n";
+      is_alpha_flag = false;
+      continue;
+    }
+    depth_tmp = std::atoi(input_string.c_str());
+    break;
   }
   return depth_tmp;
 }
@@ -351,15 +366,27 @@ void write_to_file(const std::string& content, const std::string& file_name) {
 }
 
 int handle_new_vertices_count_input() {
+  std::string input_string;
   int new_vertices_count_tmp;
+  bool is_alpha_flag = false;
   while (true) {
     std::cout << "Enter new vertices count: ";
-    std::cin >> new_vertices_count_tmp;
+    std::cin >> input_string;
     std::cout << std::endl;
-    if (new_vertices_count_tmp < 0)
-      std::cout << "Incorrect data. Enter new vertices count one more time: ";
-    else
-      break;
+    for (char next_symbol : input_string) {
+      if (!isdigit(next_symbol)) {
+        is_alpha_flag = true;
+        break;
+      }
+    }
+    if (is_alpha_flag) {
+      std::cout << "Incorrect data, new vertices count must be not negative "
+                   "integer.\n";
+      is_alpha_flag = false;
+      continue;
+    }
+    new_vertices_count_tmp = std::atoi(input_string.c_str());
+    break;
   }
   return new_vertices_count_tmp;
 }
