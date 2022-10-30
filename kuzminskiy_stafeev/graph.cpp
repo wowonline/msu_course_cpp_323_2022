@@ -60,13 +60,13 @@ bool Graph::is_connected(Graph::VertexId from_vertex_id,
     return false;
   }
 
-  const auto PullEdgesFrom = connections_list_.at(from_vertex_id);
-  const auto PullEdgesTo = connections_list_.at(to_vertex_id);
+  const auto pull_edges_from = connections_list_.at(from_vertex_id);
+  const auto pull_edges_to = connections_list_.at(to_vertex_id);
 
   std::set<Graph::EdgeId> intersection;
 
-  std::set_intersection(PullEdgesFrom.begin(), PullEdgesFrom.end(),
-                        PullEdgesTo.begin(), PullEdgesTo.end(),
+  std::set_intersection(pull_edges_from.begin(), pull_edges_from.end(),
+                        pull_edges_to.begin(), pull_edges_to.end(),
                         std::inserter(intersection, intersection.begin()));
 
   return !intersection.empty();
