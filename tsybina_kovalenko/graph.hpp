@@ -29,7 +29,7 @@ class Graph {
            !(depth_of(from_vertex_id) == 1 && depth_of(to_vertex_id) == 1));
 
     const auto edge_id = get_new_edge_id();
-    const auto edge_color = Edge::Color::Grey;  // TODO add color determination
+    const auto edge_color = define_edge_color(from_vertex_id, to_vertex_id);
     edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, edge_color);
 
     connections_[from_vertex_id].push_back(edge_id);
@@ -54,6 +54,12 @@ class Graph {
 
   const Depth depth_of(VertexId vertex_id) const {
     return vertex_depths_.at(vertex_id);
+  }
+
+  bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
+    const auto& from_connections = connections_.at(from_vertex_id);
+    return std::find(from_connections.begin(), from_connections.end(),
+                     to_vertex_id) != from_connections.end();
   }
 
   struct Vertex {
@@ -103,6 +109,26 @@ class Graph {
 
   VertexId get_new_vertex_id() { return last_vertex_id_++; }
   EdgeId get_new_edge_id() { return last_edge_id_++; }
+
+  Edge::Color define_edge_color(VertexId from_vertex_id,
+                                VertexId to_vertex_id) const {
+    if (from_vertex_id == to_vertex_id) {
+      return Edge::Color::Green;
+    }
+    if ((from_vertex_id != 0 && depth_of(from_vertex_id) == 1) ||
+        (to_vertex_id != 0 && depth_of(to_vertex_id) == 1)) {
+      return Edge::Color::Grey;
+    }
+    int height_difference =
+        abs(depth_of(to_vertex_id) - depth_of(from_vertex_id));
+    if (height_difference == 1 && !is_connected(from_vertex_id, to_vertex_id)) {
+      return Edge::Color::Yellow;
+    }
+    if (height_difference == 2) {
+      return Edge::Color::Red;
+    }
+    throw std::runtime_error("Failed to determine color");
+  }
 
   void set_depth(VertexId vertex_id, Depth depth) {
     vertex_depths_[vertex_id] = depth;
