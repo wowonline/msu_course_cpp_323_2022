@@ -16,6 +16,7 @@ class Graph {
     vertices_.emplace_back(new_vertex_id);
     connections_[new_vertex_id] = {};
     set_depth(new_vertex_id, 1);
+    parents_.emplace_back(-1);
     return new_vertex_id;
   }
 
@@ -39,6 +40,11 @@ class Graph {
 
     if (edge_color == Edge::Color::Grey) {
       update_vertex_depth(from_vertex_id, to_vertex_id);
+      if (parents_[from_vertex_id] == -1) {
+        parents_[from_vertex_id] = to_vertex_id;
+      } else {
+        parents_[to_vertex_id] = from_vertex_id;
+      }
     }
   }
 
@@ -52,8 +58,12 @@ class Graph {
 
   const auto& max_depth() const { return max_depth_; }
 
-  const Depth depth_of(VertexId vertex_id) const {
+  Depth depth_of(VertexId vertex_id) const {
     return vertex_depths_.at(vertex_id);
+  }
+
+  VertexId parent_of(VertexId vertex_id) const {
+    return parents_.at(vertex_id);
   }
 
   bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
@@ -101,6 +111,7 @@ class Graph {
   std::vector<Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
+  std::vector<EdgeId> parents_;
 
   Depth max_depth_ = 0;
 
