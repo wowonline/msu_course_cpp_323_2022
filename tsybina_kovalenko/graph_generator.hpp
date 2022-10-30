@@ -20,7 +20,8 @@ class GraphGenerator {
     int new_vertices_count_ = 0;
   };
 
-  explicit GraphGenerator(Params&& params) : params_(std::move(params)) {}
+  explicit GraphGenerator(Params&& params)
+      : params_(std::move(params)), generator_(std::random_device()()) {}
 
   Graph generate() const {
     auto graph = Graph();
@@ -37,6 +38,8 @@ class GraphGenerator {
  private:
   Params params_ = Params(0, 0);
 
+  mutable std::mt19937 generator_;
+
   void generate_grey_edges(Graph& graph) const {
     if (params_.depth() <= 1) {
       return;
@@ -51,10 +54,8 @@ class GraphGenerator {
         const float success_chance =
             1.f - static_cast<float>(depth - 1) / (params_.depth() - 1);
         std::bernoulli_distribution distribution(success_chance);
-        std::random_device device;
-        std::mt19937 generator(device());
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
-          if (distribution(generator)) {
+          if (distribution(generator_)) {
             auto new_vertex_id = graph.add_vertex();
             graph.add_edge(vertex_id, new_vertex_id);
             queue.push(new_vertex_id);
