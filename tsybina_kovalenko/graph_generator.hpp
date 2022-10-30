@@ -52,7 +52,7 @@ class GraphGenerator {
             1.f - static_cast<float>(depth - 1) / (params_.depth() - 1);
         std::bernoulli_distribution distribution(success_chance);
         std::random_device device;
-        const std::mt19937 generator(device());
+        std::mt19937 generator(device());
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
           if (distribution(generator)) {
             auto new_vertex_id = graph.add_vertex();
