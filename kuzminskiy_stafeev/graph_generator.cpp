@@ -65,7 +65,7 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
 
     for (const auto from_vertex_id : graph.vertices_of_depth(cur_depth)) {
       if (check_probability(prob)) {
-        const auto& unconnected_vertices_ids = graph.get_unconnected_vertex_ids(
+        const auto unconnected_vertices_ids = graph.get_unconnected_vertex_ids(
             from_vertex_id, graph.vertices_of_depth(cur_depth + 1));
         if (!unconnected_vertices_ids.empty()) {
           const auto to_vertex_id = get_random_vertex(unconnected_vertices_ids);

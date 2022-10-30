@@ -74,7 +74,8 @@ class Graph {
   EdgeId gen_new_edge_id() { return next_edge_id_++; }
   VertexId gen_new_vertex_id() { return next_vertex_id_++; }
 
-  Edge::Color define_color(VertexId from_vertex_id, VertexId to_vertex_id);
+  Edge::Color define_color(VertexId from_vertex_id,
+                           VertexId to_vertex_id) const;
   void set_vertex_depth(VertexId id, Depth depth);
 
   VertexId next_vertex_id_ = 0;
