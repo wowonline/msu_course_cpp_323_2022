@@ -15,7 +15,7 @@ class Graph {
     const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(new_vertex_id);
     connections_[new_vertex_id] = {};
-    vertex_depths_[new_vertex_id] = 1;
+    set_depth(new_vertex_id, 1);
     return new_vertex_id;
   }
 
@@ -26,8 +26,7 @@ class Graph {
     // component. In other words, at any moment graph must be connected except
     // for isolated vertices.
     assert(from_vertex_id == 0 || to_vertex_id == 0 ||
-           !(vertex_depths_[from_vertex_id] == 1 &&
-             vertex_depths_[to_vertex_id] == 1));
+           !(depth(from_vertex_id) == 1 && depth(to_vertex_id) == 1));
 
     const auto edge_id = get_new_edge_id();
     edges_.emplace_back(Edge(edge_id, from_vertex_id, to_vertex_id));
@@ -48,6 +47,12 @@ class Graph {
   const auto& connections() const { return connections_; }
 
   const auto& vertex_depths() const { return vertex_depths_; }
+
+  const auto& graph_depth() const { return depth_; }
+
+  const Depth depth(VertexId vertex_id) const {
+    return vertex_depths_.at(vertex_id);
+  }
 
   struct Vertex {
    public:
@@ -80,22 +85,29 @@ class Graph {
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
 
+  Depth depth_ = 0;
+
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
 
   VertexId get_new_vertex_id() { return last_vertex_id_++; }
   EdgeId get_new_edge_id() { return last_edge_id_++; }
 
+  void set_depth(VertexId vertex_id, Depth depth) {
+    vertex_depths_[vertex_id] = depth;
+    depth_ = std::max(depth_, depth);
+  }
+
   void update_vertex_depth(VertexId from_vertex_id, VertexId to_vertex_id) {
     if (from_vertex_id == 0 || to_vertex_id == 0) {
       const auto non_root_id = std::max(from_vertex_id, to_vertex_id);
       if (non_root_id != 0) {
-        vertex_depths_[non_root_id] = 2;
+        set_depth(non_root_id, 2);
       }
-    } else if (vertex_depths_[from_vertex_id] == 1) {
-      vertex_depths_[from_vertex_id] = vertex_depths_[to_vertex_id] + 1;
-    } else if (vertex_depths_[to_vertex_id] == 1) {
-      vertex_depths_[to_vertex_id] = vertex_depths_[from_vertex_id] + 1;
+    } else if (depth(from_vertex_id) == 1) {
+      set_depth(from_vertex_id, depth(to_vertex_id) + 1);
+    } else if (depth(to_vertex_id) == 1) {
+      set_depth(to_vertex_id, depth(from_vertex_id) + 1);
     }
   }
 };
