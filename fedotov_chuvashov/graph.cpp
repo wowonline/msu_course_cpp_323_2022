@@ -20,7 +20,7 @@ Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   if (edge_color == Edge::Color::Grey) {
     const auto from_vertex_depth = get_vertex_depth(from_vertex_id);
     set_vertex_depth(to_vertex_id, from_vertex_depth + 1);
-    vertices_with_depth_[from_vertex_depth + 1].insert(to_vertex_id);
+    vertices_at_depth_[from_vertex_depth + 1].insert(to_vertex_id);
   }
   edges_.try_emplace(new_id, new_id, from_vertex_id, to_vertex_id);
   adjacency_list_[from_vertex_id].emplace_back(new_id);
@@ -49,3 +49,5 @@ Graph::Edge::Color Graph::get_edge_color(EdgeId from_vertex_id,
   }
   return Edge::Color::Grey;
 }
+
+

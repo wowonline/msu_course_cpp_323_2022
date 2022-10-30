@@ -29,7 +29,7 @@ void generate_new_vertices(Graph& graph,
       1.0 - graph.get_vertex_depth(root_id) / (depth - 1.0);
   for (int i = 0; i < new_vertices_count; ++i) {
     if (check_probabilty(probabilty_of_grey_edge)) {
-      Graph::VertexId child_id = graph.add_vertex();
+      const Graph::VertexId child_id = graph.add_vertex();
       graph.add_edge(root_id, child_id);
       generate_new_vertices(graph, child_id, depth, new_vertices_count);
     }
@@ -37,7 +37,7 @@ void generate_new_vertices(Graph& graph,
 }
 
 void generate_green_edges(Graph& graph) {
-  const float probabilty_of_green_edge = 0.1;
+  constexpr float probabilty_of_green_edge = 0.1;
   for (const auto& [vertex_id, _] : graph.vertices()) {
     if (check_probabilty(probabilty_of_green_edge)) {
       graph.add_edge(vertex_id, vertex_id);
@@ -46,15 +46,15 @@ void generate_green_edges(Graph& graph) {
 }
 
 void generate_red_edges(Graph& graph) {
-  const float probabilty_of_red_edge = 0.33;
+  constexpr float probabilty_of_red_edge = 0.33;
   for (const auto& [vertex_id, _] : graph.vertices()) {
     if (check_probabilty(probabilty_of_red_edge)) {
-      Graph::Depth current_depth = graph.get_vertex_depth(vertex_id);
+      const Graph::Depth current_depth = graph.get_vertex_depth(vertex_id);
       if (current_depth + 2 <= graph.depth()) {
         const std::set<Graph::VertexId>& deeper_vertices =
             graph.vertices_with_depth(current_depth + 2);
         if (deeper_vertices.size() > 0) {
-          Graph::VertexId random_vertex_pos =
+          const Graph::VertexId random_vertex_pos =
               get_random_number_between(0, deeper_vertices.size() - 1);
           graph.add_edge(vertex_id, *std::next(deeper_vertices.begin(),
                                                random_vertex_pos));
@@ -92,7 +92,7 @@ void generate_yellow_edges(Graph& graph) {
 
 Graph GraphGenerator::generate() const {
   auto graph = Graph();
-  Graph::VertexId root_id = graph.add_vertex();
+  const Graph::VertexId root_id = graph.add_vertex();
   generate_new_vertices(graph, root_id, params_.depth(),
                         params_.new_vertices_count());
   generate_green_edges(graph);

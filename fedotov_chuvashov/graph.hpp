@@ -82,10 +82,10 @@ class Graph {
     depths_of_vertices_[vertex_id] = new_depth;
   }
 
-  Depth depth() const { return vertices_with_depth_.size(); }
+  Depth depth() const { return vertices_at_depth_.size(); }
 
   const std::set<VertexId>& vertices_with_depth(Depth depth) const {
-    return vertices_with_depth_.at(depth);
+    return vertices_at_depth_.at(depth);
   }
 
   const std::set<VertexId>& children_of_vertex(VertexId vertex_id) const {
@@ -103,7 +103,7 @@ class Graph {
 
   std::unordered_map<VertexId, std::set<VertexId>> children_of_vertex_;
   std::unordered_map<VertexId, Depth> depths_of_vertices_;
-  std::unordered_map<Depth, std::set<VertexId>> vertices_with_depth_;
+  std::unordered_map<Depth, std::set<VertexId>> vertices_at_depth_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
   std::unordered_map<VertexId, Vertex> vertices_;
   std::unordered_map<EdgeId, Edge> edges_;
