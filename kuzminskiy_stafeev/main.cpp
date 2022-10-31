@@ -11,45 +11,40 @@ void write_to_file(const std::string& str, const std::string& filename) {
   out << str << std::endl;
 }
 
-int handle_depth_input() {
-  try {
-    int input;
-    std::cout << "Input depth of graph: ";
-    while (std::cin >> input) {
-      if (input >= 0) {
-        return input;
-      }
+bool is_number(std::string s) {
+  for (int i = 0; i < s.length(); i++) {
+    if (isdigit(s[i]) == false) {
+      return false;
+    }
+  }
 
-      std::cout << "Incorrect depth" << std::endl;
-      std::cout << "Input depth of graph: ";
+  return true;
+}
+
+int handle_depth_input() {
+  std::string input;
+  do {
+    std::cout << "Input depth of graph: ";
+    std::cin >> input;
+    if (is_number(input) && std::stoi(input) >= 0) {
+      return std::stoi(input);
     }
 
-    throw std::runtime_error("Bad input depth!");
-
-  } catch (const std::bad_exception& e) {
-    std::cerr << "Caught " << e.what() << std::endl;
-    return 1;
-  }
+    std::cout << "Incorrect depth" << std::endl;
+  } while (true);
 }
 
 int handle_new_vertices_count_input() {
-  try {
-    int input;
+  std::string input;
+  do {
     std::cout << "Input new_vertices_count: ";
-    while (std::cin >> input) {
-      if (input >= 0) {
-        return input;
-      }
-
-      std::cout << "Incorrect new_vertices_count" << std::endl;
-      std::cout << "Input new_vertices_count: ";
+    std::cin >> input;
+    if (is_number(input) && std::stoi(input) >= 0) {
+      return std::stoi(input);
     }
 
-    throw std::runtime_error("Bad input new_vertices_count!");
-  } catch (const std::bad_exception& e) {
-    std::cerr << "Caught " << e.what() << std::endl;
-    return 1;
-  }
+    std::cout << "Incorrect new_vertices_count" << std::endl;
+  } while (true);
 }
 
 int main() {

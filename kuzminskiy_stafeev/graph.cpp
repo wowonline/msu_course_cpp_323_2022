@@ -3,7 +3,7 @@
 #include <cassert>
 #include <iostream>
 
-const Graph::Depth kBaseDepth = 1;
+static constexpr Graph::Depth kBaseDepth = 1;
 
 Graph::Depth Graph::get_vertex_depth(Graph::VertexId id) const {
   assert(has_vertex(id));
@@ -60,8 +60,8 @@ bool Graph::is_connected(Graph::VertexId from_vertex_id,
     return false;
   }
 
-  const auto pull_edges_from = connections_list_.at(from_vertex_id);
-  const auto pull_edges_to = connections_list_.at(to_vertex_id);
+  const auto& pull_edges_from = connections_list_.at(from_vertex_id);
+  const auto& pull_edges_to = connections_list_.at(to_vertex_id);
 
   std::set<Graph::EdgeId> intersection;
 
@@ -92,7 +92,7 @@ void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   assert(has_vertex(from_vertex_id));
   assert(has_vertex(to_vertex_id));
   const auto edge_id = gen_new_edge_id();
-  auto edge_color = define_color(from_vertex_id, to_vertex_id);
+  const auto edge_color = define_color(from_vertex_id, to_vertex_id);
 
   if (edge_color == Graph::Edge::Color::Grey) {
     set_vertex_depth(to_vertex_id, get_vertex_depth(from_vertex_id) + 1);
