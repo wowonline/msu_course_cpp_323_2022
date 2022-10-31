@@ -172,7 +172,8 @@ Graph::EdgeId Graph::add_edge(Graph::VertexId from_vertex_id,
 }
 
 Graph::Depth Graph::get_depth() const {
-  return (depth_vertices_list_.size() - 1);
+  return (depth_vertices_list_.empty()) ? (0)
+                                        : (depth_vertices_list_.size() - 1);
 }
 
 const std::vector<Graph::VertexId>& Graph::get_depth_vertex_ids(
@@ -318,11 +319,14 @@ class GraphGenerator {
 
   Graph generate() const {
     auto graph = Graph();
-    graph.add_vertex();
-    generate_grey_edges(graph);
-    generate_green_edges(graph);
-    generate_yellow_edges(graph);
-    generate_red_edges(graph);
+
+    if (params_.depth() != 0) {
+      graph.add_vertex();
+      generate_grey_edges(graph);
+      generate_green_edges(graph);
+      generate_yellow_edges(graph);
+      generate_red_edges(graph);
+    }
 
     return graph;
   }
