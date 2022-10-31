@@ -32,8 +32,9 @@ void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   const EdgeId id = get_new_edge_id();
   edges_.try_emplace(id, id, from_vertex_id, to_vertex_id);
   adjacency_list_[from_vertex_id].emplace_back(id);
-  if (from_vertex_id != to_vertex_id)
+  if (from_vertex_id != to_vertex_id) {
     adjacency_list_[to_vertex_id].emplace_back(id);
+  }
 }
 
 const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices()
