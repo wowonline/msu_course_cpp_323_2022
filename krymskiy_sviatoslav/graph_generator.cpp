@@ -1,8 +1,8 @@
-#include <iostream>
 #include <cassert>
+#include <fstream>
+#include <iostream>
 #include <unordered_map>
 #include <vector>
-#include <fstream>
 
 #include "graph_generator.hpp"
 #include "printing.hpp"
@@ -43,7 +43,7 @@ std::string printing::json::print_graph(const Graph& graph) {
   std::string graphString = "{\n\t\"vertices\": [\n";
   bool first = true;
 
-  for (auto& vertex: vertices) {
+  for (auto& vertex : vertices) {
     if (!first) {
       graphString += ",\n";
     }
@@ -94,7 +94,8 @@ std::string printing::json::print_edge(const Graph::Edge& edge,
   return edgeString;
 }
 
-const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices() const {
+const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices()
+    const {
   return vertices_;
 }
 
