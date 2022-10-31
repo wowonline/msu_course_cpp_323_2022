@@ -53,7 +53,5 @@ int main() {
   graph.add_edge(10, 13);
   graph.add_edge(11, 13);
   graph.add_edge(12, 13);
-
-  return graph;
   return 0;
 }
