@@ -275,7 +275,8 @@ void Graph::set_vertex_depth(Graph::VertexId vertex_id, Graph::Depth depth) {
   vertex_depths_list_[vertex_id] = depth;
 }
 
-Graph::VertexId get_random_vertex_id(std::vector<Graph::VertexId> vertex_ids) {
+Graph::VertexId get_random_vertex_id(
+    const std::vector<Graph::VertexId>& vertex_ids) {
   if (vertex_ids.empty()) {
     throw std::runtime_error("Can't pick random vertex id from empty list");
   }
@@ -427,7 +428,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   return vertex_json;
 }
 
-std::string print_edge_color(const Graph::Edge::Color color) {
+std::string print_edge_color(Graph::Edge::Color color) {
   switch (color) {
     case Graph::Edge::Color::Grey:
       return "grey";
