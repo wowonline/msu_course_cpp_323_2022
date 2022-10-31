@@ -40,19 +40,18 @@ std::string printing::json::print_vertex(const Graph::Vertex& vertex,
   bool first = true;
   const auto vertex_edges = graph.get_vertex_edges(vertex_id);
   for (const auto& edge : vertex_edges) {
-      if (!first) {
-        vertex_string += ", ";
-      }
-      first = false;
-      vertex_string += std::to_string(edge.id());
+    if (!first) {
+      vertex_string += ", ";
+    }
+    first = false;
+    vertex_string += std::to_string(edge.id());
   }
   vertex_string += "] }";
   return vertex_string;
 }
 
 std::string printing::json::print_edge(const Graph::Edge& edge) {
-  return "{ \"id\": " + std::to_string(edge.id()) +
-                           ", \"vertex_ids\": [" +
-                           std::to_string(edge.to_vertex_id()) + ", " +
-                           std::to_string(edge.from_vertex_id()) + "] }";
+  return "{ \"id\": " + std::to_string(edge.id()) + ", \"vertex_ids\": [" +
+         std::to_string(edge.to_vertex_id()) + ", " +
+         std::to_string(edge.from_vertex_id()) + "] }";
 }
