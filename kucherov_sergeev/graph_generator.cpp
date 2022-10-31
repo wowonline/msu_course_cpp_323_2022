@@ -116,8 +116,9 @@ class Graph {
   bool is_vertices_connected(VertexId first_vertex_id,
                              VertexId second_vertex_id) const;
   Depth get_vertex_depth(VertexId vertex_id) const;
-  const std::vector<Vertex>& get_vertices() const;
-  const std::vector<Edge>& get_edges() const;
+  const std::unordered_map<Graph::VertexId, Graph::Vertex>& get_vertices()
+      const;
+  const std::unordered_map<Graph::EdgeId, Graph::Edge>& get_edges() const;
 
  private:
   VertexId get_new_vertex_id();
@@ -131,8 +132,8 @@ class Graph {
 
   VertexId next_free_vertex_id_ = 0;
   EdgeId next_free_edge_id_ = 0;
-  std::vector<Vertex> vertices_;
-  std::vector<Edge> edges_;
+  std::unordered_map<VertexId, Vertex> vertices_;
+  std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
   std::unordered_map<VertexId, Depth> vertex_depths_list_;
   std::vector<std::vector<VertexId>> depth_vertices_list_;
@@ -145,7 +146,7 @@ static constexpr float kEdgeRedProbability = 0.33;
 Graph::VertexId Graph::add_vertex() {
   const VertexId vertex_id = get_new_vertex_id();
 
-  vertices_.emplace_back(vertex_id);
+  vertices_.insert({vertex_id, Graph::Vertex(vertex_id)});
   set_vertex_depth(vertex_id, kGraphDefaultDepth);
 
   return vertex_id;
@@ -160,7 +161,8 @@ Graph::EdgeId Graph::add_edge(Graph::VertexId from_vertex_id,
   const auto edge_id = get_new_edge_id();
   const auto edge_color = determine_edge_color(from_vertex_id, to_vertex_id);
 
-  edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, edge_color);
+  edges_.insert({edge_id, Graph::Edge(edge_id, from_vertex_id, to_vertex_id,
+                                      edge_color)});
 
   adjacency_list_[from_vertex_id].push_back(edge_id);
   if (to_vertex_id != from_vertex_id) {
@@ -200,7 +202,7 @@ bool Graph::is_vertices_connected(Graph::VertexId first_vertex_id,
   const auto& connected_edge_ids = get_connected_edge_ids(first_vertex_id);
 
   for (const auto& edge_id : connected_edge_ids) {
-    const auto& current_edge = edges_[edge_id];
+    const auto& current_edge = edges_.at(edge_id);
     if ((current_edge.from_vertex_id() ^ current_edge.to_vertex_id() ^
          first_vertex_id) == second_vertex_id) {
       return true;
@@ -214,11 +216,12 @@ Graph::Depth Graph::get_vertex_depth(Graph::VertexId vertex_id) const {
   return vertex_depths_list_.at(vertex_id);
 }
 
-const std::vector<Graph::Vertex>& Graph::get_vertices() const {
+const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices()
+    const {
   return vertices_;
 }
 
-const std::vector<Graph::Edge>& Graph::get_edges() const {
+const std::unordered_map<Graph::EdgeId, Graph::Edge>& Graph::get_edges() const {
   return edges_;
 }
 
@@ -461,7 +464,7 @@ std::string print_graph(const Graph& graph) {
   graph_json += "\n\t\"vertices\": [\n";
   if (vertices.size() != 0) {
     for (const auto& vertex : vertices) {
-      graph_json += "\t\t" + print_vertex(vertex, graph) + ",\n";
+      graph_json += "\t\t" + print_vertex(vertex.second, graph) + ",\n";
     }
     graph_json.pop_back();
     graph_json.pop_back();
@@ -471,7 +474,7 @@ std::string print_graph(const Graph& graph) {
 
   if (edges.size() != 0) {
     for (const auto& edge : edges) {
-      graph_json += "\t\t" + print_edge(edge) + ",\n";
+      graph_json += "\t\t" + print_edge(edge.second) + ",\n";
     }
     graph_json.pop_back();
     graph_json.pop_back();
