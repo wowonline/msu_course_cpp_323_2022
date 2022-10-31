@@ -60,7 +60,7 @@ std::string printing::json::print_graph(const Graph& graph) {
     first = false;
     graphString += "\t\t" + print_edge(edge, graph);
   }
-  graphString += "\n\t]\n}";
+  graphString += "\n\t]\n}\n";
   return graphString;
 }
 
