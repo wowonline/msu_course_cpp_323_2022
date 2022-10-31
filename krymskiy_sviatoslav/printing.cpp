@@ -6,8 +6,8 @@
 #include "printing.hpp"
 
 std::string printing::json::print_graph(const Graph& graph) {
-  const auto vertices = graph.get_vertices();
-  const auto edges = graph.get_edges();
+  const auto& vertices = graph.get_vertices();
+  const auto& edges = graph.get_edges();
   std::string graph_string = "{\n\t\"vertices\": [\n";
   bool first = true;
 
@@ -26,7 +26,7 @@ std::string printing::json::print_graph(const Graph& graph) {
       graph_string += ",\n";
     }
     first = false;
-    graph_string += "\t\t" + print_edge(edge);
+    graph_string += "\t\t" + print_edge(edge.second);
   }
   graph_string += "\n\t]\n}\n";
   return graph_string;
@@ -34,12 +34,13 @@ std::string printing::json::print_graph(const Graph& graph) {
 
 std::string printing::json::print_vertex(const Graph::Vertex& vertex,
                                          const Graph& graph) {
-  auto vertex_id = vertex.id();
+  const auto vertex_id = vertex.id();
   std::string vertex_string =
       "{ \"id\": " + std::to_string(vertex_id) + ", \"edge_ids\": [";
   bool first = true;
-  const auto vertex_edges = graph.get_vertex_edges(vertex_id);
-  for (const auto& edge : vertex_edges) {
+  const auto& vertex_edge_ids = graph.get_vertex_edge_ids(vertex_id);
+  for (const auto& edge_id : vertex_edge_ids) {
+    const Graph::Edge edge = graph.get_edge_from_id(edge_id);
     if (!first) {
       vertex_string += ", ";
     }

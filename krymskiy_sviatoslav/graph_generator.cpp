@@ -30,10 +30,10 @@ void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   assert(has_vertex(from_vertex_id));
   assert(has_vertex(to_vertex_id));
   const EdgeId id = get_new_edge_id();
-  edges_.emplace_back(id, from_vertex_id, to_vertex_id);
-  adjacency_list_[from_vertex_id].emplace_back(id, from_vertex_id,
-                                               to_vertex_id);
-  adjacency_list_[to_vertex_id].emplace_back(id, from_vertex_id, to_vertex_id);
+  edges_.try_emplace(id, id, from_vertex_id, to_vertex_id);
+  adjacency_list_[from_vertex_id].emplace_back(id);
+  if (from_vertex_id != to_vertex_id)
+    adjacency_list_[to_vertex_id].emplace_back(id);
 }
 
 const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices()
@@ -41,13 +41,17 @@ const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices()
   return vertices_;
 }
 
-const std::vector<Graph::Edge>& Graph::get_edges() const {
+const std::unordered_map<Graph::EdgeId, Graph::Edge>& Graph::get_edges() const {
   return edges_;
 }
 
-const std::vector<Graph::Edge>& Graph::get_vertex_edges(
+const std::vector<Graph::EdgeId>& Graph::get_vertex_edge_ids(
     Graph::VertexId id) const {
   return adjacency_list_.at(id);
+}
+
+const Graph::Edge& Graph::get_edge_from_id(Graph::EdgeId id) const {
+  return edges_.at(id);
 }
 
 Graph generate_graph() {
