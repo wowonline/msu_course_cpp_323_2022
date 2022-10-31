@@ -66,6 +66,7 @@ class Graph {
     }
 
     edges_.try_emplace(edge_id, edge_id, from_vertex_id, to_vertex_id, color);
+
     return edge_id;
   }
 
@@ -241,7 +242,7 @@ class GraphGenerator {
 
  private:
   void generate_grey_edges(Graph& graph) const {
-    for (auto depth = 1; depth < params_.get_depth(); ++depth) {
+    for (Graph::Depth depth = 1; depth < params_.get_depth(); ++depth) {
       float probability =
           (params_.get_depth() - depth) / (params_.get_depth() - 1.f);
       std::random_device device;
@@ -267,7 +268,7 @@ class GraphGenerator {
     }
   }
   void generate_yellow_edges(Graph& graph) const {
-    for (auto depth = 1; depth < params_.get_depth(); ++depth) {
+    for (Graph::Depth depth = 1; depth < params_.get_depth(); ++depth) {
       float probability = (depth - 1) / (params_.get_depth() - 2.f);
       std::random_device device_1, device_2;
       std::mt19937 generator_for_bernoulli_distribution(device_1()),
@@ -279,19 +280,23 @@ class GraphGenerator {
             std::vector<Graph::VertexId> unconnected_vertices_ids =
                 get_unconnected_vertices_ids(
                     graph, vertex_id, graph.get_vertices_at_depth(depth + 1));
-            std::uniform_int_distribution<> uniform_integer_distribution(
-                0, unconnected_vertices_ids.size() - 1);
-            graph.add_edge(
-                vertex_id,
-                unconnected_vertices_ids[uniform_integer_distribution(
-                    generator_for_uniform_integer_distribution)]);
+            if (!unconnected_vertices_ids.empty()) {
+              std::uniform_int_distribution<> uniform_integer_distribution(
+                  0, unconnected_vertices_ids.size() - 1);
+              std::cout << unconnected_vertices_ids.size() << " " << std::flush;
+
+              graph.add_edge(
+                  vertex_id,
+                  unconnected_vertices_ids[uniform_integer_distribution(
+                      generator_for_uniform_integer_distribution)]);
+            }
           }
         }
       }
     }
   }
   void generate_red_edges(Graph& graph) const {
-    for (auto depth = 1; depth < params_.get_depth() - 2; ++depth) {
+    for (Graph::Depth depth = 1; depth < params_.get_depth() - 1; ++depth) {
       std::random_device device_1, device_2;
       std::mt19937 generator_for_bernoulli_distribution(device_1()),
           generator_for_uniform_integer_distribution(device_2());
