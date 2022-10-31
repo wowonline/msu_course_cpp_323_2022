@@ -153,8 +153,7 @@ Graph::VertexId Graph::add_vertex() {
 
 Graph::EdgeId Graph::add_edge(Graph::VertexId from_vertex_id,
                               Graph::VertexId to_vertex_id) {
-  if (adjacency_list_.find(to_vertex_id) == adjacency_list_.end() ||
-      adjacency_list_.at(to_vertex_id).empty()) {
+  if (get_connected_edge_ids(to_vertex_id).empty()) {
     set_vertex_depth(to_vertex_id, get_vertex_depth(from_vertex_id) + 1);
   }
 
