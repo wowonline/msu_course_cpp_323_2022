@@ -33,6 +33,8 @@ class Graph {
 
   void add_vertex();
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
+  const std::vector<Edge>& get_edges() const;
+  const std::unordered_map<VertexId, Vertex>& get_vertices() const;
 
  private:
   VertexId get_new_edge_id();
