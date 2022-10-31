@@ -1,18 +1,9 @@
 #include "printing.hpp"
 #include <sstream>
 #include <string>
-#include <unordered_map>
 #include "graph.hpp"
 
 namespace printing {
-std::string print_edge_color(const Graph::Edge::Color& color) {
-  std::unordered_map<Graph::Edge::Color, std::string> table = {
-      {Graph::Edge::Color::Grey, "grey"},
-      {Graph::Edge::Color::Green, "green"},
-      {Graph::Edge::Color::Red, "red"},
-      {Graph::Edge::Color::Yellow, "yellow"}};
-  return table[color];
-}
 namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::stringstream json_string;
@@ -25,8 +16,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
     }
     json_string << *(edge_ids.cend() - 1);
   }
-  json_string << "], \"depth\": " << graph.get_vertex_depth(vertex.id())
-              << " }";
+  json_string << "] }";
 
   return json_string.str();
 }
@@ -35,8 +25,7 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
   std::stringstream json_string;
   json_string << "\n\t\t{ \"id\": " << edge.id() << ", \"vertex_ids\": ["
               << edge.get_first_vertex_id() << ", "
-              << edge.get_second_vertex_id() << "], \"color\": \""
-              << print_edge_color(edge.color()) << "\" }";
+              << edge.get_second_vertex_id() << "] }";
 
   return json_string.str();
 }

@@ -4,25 +4,18 @@ PROGS.O = graph.o printing.o main.o
 PROGS.CPP = graph.cpp printing.cpp main.cpp
 PROGS.HPP = graph.hpp printing.hpp 
 RES = main
-GRAPH = graph.json
 
 all: $(PROGS.O)
-	$(CC) $(PROGS.O) -o $(RES) $(FLAGS)
+	$(CC) $(PROGS.O) -o $(RES) $(FLAGS) && ./$(RES)
 
 %.o : %.cpp
 	$(CC) -c $< $(CFLAGS)
-
-run:
-	./$(RES)
 
 clean:
 	rm -f $(PROGS.O)
 
 delete: clean
 	rm -f $(RES)
-
-erase: delete
-	rm -f $(GRAPH)
 
 clang-format:
 	clang-format -i -style=Chromium $(PROGS.CPP) $(PROGS.HPP)
