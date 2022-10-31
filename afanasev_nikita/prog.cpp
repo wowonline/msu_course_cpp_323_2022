@@ -149,7 +149,6 @@ class Graph {
                               VertexId to_vertex_id) const {
     const auto from_vertex_depth = get_vertex_depth(from_vertex_id);
     const auto to_vertex_depth = get_vertex_depth(to_vertex_id);
-    std::cout << from_vertex_depth << "+" << to_vertex_depth << std::flush;
     if (from_vertex_id == to_vertex_id) {
       return Edge::Color::Green;
     }
@@ -163,8 +162,6 @@ class Graph {
     if (to_vertex_depth - from_vertex_depth == 2) {
       return Edge::Color::Red;
     }
-    std::cout << "hi";
-    std::cout << from_vertex_id << "+" << to_vertex_id << std::flush;
     throw std::runtime_error("Failed to determine color");
   }
 
@@ -206,11 +203,12 @@ class GraphGenerator {
 
   Graph generate() const {
     auto graph = Graph();
-    graph.add_vertex();
+    if (params_.get_depth() != 0) {
+      graph.add_vertex();
+    }
     generate_grey_edges(graph);
     generate_green_edges(graph);
     generate_yellow_edges(graph);
-    std::cout << "hi\n";
     generate_red_edges(graph);
     return graph;
   }
@@ -235,7 +233,7 @@ class GraphGenerator {
   void generate_green_edges(Graph& graph) const {
     std::random_device device;
     std::mt19937 generator(device());
-    std::bernoulli_distribution distribution(0.1);
+    std::bernoulli_distribution distribution(kGreenEdgesProbability);
     for (const auto& [vertex_id, vertex] : graph.get_vertices()) {
       if (distribution(generator)) {
         graph.add_edge(vertex_id, vertex_id);
@@ -272,7 +270,7 @@ class GraphGenerator {
       std::random_device device_1, device_2;
       std::mt19937 generator_for_bernoulli_distribution(device_1()),
           generator_for_uniform_integer_distribution(device_2());
-      std::bernoulli_distribution bernoulli_distribution(0.33);
+      std::bernoulli_distribution bernoulli_distribution(kRedEdgesProbability);
       for (auto vertex_id : graph.get_vertices_at_depth(depth)) {
         if (bernoulli_distribution(generator_for_bernoulli_distribution)) {
           std::uniform_int_distribution<> uniform_integer_distribution(
