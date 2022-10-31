@@ -291,7 +291,7 @@ class GraphGenerator {
     }
   }
   void generate_red_edges(Graph& graph) const {
-    for (auto depth = 1; depth < params_.get_depth() - 1; ++depth) {
+    for (auto depth = 1; depth < params_.get_depth() - 2; ++depth) {
       std::random_device device_1, device_2;
       std::mt19937 generator_for_bernoulli_distribution(device_1()),
           generator_for_uniform_integer_distribution(device_2());
