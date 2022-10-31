@@ -130,21 +130,7 @@ class Graph {
     return vertices_.find(vertex_id) != vertices_.end();
   }
 
-  void set_vertex_depth(VertexId vertex_id, Depth depth) {
-    current_depth_ = std::max(current_depth_, depth);
-    depths_[vertex_id] = depth;
-    vertices_at_depth_[depth].push_back(vertex_id);
-    if (depth != 1) {
-      for (auto vertex_id_iterator = vertices_at_depth_[1].cbegin();
-           vertex_id_iterator != vertices_at_depth_[1].cend();
-           ++vertex_id_iterator) {
-        if (*vertex_id_iterator == vertex_id) {
-          vertices_at_depth_[1].erase(vertex_id_iterator);
-          break;
-        }
-      }
-    }
-  }
+  void set_vertex_depth(VertexId, Depth);
 
   Edge::Color determine_color(VertexId from_vertex_id,
                               VertexId to_vertex_id) const {
@@ -183,6 +169,22 @@ Graph::VertexId Graph::add_vertex() {
   adjacency_list_[vertex_id];
   set_vertex_depth(vertex_id, kDefaultDepth);
   return vertex_id;
+}
+
+void Graph::set_vertex_depth(Graph::VertexId vertex_id, Graph::Depth depth) {
+  current_depth_ = std::max(current_depth_, depth);
+  depths_[vertex_id] = depth;
+  vertices_at_depth_[depth].push_back(vertex_id);
+  if (depth != kDefaultDepth) {
+    for (auto vertex_id_iterator = vertices_at_depth_[kDefaultDepth].cbegin();
+         vertex_id_iterator != vertices_at_depth_[kDefaultDepth].cend();
+         ++vertex_id_iterator) {
+      if (*vertex_id_iterator == vertex_id) {
+        vertices_at_depth_[kDefaultDepth].erase(vertex_id_iterator);
+        break;
+      }
+    }
+  }
 }
 
 class GraphGenerator {
