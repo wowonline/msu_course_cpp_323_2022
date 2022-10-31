@@ -280,9 +280,8 @@ void Graph::set_vertex_depth(Graph::VertexId vertex_id, Graph::Depth depth) {
 
 Graph::VertexId get_random_vertex_id(
     const std::vector<Graph::VertexId>& vertex_ids) {
-  if (vertex_ids.empty()) {
-    assert("Can't pick random vertex id from empty list");
-  }
+  assert((vertex_ids.empty() == false) &&
+         "Can't pick random vertex id from empty list");
 
   std::random_device random_device;
   std::mt19937 generator(random_device());
