@@ -187,6 +187,29 @@ void Graph::set_vertex_depth(Graph::VertexId vertex_id, Graph::Depth depth) {
   }
 }
 
+std::vector<Graph::VertexId> get_unconnected_vertices_ids(
+    Graph& graph,
+    Graph::VertexId vertex_id,
+    const std::vector<Graph::VertexId>& vertices_ids) {
+  std::vector<Graph::VertexId> result;
+  for (auto vertex_id_depth_greater : vertices_ids) {
+    if (!graph.is_connected(vertex_id, vertex_id_depth_greater)) {
+      result.push_back(vertex_id_depth_greater);
+    }
+  }
+  return result;
+}
+
+std::vector<Graph::VertexId> get_vertices_ids(
+    Graph& graph,
+    const std::vector<Graph::VertexId>& vertices_ids) {
+  std::vector<Graph::VertexId> result;
+  for (auto vertex_id_depth_greater : vertices_ids) {
+    result.push_back(vertex_id_depth_greater);
+  }
+  return result;
+}
+
 class GraphGenerator {
  public:
   struct Params {
@@ -253,13 +276,9 @@ class GraphGenerator {
       for (auto vertex_id : graph.get_vertices_at_depth(depth)) {
         if (bernoulli_distribution(generator_for_bernoulli_distribution)) {
           if (!graph.get_vertices_at_depth(depth + 1).empty()) {
-            std::vector<Graph::VertexId> unconnected_vertices_ids;
-            for (auto vertex_id_depth_greater :
-                 graph.get_vertices_at_depth(depth + 1)) {
-              if (!graph.is_connected(vertex_id, vertex_id_depth_greater)) {
-                unconnected_vertices_ids.push_back(vertex_id_depth_greater);
-              }
-            }
+            std::vector<Graph::VertexId> unconnected_vertices_ids =
+                get_unconnected_vertices_ids(
+                    graph, vertex_id, graph.get_vertices_at_depth(depth + 1));
             std::uniform_int_distribution<> uniform_integer_distribution(
                 0, unconnected_vertices_ids.size() - 1);
             graph.add_edge(
@@ -280,11 +299,8 @@ class GraphGenerator {
       for (auto vertex_id : graph.get_vertices_at_depth(depth)) {
         if (bernoulli_distribution(generator_for_bernoulli_distribution)) {
           if (!graph.get_vertices_at_depth(depth + 2).empty()) {
-            std::vector<Graph::VertexId> vertices_ids;
-            for (auto vertex_id_depth_greater :
-                 graph.get_vertices_at_depth(depth + 2)) {
-              vertices_ids.push_back(vertex_id_depth_greater);
-            }
+            std::vector<Graph::VertexId> vertices_ids =
+                get_vertices_ids(graph, graph.get_vertices_at_depth(depth + 2));
             std::uniform_int_distribution<> uniform_integer_distribution(
                 0, vertices_ids.size() - 1);
             graph.add_edge(vertex_id,
