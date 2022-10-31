@@ -51,10 +51,6 @@ const std::vector<Graph::EdgeId>& Graph::get_vertex_edge_ids(
   return adjacency_list_.at(id);
 }
 
-const Graph::Edge& Graph::get_edge_from_id(Graph::EdgeId id) const {
-  return edges_.at(id);
-}
-
 Graph generate_graph() {
   auto graph = Graph();
   for (int i = 0; i < kVerticesCount; i++) {

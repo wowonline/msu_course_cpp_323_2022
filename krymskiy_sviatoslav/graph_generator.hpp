@@ -36,7 +36,6 @@ class Graph {
   const std::unordered_map<EdgeId, Edge>& get_edges() const;
   const std::unordered_map<VertexId, Vertex>& get_vertices() const;
   const std::vector<EdgeId>& get_vertex_edge_ids(VertexId) const;
-  const Edge& get_edge_from_id(EdgeId) const;
 
  private:
   VertexId get_new_edge_id();
