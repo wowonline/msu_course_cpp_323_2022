@@ -30,7 +30,7 @@ void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   edges_.emplace_back(id, from_vertex_id, to_vertex_id);
 }
 
-Graph generate_graph() {
+int main() {
   auto graph = Graph();
   for (int i = 0; i < kVerticesCount; i++) {
     graph.add_vertex();
@@ -55,8 +55,5 @@ Graph generate_graph() {
   graph.add_edge(12, 13);
 
   return graph;
-}
-
-int main() {
   return 0;
 }
