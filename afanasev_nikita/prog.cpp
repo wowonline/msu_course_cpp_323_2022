@@ -64,6 +64,7 @@ class Graph {
     if (from_vertex_id != to_vertex_id) {
       adjacency_list_[to_vertex_id].push_back(edge_id);
     }
+
     edges_.try_emplace(edge_id, edge_id, from_vertex_id, to_vertex_id, color);
     return edge_id;
   }
@@ -86,8 +87,8 @@ class Graph {
     return depths_.at(vertex_id);
   }
 
-  const std::vector<VertexId>& get_vertices_at_depth(Depth depth) const {
-    return vertices_at_depth_.at(depth);
+  const std::vector<VertexId>& get_vertices_at_depth(Depth depth) {
+    return vertices_at_depth_[depth];
   }
 
   bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
@@ -249,18 +250,21 @@ class GraphGenerator {
       std::bernoulli_distribution bernoulli_distribution(probability);
       for (auto vertex_id : graph.get_vertices_at_depth(depth)) {
         if (bernoulli_distribution(generator_for_bernoulli_distribution)) {
-          std::vector<Graph::VertexId> unconnected_vertices_ids;
-          for (auto vertex_id_depth_greater :
-               graph.get_vertices_at_depth(depth + 1)) {
-            if (!graph.is_connected(vertex_id, vertex_id_depth_greater)) {
-              unconnected_vertices_ids.push_back(vertex_id_depth_greater);
+          if (!graph.get_vertices_at_depth(depth + 1).empty()) {
+            std::vector<Graph::VertexId> unconnected_vertices_ids;
+            for (auto vertex_id_depth_greater :
+                 graph.get_vertices_at_depth(depth + 1)) {
+              if (!graph.is_connected(vertex_id, vertex_id_depth_greater)) {
+                unconnected_vertices_ids.push_back(vertex_id_depth_greater);
+              }
             }
+            std::uniform_int_distribution<> uniform_integer_distribution(
+                0, unconnected_vertices_ids.size() - 1);
+            graph.add_edge(
+                vertex_id,
+                unconnected_vertices_ids[uniform_integer_distribution(
+                    generator_for_uniform_integer_distribution)]);
           }
-          std::uniform_int_distribution<> uniform_integer_distribution(
-              0, unconnected_vertices_ids.size() - 1);
-          graph.add_edge(vertex_id,
-                         unconnected_vertices_ids[uniform_integer_distribution(
-                             generator_for_uniform_integer_distribution)]);
         }
       }
     }
@@ -273,11 +277,18 @@ class GraphGenerator {
       std::bernoulli_distribution bernoulli_distribution(kRedEdgesProbability);
       for (auto vertex_id : graph.get_vertices_at_depth(depth)) {
         if (bernoulli_distribution(generator_for_bernoulli_distribution)) {
-          std::uniform_int_distribution<> uniform_integer_distribution(
-              0, graph.get_vertices_at_depth(depth + 2).size() - 1);
-          graph.add_edge(vertex_id,
-                         uniform_integer_distribution(
-                             generator_for_uniform_integer_distribution));
+          if (!graph.get_vertices_at_depth(depth + 2).empty()) {
+            std::vector<Graph::VertexId> vertices_ids;
+            for (auto vertex_id_depth_greater :
+                 graph.get_vertices_at_depth(depth + 2)) {
+              vertices_ids.push_back(vertex_id_depth_greater);
+            }
+            std::uniform_int_distribution<> uniform_integer_distribution(
+                0, vertices_ids.size() - 1);
+            graph.add_edge(vertex_id,
+                           vertices_ids[uniform_integer_distribution(
+                               generator_for_uniform_integer_distribution)]);
+          }
         }
       }
     }
