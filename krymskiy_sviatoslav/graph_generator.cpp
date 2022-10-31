@@ -1,6 +1,5 @@
-#include <fstream>
-#include <iostream>
-#include <iterator>
+#include <cassert>
+#include <unordered_map>
 #include <vector>
 
 #include "graph_generator.hpp"
@@ -9,37 +8,39 @@
 using VertexId = int;
 using EdgeId = int;
 
-struct Graph::Vertex {
- public:
-  Vertex(VertexId id) : id_(id) {}
-  VertexId id() const { return id_; }
+constexpr int kVerticesCount = 14;
 
- private:
-  VertexId id_ = 0;
-};
+Graph::VertexId Graph::get_new_vertex_id() {
+  return current_vertex_id_++;
+}
 
-struct Graph::Edge {
- public:
-  Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
-      : id_(id), from_vertex_id_(from_vertex_id), to_vertex_id_(to_vertex_id) {}
+Graph::EdgeId Graph::get_new_edge_id() {
+  return current_edge_id_++;
+}
 
-  EdgeId id() const { return id_; }
-  VertexId from_vertex_id() const { return from_vertex_id_; }
-  VertexId to_vertex_id() const { return to_vertex_id_; }
+bool Graph::has_vertex(Graph::VertexId id) const {
+  return vertices_.find(id) != vertices_.end();
+}
 
- private:
-  EdgeId id_ = 0;
-  VertexId from_vertex_id_ = 0;
-  VertexId to_vertex_id_ = 0;
-};
+void Graph::add_vertex() {
+  const VertexId id = get_new_vertex_id();
+  vertices_.emplace(id, id);
+}
+
+void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+  assert(has_vertex(from_vertex_id));
+  assert(has_vertex(to_vertex_id));
+  const EdgeId id = get_new_edge_id();
+  edges_.emplace_back(id, from_vertex_id, to_vertex_id);
+}
 
 std::string printing::json::print_graph(const Graph& graph) {
-  auto graphVertices = graph.get_vertices();
-  auto graphEdges = graph.get_edges();
+  auto vertices = graph.get_vertices();
+  auto edges = graph.get_edges();
 
   std::string graphString = "{\n\t\"vertices\": [\n";
   bool first = true;
-  for (auto vertex : graphVertices) {
+  for (auto vertex : vertices) {
     if (!first) {
       graphString += ",\n";
     }
@@ -49,7 +50,7 @@ std::string printing::json::print_graph(const Graph& graph) {
 
   graphString += "\n\t],\n\t\"edges\": [\n";
   first = true;
-  for (auto edge : graphEdges) {
+  for (auto edge : edges) {
     if (!first) {
       graphString += ",\n";
     }
@@ -90,34 +91,16 @@ std::string printing::json::print_edge(const Graph::Edge& edge,
   return edgeString;
 }
 
-void Graph::add_vertex() {
-  int verticesAmount = int(graphVertices.size());
-  Vertex vertex(verticesAmount);
-  graphVertices.push_back(vertex);
-}
-
-const std::vector<Graph::Vertex>& Graph::get_vertices() const {
-  return graphVertices;
-}
+//const std::vector<Graph::Vertex>& Graph::get_vertices() const {
+//  return graphVertices;
+//}
 
 const std::vector<Graph::Edge>& Graph::get_edges() const {
   return graphEdges;
 }
 
-void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-  int verticesAmount = int(graphVertices.size());
-  if (from_vertex_id >= verticesAmount || to_vertex_id >= verticesAmount) {
-    std::cout << "Wrong vertexes!\n";
-    return;
-  }
-  int graphSize = int(graphEdges.size());
-  Edge edge(graphSize, from_vertex_id, to_vertex_id);
-  graphEdges.push_back(edge);
-}
-
 Graph generate_graph() {
   auto graph = Graph();
-  int kVerticesCount = 14;
   for (int i = 0; i < kVerticesCount; i++) {
     graph.add_vertex();
   }
