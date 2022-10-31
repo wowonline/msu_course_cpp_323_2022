@@ -35,7 +35,7 @@ class Graph {
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
   const std::vector<Edge>& get_edges() const;
   const std::unordered_map<VertexId, Vertex>& get_vertices() const;
-
+  const std::vector<Edge>& get_vertex_edges(VertexId) const;
  private:
   VertexId get_new_edge_id();
   EdgeId get_new_vertex_id();
@@ -45,4 +45,5 @@ class Graph {
   EdgeId current_edge_id_ = 0;
   std::vector<Edge> edges_;
   std::unordered_map<VertexId, Vertex> vertices_;
+  std::unordered_map<VertexId, std::vector<Edge>> adjacency_list_;
 };

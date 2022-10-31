@@ -7,9 +7,6 @@
 #include "graph_generator.hpp"
 #include "printing.hpp"
 
-using VertexId = int;
-using EdgeId = int;
-
 constexpr int kVerticesCount = 14;
 
 Graph::VertexId Graph::get_new_vertex_id() {
@@ -20,7 +17,7 @@ Graph::EdgeId Graph::get_new_edge_id() {
   return current_edge_id_++;
 }
 
-bool Graph::has_vertex(Graph::VertexId id) const {
+bool Graph::has_vertex(VertexId id) const {
   return vertices_.find(id) != vertices_.end();
 }
 
@@ -34,64 +31,8 @@ void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   assert(has_vertex(to_vertex_id));
   const EdgeId id = get_new_edge_id();
   edges_.emplace_back(id, from_vertex_id, to_vertex_id);
-}
-
-std::string printing::json::print_graph(const Graph& graph) {
-  auto vertices = graph.get_vertices();
-  auto edges = graph.get_edges();
-
-  std::string graphString = "{\n\t\"vertices\": [\n";
-  bool first = true;
-
-  for (auto& vertex : vertices) {
-    if (!first) {
-      graphString += ",\n";
-    }
-    first = false;
-    graphString += "\t\t" + print_vertex(vertex.second, graph);
-  }
-
-  graphString += "\n\t],\n\t\"edges\": [\n";
-  first = true;
-  for (auto edge : edges) {
-    if (!first) {
-      graphString += ",\n";
-    }
-    first = false;
-    graphString += "\t\t" + print_edge(edge, graph);
-  }
-  graphString += "\n\t]\n}\n";
-  return graphString;
-}
-
-std::string printing::json::print_vertex(const Graph::Vertex& vertex,
-                                         const Graph& graph) {
-  auto graphEdges = graph.get_edges();
-  Graph::VertexId vertexId = vertex.id();
-  std::string vertexString =
-      "{ \"id\": " + std::to_string(vertexId) + ", \"edge_ids\": [";
-  bool first = true;
-  for (auto edge : graphEdges) {
-    if (edge.from_vertex_id() == vertexId || edge.to_vertex_id() == vertexId) {
-      if (!first) {
-        vertexString += ", ";
-      }
-      first = false;
-      vertexString += std::to_string(edge.id());
-      ;
-    }
-  }
-  vertexString += "] }";
-  return vertexString;
-}
-
-std::string printing::json::print_edge(const Graph::Edge& edge,
-                                       const Graph& graph) {
-  std::string edgeString = "{ \"id\": " + std::to_string(edge.id()) +
-                           ", \"vertex_ids\": [" +
-                           std::to_string(edge.to_vertex_id()) + ", " +
-                           std::to_string(edge.from_vertex_id()) + "] }";
-  return edgeString;
+  adjacency_list_[from_vertex_id].emplace_back(id, from_vertex_id, to_vertex_id);
+  adjacency_list_[to_vertex_id].emplace_back(id, from_vertex_id, to_vertex_id);
 }
 
 const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices()
@@ -101,6 +42,10 @@ const std::unordered_map<Graph::VertexId, Graph::Vertex>& Graph::get_vertices()
 
 const std::vector<Graph::Edge>& Graph::get_edges() const {
   return edges_;
+}
+
+const std::vector<Graph::Edge>& Graph::get_vertex_edges(Graph::VertexId id) const {
+  return adjacency_list_.at(id);
 }
 
 Graph generate_graph() {
@@ -130,11 +75,9 @@ Graph generate_graph() {
   return graph;
 }
 
-void write_to_file(const std::string& graph_json, const std::string& fileName) {
-  std::ofstream output;
-  output.open(fileName);
+void write_to_file(const std::string& graph_json, const std::string& file_name) {
+  std::ofstream output(file_name);
   output << graph_json;
-  output.close();
 }
 
 int main() {
