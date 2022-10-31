@@ -5,14 +5,22 @@
 #include "graph.hpp"
 
 namespace printing {
-std::string print_edge_color(const Graph::Edge::Color& color) {
-  std::unordered_map<Graph::Edge::Color, std::string> table = {
-      {Graph::Edge::Color::Grey, "grey"},
-      {Graph::Edge::Color::Green, "green"},
-      {Graph::Edge::Color::Red, "red"},
-      {Graph::Edge::Color::Yellow, "yellow"}};
-  return table[color];
+std::string print_edge_color(const Graph::Edge::Color color) {
+  switch (color) {
+    case Graph::Edge::Color::Grey:
+      return "grey";
+      break;
+    case Graph::Edge::Color::Green:
+      return "green";
+      break;
+    case Graph::Edge::Color::Red:
+      return "red";
+      break;
+    default:
+      return "yellow";
+  }
 }
+
 namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::stringstream json_string;

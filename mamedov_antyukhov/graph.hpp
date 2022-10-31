@@ -88,7 +88,6 @@ class Graph {
 
   std::unordered_map<VertexId, std::pair<Depth, Depth>> vertices_depth_ = {};
 
-  std::vector<int> vetices_dep_;
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
 };

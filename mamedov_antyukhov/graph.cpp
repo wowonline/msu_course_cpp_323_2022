@@ -6,8 +6,6 @@
 
 Graph::VertexId Graph::add_vertex() {
   const VertexId new_vertex_id = get_new_vertex_id();
-  Vertex new_vertex(new_vertex_id);
-
   vertices_.insert({new_vertex_id, Vertex(new_vertex_id)});
   return new_vertex_id;
 }
@@ -106,12 +104,12 @@ bool Graph::has_edge(VertexId first_vertex_id,
   if (connections_.find(second_vertex_id) == connections_.end())
     return false;
 
-  const auto& first_vertex_edges = get_connected_edge_ids(first_vertex_id);
-  const auto& second_vertex_edges = get_connected_edge_ids(second_vertex_id);
+  const auto& first_vertex_edge_ids = get_connected_edge_ids(first_vertex_id);
+  const auto& second_vertex_edge_ids = get_connected_edge_ids(second_vertex_id);
   return std::find_first_of(
-             first_vertex_edges.begin(), first_vertex_edges.end(),
-             second_vertex_edges.begin(),
-             second_vertex_edges.end()) != first_vertex_edges.end();
+             first_vertex_edge_ids.begin(), first_vertex_edge_ids.end(),
+             second_vertex_edge_ids.begin(),
+             second_vertex_edge_ids.end()) != first_vertex_edge_ids.end();
 }
 
 // GraphGenerator's interface
