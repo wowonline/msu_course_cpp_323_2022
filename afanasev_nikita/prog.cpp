@@ -298,7 +298,6 @@ class GraphGenerator {
 };
 
 namespace printing {
-namespace json {
 std::string print_edge_color(Graph::Edge::Color color) {
   switch (color) {
     case Graph::Edge::Color::Grey:
@@ -311,6 +310,7 @@ std::string print_edge_color(Graph::Edge::Color color) {
       return "green";
   }
 }
+namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string result = "{";
 
