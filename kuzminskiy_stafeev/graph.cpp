@@ -5,15 +5,6 @@
 
 static constexpr Graph::Depth kBaseDepth = 1;
 
-std::vector<Graph::VertexId> Graph::vertices_of_depth(
-    Graph::Depth depth) const {
-  if (vertices_of_depth_.size() - 1 < depth) {
-    std::vector<Graph::VertexId> empty_set = {};
-    return empty_set;
-  }
-
-  return vertices_of_depth_[depth];
-}
 Graph::Depth Graph::get_vertex_depth(Graph::VertexId id) const {
   assert(has_vertex(id));
   return depth_of_vertices_.at(id);
