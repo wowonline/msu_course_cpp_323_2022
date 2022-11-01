@@ -1,4 +1,5 @@
 #include "graph_generator.hpp"
+#include <iostream>
 #include <random>
 
 std::vector<Graph::VertexId> get_unconnected_vertex_ids(
@@ -11,13 +12,14 @@ std::vector<Graph::VertexId> get_unconnected_vertex_ids(
       unconnected_vertices.emplace_back(cur_vertex_id);
     }
   }
+
   return unconnected_vertices;
 }
 
 int get_random_vertex(const std::vector<Graph::VertexId>& vertex_ids) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(0, vertex_ids.size());
+  std::uniform_int_distribution<> dis(0, vertex_ids.size() - 1);
   return vertex_ids[dis(gen)];
 }
 
