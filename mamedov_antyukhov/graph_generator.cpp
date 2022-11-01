@@ -52,10 +52,9 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
 }
 
 void GraphGenerator::generate_green_edges(Graph& graph) const {
-  const double probability = 0.1;
   const auto& vertices = graph.get_vertices();
   for (auto vertex : vertices) {
-    if (check_probability(probability)) {
+    if (check_probability(constants::green_edges_probability)) {
       graph.add_edge(vertex.first, vertex.first);
     }
   }
@@ -88,7 +87,6 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
 }
 
 void GraphGenerator::generate_red_edges(Graph& graph) const {
-  double probability = 0.33;
   const auto& depth_levels = graph.get_depth_levels();
 
   auto it_temp = depth_levels.begin();
@@ -98,7 +96,7 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
 
   for (; it_next != depth_levels.end(); ++it_next, ++it_temp) {
     for (auto vertex = it_temp->begin(); vertex != it_temp->end(); ++vertex) {
-      if (check_probability(probability)) {
+      if (check_probability(constants::red_edges_probability)) {
         auto new_vertex_id = (*it_next)[get_random_vertex_id(it_next->size() - 1)];
         graph.add_edge(*vertex, new_vertex_id);
       }

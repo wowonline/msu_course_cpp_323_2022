@@ -33,3 +33,8 @@ class GraphGenerator {
 bool check_probability(double probability);
 
 Graph::VertexId get_random_vertex_id(std::size_t size);
+
+namespace constants {
+  double green_edges_probability = 0.1;
+  double red_edges_probability = 0.33;
+};
