@@ -22,7 +22,6 @@ class Graph {
    public:
     enum class Color { Grey, Green, Yellow, Red };
 
-
     Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id, Color color)
         : id_(id),
           from_vertex_id_(from_vertex_id),
@@ -60,7 +59,8 @@ class Graph {
 
   bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const;
 
-  Edge::Color get_edge_color(VertexId from_vertex_id, VertexId to_vertex_id) const;
+  Edge::Color get_edge_color(VertexId from_vertex_id,
+                             VertexId to_vertex_id) const;
 
   Depth get_vertex_depth(VertexId vertex_id) const {
     return depths_of_vertices_.at(vertex_id);
@@ -75,8 +75,8 @@ class Graph {
   }
 
   std::set<VertexId> children_of_vertex(VertexId vertex_id) const {
-    return std::set<VertexId>(adjacency_list_.at(vertex_id).begin(), 
-        adjacency_list_.at(vertex_id).end());
+    return std::set<VertexId>(adjacency_list_.at(vertex_id).begin(),
+                              adjacency_list_.at(vertex_id).end());
   }
 
  private:
