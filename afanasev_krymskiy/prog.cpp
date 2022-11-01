@@ -283,11 +283,10 @@ class GraphGenerator {
   void generate_red_edges(Graph& graph) const {
     for (Graph::Depth depth = 1; depth < params_.get_depth() - 1; ++depth) {
       for (auto vertex_id : graph.vertices_at_depth(depth)) {
-        if (check_probability(kRedEdgesProbability)) {
-          if (!graph.vertices_at_depth(depth + 2).empty()) {
-            graph.add_edge(vertex_id, get_random_vertex_id(
-                                          graph.vertices_at_depth(depth + 2)));
-          }
+        if (check_probability(kRedEdgesProbability) &&
+            !graph.vertices_at_depth(depth + 2).empty()) {
+          graph.add_edge(vertex_id, get_random_vertex_id(
+                                        graph.vertices_at_depth(depth + 2)));
         }
       }
     }
