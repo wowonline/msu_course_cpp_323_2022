@@ -148,7 +148,7 @@ static constexpr Graph::Depth kRedEdgeDepth = 2;
 Graph::VertexId Graph::add_vertex() {
   const auto vertex_id = next_vertex_id();
   vertices_.try_emplace(vertex_id, vertex_id);
-  adjacency_list_[vertex_id];
+  adjacency_list_.emplace(vertex_id, std::move(std::vector<VertexId>()));
   set_vertex_depth(vertex_id, kDefaultDepth);
   return vertex_id;
 }
@@ -205,9 +205,9 @@ Graph::VertexId get_random_vertex_id(const std::vector<Graph::VertexId>& list) {
   return list[distribution(generator)];
 }
 
-const std::vector<Graph::VertexId> get_unconnected_vertices_ids(
+std::vector<Graph::VertexId> get_unconnected_vertices_ids(
     const Graph& graph,
-    const Graph::VertexId vertex_id,
+    Graph::VertexId vertex_id,
     const std::vector<Graph::VertexId>& vertices_ids) {
   std::vector<Graph::VertexId> result;
   for (const auto vertex_id_depth_greater : vertices_ids) {
