@@ -29,3 +29,7 @@ class GraphGenerator {
  private:
   Params params_ = Params(0, 0);
 };
+
+bool check_probability(double probability);
+
+Graph::VertexId get_random_vertex_id(std::size_t size);
