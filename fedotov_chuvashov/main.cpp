@@ -14,34 +14,35 @@ void write_to_file(const std::string& output_string,
   }
 }
 
-int handle_depth_input() {
-  int depth;
-  while (std::cin >> depth) {
-    if (depth >= 0) {
-      return depth;
-    }
-    std::cout << "Invalid depth. Please, try again." << std::endl;
-  }
+constexpr int input_size = 256;
 
-  throw std::runtime_error("Invalid input");
+int handle_depth_input() {
+  std::cout << "Enter depth: ";
+  int depth = 0;
+  while (!(std::cin >> depth) || depth < 0) {
+    std::cout << "Invalid value. Please, try again." << std::endl
+              << "Enter depth: ";
+    std::cin.clear();
+    std::cin.ignore(input_size, '\n');
+  }
+  return depth;
 }
 
 int handle_new_vertices_count_input() {
-  int new_vertices_count;
-  while (std::cin >> new_vertices_count) {
-    if (new_vertices_count >= 0) {
-      return new_vertices_count;
-    }
-    std::cout << "Invalid new vertices count. Please, try again." << std::endl;
+  std::cout << "Enter new vertices count: ";
+  int new_vertices_count = 0;
+  while (!(std::cin >> new_vertices_count) || new_vertices_count < 0) {
+    std::cout << "Invalid value. Please, try again." << std::endl
+              << "Enter new vertices count: ";
+    std::cin.clear();
+    std::cin.ignore(input_size, '\n');
   }
-
-  throw std::runtime_error("Invalid input");
+  return new_vertices_count;
 }
 
 int main() {
   const int depth = handle_depth_input();
   const int new_vertices_count = handle_new_vertices_count_input();
-
   auto params = GraphGenerator::Params(depth, new_vertices_count);
   const auto generator = GraphGenerator(std::move(params));
   const auto graph = generator.generate();

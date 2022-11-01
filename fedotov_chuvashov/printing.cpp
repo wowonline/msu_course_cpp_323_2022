@@ -2,20 +2,20 @@
 #include <sstream>
 
 namespace printing {
-namespace json {
 std::string print_edge_color(Graph::Edge::Color color) {
   switch (color) {
     case Graph::Edge::Color::Grey:
-      return "\"grey\"";
+      return "grey";
     case Graph::Edge::Color::Yellow:
-      return "\"yellow\"";
+      return "yellow";
     case Graph::Edge::Color::Red:
-      return "\"red\"";
+      return "red";
     case Graph::Edge::Color::Green:
-      return "\"green\"";
+      return "green";
   }
 }
 
+namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::ostringstream result;
   bool is_first = true;
@@ -37,10 +37,9 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 
 std::string print_edge(const Graph::Edge& edge) {
   std::ostringstream result;
-  result << "\n{\"id\": " << edge.id()
-         << ", \"color\": " << print_edge_color(edge.color())
-         << ", \"vertex_ids\": [" << edge.from_vertex_id() << ", "
-         << edge.to_vertex_id() << "]}";
+  result << "\n{\"id\": " << edge.id() << ", \"color\": \""
+         << print_edge_color(edge.color()) << "\", \"vertex_ids\": ["
+         << edge.from_vertex_id() << ", " << edge.to_vertex_id() << "]}";
   return result.str();
 }
 
