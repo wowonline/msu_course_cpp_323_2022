@@ -1,1 +1,0 @@
-{"depth": 3,"vertices":[{"id":2,"edge_ids":[1,2],"depth": 3},{"id":1,"edge_ids":[0,1],"depth": 2},{"id":0,"edge_ids":[0,2],"depth": 1}],"edges":[{"id":2,"vertex_ids":[0,2],"color": "red"},{"id":1,"vertex_ids":[1,2],"color": "grey"},{"id":0,"vertex_ids":[0,1],"color": "grey"}]}
