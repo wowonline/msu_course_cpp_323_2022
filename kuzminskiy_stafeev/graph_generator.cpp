@@ -46,12 +46,10 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
   const auto depth = params_.depth();
   const auto new_vertices_count = params_.new_vertices_count();
   float step = 1.0 / (depth - 1);
-  bool is_created = true;
 
-  for (Graph::Depth cur_depth = 1; is_created && cur_depth <= depth;
-       cur_depth++) {
+  for (Graph::Depth cur_depth = 1; cur_depth <= depth; cur_depth++) {
     float prob = (float)(1 - step * (cur_depth - 1));
-    is_created = false;
+    bool is_created = false;
     for (const auto from_vertex_id : graph.vertices_of_depth(cur_depth)) {
       for (Graph::VertexId cur_vertex_count = 0;
            cur_vertex_count < new_vertices_count; cur_vertex_count++) {
@@ -62,6 +60,9 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
         }
       }
     }
+
+    if (!is_created)
+      break;
   }
 }
 
