@@ -51,7 +51,7 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
 
 std::string print_graph(const Graph& graph) {
   std::stringstream json_string;
-  json_string << "{\n\t\"vertices\": [";
+  json_string << "{\n\t\"depth\": " << graph.depth() << ",\n\t\"vertices\": [";
   const auto& vertices = graph.get_vertices();
   const auto& edges = graph.get_edges();
 
