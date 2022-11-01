@@ -94,7 +94,7 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
   const auto depth = graph.get_graph_depth();
   static float constexpr prob = (float)1 / 3;
   for (Graph::Depth cur_depth = 1; cur_depth <= depth - 2; cur_depth++) {
-    const auto next_vertices_depth = graph.vertices_of_depth(cur_depth + 2);
+    const auto& next_vertices_depth = graph.vertices_of_depth(cur_depth + 2);
 
     for (const auto& from_vertex_id : graph.vertices_of_depth(cur_depth)) {
       const auto to_vertex_id = get_random_vertex(next_vertices_depth);
