@@ -78,6 +78,11 @@ class Graph {
 
   void set_vertex_depth(VertexId vertex_id, Depth vertex_depth);
 
+  void update_vertex_depth(VertexId vertex_id, Depth vertex_depth);
+
+  const Edge::Color get_edge_color(VertexId first_vertex_id,
+                                   VertexId second_vertex_id) const;
+
   std::unordered_map<VertexId, Vertex> vertices_ = {};
   std::unordered_map<EdgeId, Edge> edges_ = {};
 
