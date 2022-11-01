@@ -2,8 +2,8 @@
 #include <iostream>
 #include <string>
 #include "graph.hpp"
-#include "printing.hpp"
 #include "graph_generator.hpp"
+#include "printing.hpp"
 
 int handle_depth_input() {
   int output;

@@ -22,10 +22,11 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
   std::vector<Graph::VertexId> vertices = {graph.get_vertices().begin()->first};
   std::vector<Graph::VertexId> vertices_next;
 
-  for (Graph::Depth temp_depth = 0; temp_depth < max_depth; ++temp_depth) {
+  for (Graph::Depth current_depth = 0; current_depth < max_depth;
+       ++current_depth) {
     std::bernoulli_distribution d(probability);
     for (auto vertex = vertices.begin(); vertex != vertices.end(); ++vertex) {
-      for (int j = 0; j < new_vertices_count; ++j) {
+      for (int i = 0; i < new_vertices_count; ++i) {
         if (d(gen)) {
           const auto new_vertex_id = graph.add_vertex();
           graph.add_edge(*vertex, new_vertex_id);
@@ -57,20 +58,19 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
   const double step = 1.0 / (params_.depth() - 1);
   std::random_device rd;
   std::mt19937 gen(rd());
-  const auto& vertices = graph.get_depth_levels();
+  const auto& depth_levels = graph.get_depth_levels();
 
-  if (!vertices.empty()) {
-    for (auto it_next = vertices.begin(), it_temp = it_next++;
-         it_next != vertices.end(); ++it_next, ++it_temp) {
+  if (!depth_levels.empty()) {
+    for (auto it_next = depth_levels.begin(), it_temp = it_next++;
+         it_next != depth_levels.end(); ++it_next, ++it_temp) {
       std::bernoulli_distribution d(probability);
-      std::uniform_int_distribution<> distrib(0, it_next->second.size() - 1);
-      for (auto vertex = it_temp->second.begin();
-           vertex != it_temp->second.end(); ++vertex) {
+      std::uniform_int_distribution<> distrib(0, it_next->size() - 1);
+      for (auto vertex = it_temp->begin(); vertex != it_temp->end(); ++vertex) {
         if (d(gen)) {
           int tries = 0;
-          while (tries < it_next->second.size()) {
+          while (tries < it_next->size()) {
             ++tries;
-            auto new_vertex_id = it_next->second[distrib(gen)];
+            auto new_vertex_id = (*it_next)[distrib(gen)];
             if (!graph.has_edge(*vertex, new_vertex_id)) {
               graph.add_edge(*vertex, new_vertex_id);
               break;
@@ -88,19 +88,18 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::bernoulli_distribution d(probability);
-  const auto& vertices = graph.get_depth_levels();
+  const auto& depth_levels = graph.get_depth_levels();
 
-  auto it_temp = vertices.begin();
+  auto it_temp = depth_levels.begin();
   auto it_next = it_temp;
-  for (int i = 0; i < 2 && it_next != vertices.end(); ++i, ++it_next)
+  for (int i = 0; i < 2 && it_next != depth_levels.end(); ++i, ++it_next)
     ;
 
-  for (; it_next != vertices.end(); ++it_next, ++it_temp) {
-    std::uniform_int_distribution<> distrib(0, it_next->second.size() - 1);
-    for (auto vertex = it_temp->second.begin(); vertex != it_temp->second.end();
-         ++vertex) {
+  for (; it_next != depth_levels.end(); ++it_next, ++it_temp) {
+    std::uniform_int_distribution<> distrib(0, it_next->size() - 1);
+    for (auto vertex = it_temp->begin(); vertex != it_temp->end(); ++vertex) {
       if (d(gen)) {
-        auto new_vertex_id = it_next->second[distrib(gen)];
+        auto new_vertex_id = (*it_next)[distrib(gen)];
         graph.add_edge(*vertex, new_vertex_id);
       }
     }
