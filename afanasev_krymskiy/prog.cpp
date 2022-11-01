@@ -79,7 +79,9 @@ class Graph {
 
   const std::unordered_map<EdgeId, Edge>& edges() const { return edges_; }
 
-  Depth depth() const { return current_depth_; }
+  Depth depth() const {
+    return current_depth_;
+  }
 
   Depth vertex_depth(VertexId vertex_id) const { return depths_.at(vertex_id); }
 
