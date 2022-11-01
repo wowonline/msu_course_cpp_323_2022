@@ -53,9 +53,7 @@ class Graph {
   const std::unordered_map<VertexId, Vertex>& vertices() const {
     return vertices_;
   }
-  const std::vector<VertexId>& vertices_of_depth(Depth depth) const {
-    return vertices_of_depth_[depth];
-  }
+  std::vector<VertexId> vertices_of_depth(Depth depth) const;
   const std::unordered_map<EdgeId, Edge>& edges() const { return edges_; }
   const std::set<EdgeId>& connected_edge_ids(VertexId vertex_id) const {
     return connections_list_.at(vertex_id);
