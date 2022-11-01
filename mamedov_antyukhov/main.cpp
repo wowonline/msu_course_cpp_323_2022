@@ -3,6 +3,7 @@
 #include <string>
 #include "graph.hpp"
 #include "printing.hpp"
+#include "graph_generator.hpp"
 
 int handle_depth_input() {
   int output;
