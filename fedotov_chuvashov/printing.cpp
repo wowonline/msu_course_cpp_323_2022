@@ -22,7 +22,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   const auto& edges_ids = graph.connected_edge_ids(vertex.id());
   result << "\n{ \"id\": " << vertex.id()
          << ", \"depth\": " << graph.get_vertex_depth(vertex.id())
-         << ", \"edges_ids\": [";
+         << ", \"edge_ids\": [";
   for (const auto edge_id : edges_ids) {
     if (!is_first)
       result << ", " << edge_id;

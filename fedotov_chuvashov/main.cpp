@@ -14,7 +14,7 @@ void write_to_file(const std::string& output_string,
   }
 }
 
-constexpr int input_size = 256;
+constexpr int kInputSize = 256;
 
 int handle_depth_input() {
   std::cout << "Enter depth: ";
@@ -23,7 +23,7 @@ int handle_depth_input() {
     std::cout << "Invalid value. Please, try again." << std::endl
               << "Enter depth: ";
     std::cin.clear();
-    std::cin.ignore(input_size, '\n');
+    std::cin.ignore(kInputSize, '\n');
   }
   return depth;
 }
@@ -35,7 +35,7 @@ int handle_new_vertices_count_input() {
     std::cout << "Invalid value. Please, try again." << std::endl
               << "Enter new vertices count: ";
     std::cin.clear();
-    std::cin.ignore(input_size, '\n');
+    std::cin.ignore(kInputSize, '\n');
   }
   return new_vertices_count;
 }

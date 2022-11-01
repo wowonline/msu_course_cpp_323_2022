@@ -40,7 +40,7 @@ class Graph {
     EdgeId id_ = 0;
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
-    const Edge::Color color_ = Color::Grey;
+    Edge::Color color_ = Color::Grey;
   };
 
   VertexId add_vertex();
@@ -66,18 +66,15 @@ class Graph {
     return depths_of_vertices_.at(vertex_id);
   }
 
-  void set_vertex_depth(VertexId vertex_id, Depth new_depth, Depth old_depth);
+  void set_vertex_depth(VertexId vertex_id, Depth new_depth);
 
   Depth depth() const { return vertices_at_depth_.size(); }
 
   const std::set<VertexId>& vertices_at_depth(Depth depth) const {
-    return vertices_at_depth_.at(depth);
+    return vertices_at_depth_.at(depth - 1);
   }
 
-  std::set<VertexId> children_of_vertex(VertexId vertex_id) const {
-    return std::set<VertexId>(adjacency_list_.at(vertex_id).begin(),
-                              adjacency_list_.at(vertex_id).end());
-  }
+  std::set<VertexId> children_of_vertex(VertexId vertex_id) const;
 
  private:
   bool has_vertex(VertexId id) const {
@@ -89,7 +86,7 @@ class Graph {
   EdgeId get_new_edge_id() { return last_edge_id_++; };
 
   std::unordered_map<VertexId, Depth> depths_of_vertices_;
-  std::unordered_map<Depth, std::set<VertexId>> vertices_at_depth_;
+  std::vector<std::set<VertexId>> vertices_at_depth_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
   std::unordered_map<VertexId, Vertex> vertices_;
   std::unordered_map<EdgeId, Edge> edges_;

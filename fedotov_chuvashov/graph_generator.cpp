@@ -17,7 +17,7 @@ int get_random_vertex_id(const std::set<Graph::VertexId>& vertex_ids) {
   return *std::next(vertex_ids.begin(), distrib(gen));
 }
 
-constexpr float kGreyDepthDifference = 1.0;
+constexpr Graph::Depth kGreyDepthDifference = 1;
 
 void GraphGenerator::generate_new_vertices(Graph& graph,
                                            Graph::VertexId root_id,
@@ -26,7 +26,8 @@ void GraphGenerator::generate_new_vertices(Graph& graph,
     return;
   }
   const float probabilty_of_grey_edge =
-      1.0 - (graph.get_vertex_depth(root_id) - kGreyDepthDifference) /
+      1.0 - static_cast<float>(
+                (graph.get_vertex_depth(root_id) - kGreyDepthDifference)) /
                 (params_.depth() - kGreyDepthDifference);
   for (int i = 0; i < params_.new_vertices_count(); ++i) {
     if (check_probabilty(probabilty_of_grey_edge)) {
@@ -46,7 +47,7 @@ void generate_green_edges(Graph& graph) {
   }
 }
 
-constexpr int kRedDepthDifference = 2;
+constexpr Graph::Depth kRedDepthDifference = 2;
 
 void generate_red_edges(Graph& graph) {
   constexpr float probabilty_of_red_edge = 0.33;
@@ -66,11 +67,11 @@ void generate_red_edges(Graph& graph) {
   }
 }
 
-constexpr int kYellowDepthDifference = 1;
-constexpr float kYellowDepthShift = 2.0;
+constexpr Graph::Depth kYellowDepthDifference = 1;
+constexpr Graph::Depth kYellowDepthShift = 2;
 
 std::set<Graph::VertexId> get_unconnected_vertex_ids(
-    Graph& graph,
+    const Graph& graph,
     Graph::Depth current_depth,
     Graph::VertexId vertex_id) {
   const std::set<Graph::VertexId>& deeper_vertices =
@@ -91,7 +92,7 @@ void generate_yellow_edges(Graph& graph) {
        ++current_depth) {
     for (auto vertex_id : graph.vertices_at_depth(current_depth)) {
       const float probabilty_of_yellow_edge =
-          (current_depth - kYellowDepthDifference) /
+          static_cast<float>((current_depth - kYellowDepthDifference)) /
           (graph.depth() - kYellowDepthShift);
       if (check_probabilty(probabilty_of_yellow_edge)) {
         std::set<Graph::VertexId> unconnected_vertices =
