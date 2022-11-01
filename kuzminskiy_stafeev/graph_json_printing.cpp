@@ -1,6 +1,8 @@
 #include "graph_json_printing.hpp"
 #include "graph_printing.hpp"
 
+namespace uni_course_cpp {
+
 std::string printing::json::print_vertex(const Graph::Vertex& vertex,
                                          const Graph& graph) {
   const auto vertex_id = vertex.id();
@@ -60,3 +62,5 @@ std::string printing::json::print_graph(const Graph& graph) {
 
   return graph_json;
 }
+
+}  // namespace uni_course_cpp

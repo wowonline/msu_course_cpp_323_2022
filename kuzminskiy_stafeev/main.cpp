@@ -1,10 +1,13 @@
+#include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <stdexcept>
 #include "graph.hpp"
 #include "graph_generator.hpp"
 #include "graph_json_printing.hpp"
+#include "graph_logger.hpp"
 #include "graph_printing.hpp"
+
+namespace fs = std::filesystem;
 
 void write_to_file(const std::string& str, const std::string& filename) {
   std::ofstream out(filename);
@@ -47,17 +50,51 @@ int handle_new_vertices_count_input() {
   } while (true);
 }
 
+int handle_graphs_count_input() {
+  std::string input;
+  do {
+    std::cout << "Input graphs count: ";
+    std::cin >> input;
+    if (is_number(input) && std::stoi(input) >= 0) {
+      return std::stoi(input);
+    }
+
+    std::cout << "Incorrect graphs count!" << std::endl;
+    std::cout << "Input graphs count: ";
+  } while (true);
+}
+
+void prepare_temp_directory() {
+  if (!fs::exists(config::kTempDirectoryPath)) {
+    if (!fs::create_directories(config::kTempDirectoryPath)) {
+      throw std::runtime_error("Temp directory error!");
+    }
+  }
+}
+
 int main() {
+  using namespace uni_course_cpp;
+
   const int depth = handle_depth_input();
   const int new_vertices_count = handle_new_vertices_count_input();
+  const int graphs_count = handle_graphs_count_input();
+  prepare_temp_directory();
 
   auto params = GraphGenerator::Params(depth, new_vertices_count);
   const auto generator = GraphGenerator(std::move(params));
-  const auto graph = generator.generate();
+  auto logger = Logger::get_logger();
 
-  const auto graph_json = printing::json::print_graph(graph);
-  std::cout << graph_json << std::endl;
-  write_to_file(graph_json, "graph.json");
+  for (int i = 0; i < graphs_count; i++) {
+    logger->log(printing::generation_started_string(i));
+    const auto graph = generator.generate();
+
+    const auto graph_description = printing::print_graph(graph);
+    logger->log(printing::generation_finished_string(i, graph_description));
+
+    const auto graph_json = printing::json::print_graph(graph);
+    std::cout << graph_json << std::endl;
+    write_to_file(graph_json, "graph_" + std::to_string(i) + ".json");
+  }
 
   return 0;
 }

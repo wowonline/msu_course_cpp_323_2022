@@ -1,6 +1,11 @@
+#include <chrono>
+#include <ctime>
+#include <iomanip>
 #include "graph.hpp"
 #include "graph_printing.hpp"
 #pragma once
+
+namespace uni_course_cpp {
 
 namespace printing {
 namespace json {
@@ -9,3 +14,4 @@ std::string print_edge(const Graph::Edge& edge);
 std::string print_graph(const Graph& graph);
 }  // namespace json
 }  // namespace printing
+}  // namespace uni_course_cpp

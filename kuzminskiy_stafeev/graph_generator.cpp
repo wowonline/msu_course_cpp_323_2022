@@ -1,6 +1,10 @@
 #include "graph_generator.hpp"
 #include <random>
 
+namespace uni_course_cpp {
+
+namespace {
+
 std::vector<Graph::VertexId> get_unconnected_vertex_ids(
     const Graph& graph,
     Graph::VertexId vertex_id,
@@ -29,16 +33,17 @@ bool check_probability(float prob) {
   return d(gen);
 }
 
+}  // namespace
+
 Graph GraphGenerator::generate() const {
   auto graph = Graph();
+  graph.add_vertex();
   if (params_.depth()) {
-    graph.add_vertex();
     generate_grey_edges(graph);
     generate_green_edges(graph);
     generate_yellow_edges(graph);
     generate_red_edges(graph);
   }
-
   return graph;
 }
 
@@ -109,3 +114,5 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
     }
   }
 }
+
+}  // namespace uni_course_cpp
