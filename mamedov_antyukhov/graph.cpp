@@ -90,11 +90,22 @@ bool Graph::has_edge(VertexId first_vertex_id,
     return false;
   if (connections_.find(second_vertex_id) == connections_.end())
     return false;
-
-  const auto& first_vertex_edge_ids = get_connected_edge_ids(first_vertex_id);
-  const auto& second_vertex_edge_ids = get_connected_edge_ids(second_vertex_id);
-  return std::find_first_of(
-             first_vertex_edge_ids.begin(), first_vertex_edge_ids.end(),
-             second_vertex_edge_ids.begin(),
-             second_vertex_edge_ids.end()) != first_vertex_edge_ids.end();
+  if (first_vertex_id != second_vertex_id) {
+    const auto& first_vertex_edge_ids = get_connected_edge_ids(first_vertex_id);
+    const auto& second_vertex_edge_ids =
+        get_connected_edge_ids(second_vertex_id);
+    return std::find_first_of(
+               first_vertex_edge_ids.begin(), first_vertex_edge_ids.end(),
+               second_vertex_edge_ids.begin(),
+               second_vertex_edge_ids.end()) != first_vertex_edge_ids.end();
+  } else {
+    const auto& edge_ids = get_connected_edge_ids(first_vertex_id);
+    for (const auto edge : edge_ids) {
+      if (edges_.at(edge).get_first_vertex_id() ==
+          edges_.at(edge).get_second_vertex_id()) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

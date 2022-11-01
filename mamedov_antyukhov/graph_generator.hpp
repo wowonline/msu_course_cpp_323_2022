@@ -34,7 +34,12 @@ bool check_probability(double probability);
 
 Graph::VertexId get_random_vertex_id(std::size_t size);
 
+std::vector<Graph::VertexId> get_unconnected_vertex_ids(
+    const std::vector<Graph::VertexId>& vertices,
+    const Graph& graph,
+    const Graph::VertexId vertex);
+
 namespace constants {
-  double green_edges_probability = 0.1;
-  double red_edges_probability = 0.33;
-};
+static double green_edges_probability = 0.1;
+static double red_edges_probability = 0.33;
+};  // namespace constants
