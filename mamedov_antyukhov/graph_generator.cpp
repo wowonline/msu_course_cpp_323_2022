@@ -31,9 +31,10 @@ std::vector<Graph::VertexId> get_unconnected_vertex_ids(
 
 Graph GraphGenerator::generate() const {
   auto graph = Graph();
-  if (params_.depth() > 0) {
-    graph.add_vertex();
+  if (!params_.depth()) {
+    return graph;
   }
+  graph.add_vertex();
   generate_grey_edges(graph);
   generate_green_edges(graph);
   generate_yellow_edges(graph);
