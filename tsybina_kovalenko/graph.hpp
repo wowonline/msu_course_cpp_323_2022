@@ -66,14 +66,6 @@ class Graph {
     return parents_.at(vertex_id);
   }
 
-  VertexId other_end_of(EdgeId edge_id, VertexId vertex_id) const {
-    const Edge& edge = edges().at(edge_id);
-    if (edge.from_vertex_id() == vertex_id) {
-      return edge.to_vertex_id();
-    }
-    return edge.from_vertex_id();
-  }
-
   std::vector<VertexId> children_of(VertexId vertex_id) const {
     std::vector<VertexId> result;
     for (EdgeId edge_id : connections_.at(vertex_id)) {
@@ -188,5 +180,15 @@ class Graph {
     } else if (depth_of(to_vertex_id) == 1) {
       set_depth(to_vertex_id, depth_of(from_vertex_id) + 1);
     }
+  }
+
+  VertexId other_end_of(EdgeId edge_id, VertexId vertex_id) const {
+    const Edge& edge = edges().at(edge_id);
+    assert(edge.from_vertex_id() == vertex_id ||
+           edge.to_vertex_id() == vertex_id);
+    if (edge.from_vertex_id() == vertex_id) {
+      return edge.to_vertex_id();
+    }
+    return edge.from_vertex_id();
   }
 };
