@@ -43,7 +43,8 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
   const auto max_depth = params_.depth() - 1;
   const auto new_vertices_count = params_.new_vertices_count();
 
-  for (Graph::Depth current_depth = 0; current_depth < max_depth;
+  for (Graph::Depth current_depth = 0;
+       current_depth < max_depth && current_depth < graph.depth();
        ++current_depth) {
     for (const auto vertex : graph.get_vertex_ids_at_depth(current_depth)) {
       for (int i = 0; i < new_vertices_count; ++i) {
@@ -65,11 +66,7 @@ void GraphGenerator::generate_green_edges(Graph& graph) const {
 }
 
 void GraphGenerator::generate_yellow_edges(Graph& graph) const {
-  double probability = 1.0;
-  const double step = 1.0 / (params_.depth() - 1);
-  const auto& depth_levels = graph.get_depth_levels();
-
-  const auto max_depth = params_.depth() - 2;
+  const auto max_depth = graph.depth() - 2;
 
   for (Graph::Depth current_depth = 1; current_depth <= max_depth;
        ++current_depth) {
@@ -77,15 +74,17 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
       if (check_probability((1.0 / max_depth) * current_depth)) {
         const auto next_level_vertices = get_unconnected_vertex_ids(
             graph.get_vertex_ids_at_depth(current_depth + 1), graph, vertex);
-        graph.add_edge(vertex, next_level_vertices[get_random_vertex_id(
-                                   next_level_vertices.size() - 1)]);
+        if (!next_level_vertices.empty()) {
+          graph.add_edge(vertex, next_level_vertices[get_random_vertex_id(
+                                     next_level_vertices.size() - 1)]);
+        }
       }
     }
   }
 }
 
 void GraphGenerator::generate_red_edges(Graph& graph) const {
-  const auto max_depth = params_.depth() - 2;
+  const auto max_depth = graph.depth() - 2;
 
   for (Graph::Depth current_depth = 0; current_depth < max_depth;
        ++current_depth) {

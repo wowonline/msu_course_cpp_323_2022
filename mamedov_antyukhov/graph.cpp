@@ -12,7 +12,7 @@ Graph::VertexId Graph::add_vertex() {
 
 const std::vector<Graph::VertexId>& Graph::get_vertex_ids_at_depth(
     Depth depth) const {
-  assert(depth < depth_levels_.size());
+  assert(depth < Graph::depth());
   return depth_levels_[depth];
 }
 
