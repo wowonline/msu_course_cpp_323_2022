@@ -47,8 +47,6 @@ void generate_green_edges(Graph& graph) {
   }
 }
 
-constexpr Graph::Depth kRedDepthDifference = 2;
-
 void generate_red_edges(Graph& graph) {
   constexpr float probabilty_of_red_edge = 0.33;
   for (Graph::Depth current_depth = 1;
@@ -66,9 +64,6 @@ void generate_red_edges(Graph& graph) {
     }
   }
 }
-
-constexpr Graph::Depth kYellowDepthDifference = 1;
-constexpr Graph::Depth kYellowDepthShift = 2;
 
 std::set<Graph::VertexId> get_unconnected_vertex_ids(
     const Graph& graph,
@@ -93,7 +88,7 @@ void generate_yellow_edges(Graph& graph) {
     for (auto vertex_id : graph.vertices_at_depth(current_depth)) {
       const float probabilty_of_yellow_edge =
           static_cast<float>((current_depth - kYellowDepthDifference)) /
-          (graph.depth() - kYellowDepthShift);
+          (graph.depth() - kYellowDepthDifference - kGraphBaseDepth);
       if (check_probabilty(probabilty_of_yellow_edge)) {
         std::set<Graph::VertexId> unconnected_vertices =
             get_unconnected_vertex_ids(graph, current_depth, vertex_id);

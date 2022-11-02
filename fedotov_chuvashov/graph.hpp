@@ -8,6 +8,7 @@ class Graph {
   using Depth = int;
   using VertexId = int;
   using EdgeId = int;
+  static constexpr Graph::Depth kGraphBaseDepth = 1;
 
   struct Vertex {
    public:
@@ -68,10 +69,10 @@ class Graph {
 
   void set_vertex_depth(VertexId vertex_id, Depth new_depth);
 
-  Depth depth() const { return vertices_at_depth_.size(); }
+  Depth depth() const { return vertices_at_depth_.size() - kGraphBaseDepth; }
 
   const std::set<VertexId>& vertices_at_depth(Depth depth) const {
-    return vertices_at_depth_.at(depth - 1);
+    return vertices_at_depth_.at(depth - kGraphBaseDepth);
   }
 
   std::set<VertexId> children_of_vertex(VertexId vertex_id) const;
@@ -93,3 +94,7 @@ class Graph {
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
 };
+
+constexpr Graph::Depth kYellowDepthDifference = 1;
+constexpr Graph::Depth kRedDepthDifference = 2;
+constexpr Graph::Depth kGraphBaseDepth = 1;
