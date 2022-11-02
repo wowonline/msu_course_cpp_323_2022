@@ -148,7 +148,7 @@ static constexpr Graph::Depth kRedEdgeDepth = 2;
 Graph::VertexId Graph::add_vertex() {
   const auto vertex_id = next_vertex_id();
   vertices_.try_emplace(vertex_id, vertex_id);
-  adjacency_list_.emplace(vertex_id, std::move(std::vector<VertexId>()));
+  adjacency_list_[vertex_id] = {};
   set_vertex_depth(vertex_id, kDefaultDepth);
   return vertex_id;
 }
