@@ -20,8 +20,7 @@ class GraphGenerator {
     int new_vertices_count_ = 0;
   };
 
-  explicit GraphGenerator(Params&& params)
-      : params_(std::move(params)), generator_(std::random_device()()) {}
+  explicit GraphGenerator(Params&& params) : params_(std::move(params)) {}
 
   Graph generate() const {
     auto graph = Graph();
@@ -40,7 +39,7 @@ class GraphGenerator {
   static constexpr float RED_EDGE_GENERATION_CHANCE = 0.33f;
   Params params_ = Params(0, 0);
 
-  mutable std::mt19937 generator_;
+  mutable std::mt19937 generator_{std::random_device()()};
 
   void generate_grey_edges(Graph& graph) const {
     if (params_.depth() <= 1) {
