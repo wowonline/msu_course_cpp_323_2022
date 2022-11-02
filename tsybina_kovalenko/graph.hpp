@@ -15,7 +15,7 @@ class Graph {
     const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(new_vertex_id);
     connections_[new_vertex_id] = {};
-    set_depth(new_vertex_id, 1);
+    set_vertex_depth(new_vertex_id, 1);
     return new_vertex_id;
   }
 
@@ -140,7 +140,7 @@ class Graph {
     throw std::runtime_error("Failed to determine color");
   }
 
-  void set_depth(VertexId vertex_id, Depth depth) {
+  void set_vertex_depth(VertexId vertex_id, Depth depth) {
     vertex_depths_[vertex_id] = depth;
     max_depth_ = std::max(max_depth_, depth);
   }
@@ -149,12 +149,12 @@ class Graph {
     if (from_vertex_id == 0 || to_vertex_id == 0) {
       const auto non_root_id = std::max(from_vertex_id, to_vertex_id);
       if (non_root_id != 0) {
-        set_depth(non_root_id, 2);
+        set_vertex_depth(non_root_id, 2);
       }
     } else if (depth_of(from_vertex_id) == 1) {
-      set_depth(from_vertex_id, depth_of(to_vertex_id) + 1);
+      set_vertex_depth(from_vertex_id, depth_of(to_vertex_id) + 1);
     } else if (depth_of(to_vertex_id) == 1) {
-      set_depth(to_vertex_id, depth_of(from_vertex_id) + 1);
+      set_vertex_depth(to_vertex_id, depth_of(from_vertex_id) + 1);
     }
   }
 
