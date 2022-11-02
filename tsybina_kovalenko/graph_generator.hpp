@@ -35,8 +35,8 @@ class GraphGenerator {
   }
 
  private:
-  static constexpr float GREEN_EDGE_GENERATION_CHANCE = 0.1f;
-  static constexpr float RED_EDGE_GENERATION_CHANCE = 0.33f;
+  static constexpr float kGreenEdgeGenerationChance = 0.1f;
+  static constexpr float kRedEdgeGenerationChance = 0.33f;
   static constexpr int kRedEdgeDepth = 2;
   static constexpr int kYellowEdgeDepth = 1;
   Params params_ = Params(0, 0);
@@ -74,7 +74,7 @@ class GraphGenerator {
 
   void generate_green_edges(Graph& graph) const {
     for (const auto& vertex : graph.vertices()) {
-      if (check_probability(GREEN_EDGE_GENERATION_CHANCE)) {
+      if (check_probability(kGreenEdgeGenerationChance)) {
         graph.add_edge(vertex.id(), vertex.id());
       }
     }
@@ -119,7 +119,7 @@ class GraphGenerator {
     for (const auto& vertex : graph.vertices()) {
       const auto vertex_depth = graph.depth_of(vertex.id());
       if (vertex_depth <= params_.depth() - kRedEdgeDepth) {
-        if (check_probability(RED_EDGE_GENERATION_CHANCE)) {
+        if (check_probability(kRedEdgeGenerationChance)) {
           add_red_edge(graph, vertex.id());
         }
       }
