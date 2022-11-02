@@ -61,7 +61,7 @@ class GraphGenerator {
             1.f - static_cast<float>(depth - 1) / (params_.depth() - 1);
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
           if (check_probability(success_chance)) {
-            auto new_vertex_id = graph.add_vertex();
+            const auto new_vertex_id = graph.add_vertex();
             graph.add_edge(vertex_id, new_vertex_id);
             queue.push(new_vertex_id);
           }
@@ -87,7 +87,7 @@ class GraphGenerator {
 
   void generate_yellow_edges(Graph& graph) const {
     for (const auto& vertex : graph.vertices()) {
-      auto vertex_depth = graph.depth_of(vertex.id());
+      const auto vertex_depth = graph.depth_of(vertex.id());
       if (vertex_depth != 1 && vertex_depth != params_.depth()) {
         const float success_chance =
             static_cast<float>(vertex_depth - 1) / (params_.depth() - 2);
@@ -113,7 +113,7 @@ class GraphGenerator {
 
   void generate_red_edges(Graph& graph) const {
     for (const auto& vertex : graph.vertices()) {
-      auto vertex_depth = graph.depth_of(vertex.id());
+      const auto vertex_depth = graph.depth_of(vertex.id());
       if (vertex_depth <= params_.depth() - 2) {
         if (check_probability(RED_EDGE_GENERATION_CHANCE)) {
           add_red_edge(graph, vertex.id());
