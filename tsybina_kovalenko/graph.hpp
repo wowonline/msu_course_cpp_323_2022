@@ -66,19 +66,6 @@ class Graph {
     return parents_.at(vertex_id);
   }
 
-  std::vector<VertexId> children_of(VertexId vertex_id) const {
-    std::vector<VertexId> result;
-    for (EdgeId edge_id : connections_.at(vertex_id)) {
-      if (edges().at(edge_id).color() == Edge::Color::Grey) {
-        VertexId other_vertex_id = other_end_of(edge_id, vertex_id);
-        if (other_vertex_id != parent_of(vertex_id)) {
-          result.push_back(other_vertex_id);
-        }
-      }
-    }
-    return result;
-  }
-
   std::vector<VertexId> connected_vertices(VertexId vertex_id) const {
     std::vector<VertexId> result;
     result.reserve(connections_.at(vertex_id).size());
