@@ -5,26 +5,24 @@
 #include "graph.hpp"
 
 namespace printing {
-std::string print_edge_color(const Graph::Edge::Color color) {
+std::string print_edge_color(Graph::Edge::Color color) {
   switch (color) {
     case Graph::Edge::Color::Grey:
       return "grey";
-      break;
     case Graph::Edge::Color::Green:
       return "green";
-      break;
     case Graph::Edge::Color::Red:
       return "red";
-      break;
-    default:
+    case Graph::Edge::Color::Yellow:
       return "yellow";
+    default:
   }
 }
 
 namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::stringstream json_string;
-  json_string << "\n\t\t{ \"id\":" << vertex.id() << ", \"edges_ids\": [";
+  json_string << "\n\t\t{ \"id\":" << vertex.id() << ", \"edge_ids\": [";
   const auto& edge_ids = graph.get_connected_edge_ids(vertex.id());
 
   if (!edge_ids.empty()) {
