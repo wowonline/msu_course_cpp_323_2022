@@ -10,12 +10,12 @@ int handle_depth_input() {
   int output, tries = 0;
   constexpr int max_tries_num = 15;
   std::cout << "\nEnter the estimated depth of the graph (depth is a "
-               "positive integer):"
+               "non-negative integer):"
             << std::endl;
   while (tries < max_tries_num && std::cin >> input) {
     ++tries;
     if (sscanf(input.c_str(), "%d", &output)) {
-      if (output > 0)
+      if (output >= 0)
         return output;
     }
     if (!(tries % 5))
@@ -34,12 +34,12 @@ int handle_new_vertices_count_input() {
   constexpr int max_tries_num = 15;
   std::cout
       << "\nEnter \"new_vertices_count\" variable (new_vertices_count is a "
-         "positive integer):"
+         "non-negative integer):"
       << std::endl;
   while (tries < max_tries_num && std::cin >> input) {
     ++tries;
     if (sscanf(input.c_str(), "%d", &output)) {
-      if (output > 0)
+      if (output >= 0)
         return output;
     }
     if (!(tries % 5))

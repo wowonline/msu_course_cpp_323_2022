@@ -7,6 +7,7 @@ Graph::VertexId Graph::add_vertex() {
   const VertexId new_vertex_id = get_new_vertex_id();
   vertices_.insert({new_vertex_id, Vertex(new_vertex_id)});
   set_vertex_depth(new_vertex_id, 1);
+  connections_[new_vertex_id] = {};
   return new_vertex_id;
 }
 

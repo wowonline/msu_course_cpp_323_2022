@@ -15,7 +15,6 @@ std::string print_edge_color(Graph::Edge::Color color) {
       return "red";
     case Graph::Edge::Color::Yellow:
       return "yellow";
-    default:
   }
 }
 
@@ -75,8 +74,8 @@ std::string print_graph(const Graph& graph) {
       json_string << print_edge(it_edges->second, graph);
       is_first_iteration = false;
     }
-    json_string << "\n\t]\n}\n";
   }
+  json_string << "\n\t]\n}\n";
   return json_string.str();
 }
 }  // namespace json
