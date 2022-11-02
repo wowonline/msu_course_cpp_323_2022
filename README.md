@@ -116,6 +116,11 @@
 
 # Не планируют получить зачет
 
+- **Кузнецов Алексей**
+  - Ник: KuzAlexey
+  - Prefix: kuznetsov_alexey
+  - Сданы: `task_01`
+  - Отнято баллов: `20`
 - **Сырбу Александра**
   - Ник: cmc-alexandra
   - Prefix: sirbu_alexandra
