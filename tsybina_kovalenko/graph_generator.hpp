@@ -41,6 +41,11 @@ class GraphGenerator {
 
   mutable std::mt19937 generator_{std::random_device()()};
 
+  bool check_probability(float chance) const {
+    std::bernoulli_distribution distribution(chance);
+    return distribution(generator_);
+  }
+
   void generate_grey_edges(Graph& graph) const {
     if (params_.depth() <= 1) {
       return;
@@ -54,9 +59,8 @@ class GraphGenerator {
       if (depth < params_.depth()) {
         const float success_chance =
             1.f - static_cast<float>(depth - 1) / (params_.depth() - 1);
-        std::bernoulli_distribution distribution(success_chance);
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
-          if (distribution(generator_)) {
+          if (check_probability(success_chance)) {
             auto new_vertex_id = graph.add_vertex();
             graph.add_edge(vertex_id, new_vertex_id);
             queue.push(new_vertex_id);
@@ -67,9 +71,8 @@ class GraphGenerator {
   }
 
   void generate_green_edges(Graph& graph) const {
-    std::bernoulli_distribution distribution(GREEN_EDGE_GENERATION_CHANCE);
     for (const auto& vertex : graph.vertices()) {
-      if (distribution(generator_)) {
+      if (check_probability(GREEN_EDGE_GENERATION_CHANCE)) {
         graph.add_edge(vertex.id(), vertex.id());
       }
     }
@@ -88,8 +91,7 @@ class GraphGenerator {
       if (vertex_depth != 1 && vertex_depth != params_.depth()) {
         const float success_chance =
             static_cast<float>(vertex_depth - 1) / (params_.depth() - 2);
-        std::bernoulli_distribution distribution(success_chance);
-        if (distribution(generator_)) {
+        if (check_probability(success_chance)) {
           add_yellow_edge(graph, vertex.id());
         }
       }
@@ -113,8 +115,7 @@ class GraphGenerator {
     for (const auto& vertex : graph.vertices()) {
       auto vertex_depth = graph.depth_of(vertex.id());
       if (vertex_depth <= params_.depth() - 2) {
-        std::bernoulli_distribution distribution(RED_EDGE_GENERATION_CHANCE);
-        if (distribution(generator_)) {
+        if (check_probability(RED_EDGE_GENERATION_CHANCE)) {
           add_red_edge(graph, vertex.id());
         }
       }
