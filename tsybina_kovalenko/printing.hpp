@@ -5,6 +5,22 @@
 #include "graph.hpp"
 
 namespace printing {
+
+std::string color_name_of(Graph::Edge::Color edge_color) {
+  switch (edge_color) {
+    case Graph::Edge::Color::Grey:
+      return "grey";
+    case Graph::Edge::Color::Green:
+      return "green";
+    case Graph::Edge::Color::Yellow:
+      return "yellow";
+    case Graph::Edge::Color::Red:
+      return "red";
+    default:
+      throw std::runtime_error("Failed to determine color name");
+  }
+}
+
 namespace json {
 
 // return json like {"id":0,"edge_ids":[0,1,2],"depth":1}
@@ -26,21 +42,6 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   stream << "}";
 
   return stream.str();
-}
-
-std::string color_name_of(Graph::Edge::Color edge_color) {
-  switch (edge_color) {
-    case Graph::Edge::Color::Grey:
-      return "grey";
-    case Graph::Edge::Color::Green:
-      return "green";
-    case Graph::Edge::Color::Yellow:
-      return "yellow";
-    case Graph::Edge::Color::Red:
-      return "red";
-    default:
-      throw std::runtime_error("Failed to determine color name");
-  }
 }
 
 // return json like {"id":0,"vertex_ids":[0,1],"color":"grey"}
