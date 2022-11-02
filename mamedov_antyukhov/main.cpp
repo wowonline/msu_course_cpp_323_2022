@@ -6,31 +6,50 @@
 #include "printing.hpp"
 
 int handle_depth_input() {
-  int output;
-  std::cout << "Enter the estimated depth of the graph:" << std::endl;
-  while (std::cin >> output) {
-    if (output >= 0) {
-      return output;
+  std::string input;
+  int output, tries = 0;
+  constexpr int max_tries_num = 15;
+  std::cout << "\nEnter the estimated depth of the graph (depth is a "
+               "positive integer):"
+            << std::endl;
+  while (tries < max_tries_num && std::cin >> input) {
+    ++tries;
+    if (sscanf(input.c_str(), "%d", &output)) {
+      if (output > 0)
+        return output;
     }
-
-    std::cout << "Incorrect depth!" << std::endl;
+    if (!(tries % 5))
+      std::cout << "Read the description carefully!";
+    else
+      std::cout << "Incorrect depth!";
+    std::cout << " Try one more time." << std::endl;
   }
-  std::runtime_error("Depth has not been passed!");
+  throw std::runtime_error("Depth has not been passed!");
   return output;
 }
 
 int handle_new_vertices_count_input() {
-  int output;
-  std::cout << "Enter the estimated number of new vertices:" << std::endl;
-  while (std::cin >> output) {
-    if (output >= 0) {
-      return output;
+  std::string input;
+  int output, tries = 0;
+  constexpr int max_tries_num = 15;
+  std::cout
+      << "\nEnter \"new_vertices_count\" variable (new_vertices_count is a "
+         "positive integer):"
+      << std::endl;
+  while (tries < max_tries_num && std::cin >> input) {
+    ++tries;
+    if (sscanf(input.c_str(), "%d", &output)) {
+      if (output > 0)
+        return output;
     }
-    std::cout << "Incorrect new_vertices_count!" << std::endl;
+    if (!(tries % 5))
+      std::cout << "Read the description carefully!";
+    else
+      std::cout << "Incorrect new_vertices_count variable!";
+    std::cout << " Try one more time." << std::endl;
   }
 
-  std::runtime_error("New_vertices_count has been passed!");
-
+  throw std::runtime_error("New_vertices_count has been passed!");
   return output;
 }
 
@@ -48,6 +67,7 @@ int main() {
 
   const auto graph_json = printing::json::print_graph(graph);
   write_to_file(graph_json, "graph.json");
+  std::cout << "Graph representation:" << std::endl;
   std::cout << graph_json << std::endl;
   return 0;
 }
