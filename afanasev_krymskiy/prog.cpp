@@ -250,18 +250,16 @@ class GraphGenerator {
  private:
   void generate_grey_edges(Graph& graph) const {
     for (Graph::Depth depth = 1; depth < params_.get_depth(); ++depth) {
-      if (depth <= graph.depth()) {
-        const float probability =
-            (params_.get_depth() - depth) / (params_.get_depth() - 1.f);
-        for (const auto vertex_id : graph.vertices_at_depth(depth)) {
-          for (int i = 0; i < params_.new_vertices_count(); ++i) {
-            if (check_probability(probability)) {
-              graph.add_edge(vertex_id, graph.add_vertex());
-            }
+      if (depth > graph.depth())
+        break;
+      const float probability =
+          (params_.get_depth() - depth) / (params_.get_depth() - 1.f);
+      for (const auto vertex_id : graph.vertices_at_depth(depth)) {
+        for (int i = 0; i < params_.new_vertices_count(); ++i) {
+          if (check_probability(probability)) {
+            graph.add_edge(vertex_id, graph.add_vertex());
           }
         }
-      } else {
-        break;
       }
     }
   }
