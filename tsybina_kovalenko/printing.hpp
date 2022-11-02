@@ -6,7 +6,7 @@
 
 namespace printing {
 
-std::string color_name_of(Graph::Edge::Color edge_color) {
+std::string print_edge_color(Graph::Edge::Color edge_color) {
   switch (edge_color) {
     case Graph::Edge::Color::Grey:
       return "grey";
@@ -51,7 +51,7 @@ std::string print_edge(const Graph::Edge& edge) {
   stream << R"("id":)" << edge.id() << ",";
   stream << R"("vertex_ids":[)" << edge.from_vertex_id() << ","
          << edge.to_vertex_id() << "],";
-  stream << R"("color":")" << color_name_of(edge.color()) << "\"";
+  stream << R"("color":")" << print_edge_color(edge.color()) << "\"";
   stream << "}";
   return stream.str();
 }
