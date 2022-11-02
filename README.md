@@ -46,12 +46,11 @@
 1. `task_08`: 05 декабря
 1. `task_09`: 12 декабря
 1. `task_10`: 19 декабря
-1. `task_11`: 26 декабря
 1. и так далее до конца семестра, последняя задача - зачет.
 
 # Прогресс
 
-matveev_burikova
+- matveev_burikova
   - **Бурикова Анна**
     - Ник: AnnaBurikova
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
@@ -60,8 +59,7 @@ matveev_burikova
     - Ник: matvlaale
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
     - Отнято баллов: `0`
-
-mamedov_antyukhov
+- mamedov_antyukhov
   - **Антюхов Никита**
     - Ник: chereshnya123
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
@@ -70,8 +68,7 @@ mamedov_antyukhov
     - Ник: sm0kebamb0o
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
     - Отнято баллов: `5`
-
-tsybina_kovalenko
+- tsybina_kovalenko
   - **Коваленко Лев**
     - Ник: klevvit
     - Сданы: `task_01`, `task_02`, `task_03`
@@ -80,8 +77,7 @@ tsybina_kovalenko
     - Ник: Jedi314
     - Сданы: `task_01`, `task_02`, `task_03`
     - Отнято баллов: `10`
-
-kuzminskiy_stafeev
+- kuzminskiy_stafeev
   - **Кузьминский Андрей**
     - Ник: KuzmaLine
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
@@ -90,8 +86,7 @@ kuzminskiy_stafeev
     - Ник: Jecteroid
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
     - Отнято баллов: `0`
-
-kucherov_sergeev
+- kucherov_sergeev
   - **Кучеров Василий**
     - Ник: BasilKucherov
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
@@ -100,8 +95,7 @@ kucherov_sergeev
     - Ник: fedyasa
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
     - Отнято баллов: `0`
-
-fedotov_chuvashov
+- fedotov_chuvashov
   - **Федотов Ярослав**
     - Ник: Huszar0
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
@@ -110,8 +104,7 @@ fedotov_chuvashov
     - Ник: wowonline
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
     - Отнято баллов: `0`
-
-afanasev_nikita
+- afanasev_nikita
   - **Афанасьев Никита**
     - Ник: nikitanmlk
     - Сданы: `task_01`, `task_02`, `task_03`, `task_04`
@@ -123,37 +116,33 @@ afanasev_nikita
 
 # Не планируют получить зачет
 
-**Сырбу Александра**
-- Ник: cmc-alexandra
-- Prefix: sirbu_alexandra
-- Сданы: `task_01`
-- Отнято баллов: `15`
-
-**Чжан Синьюй**
-- Ник: YamyuCheung
-- Prefix: zhang_xinyu
-- Сданы: `task_01`
-- Отнято баллов: `20`
-
-**Юйлун Мао**
-- Ник: yulongmao-stu
-- Prefix: mao_yulong
-- Сданы: `task_01`
-- Отнято баллов: `20`
-
-**Чжоу Хуншунь**
-- Ник: ZhouHongshun
-- Сданы: -
-- Отнято баллов: `20`
+- **Сырбу Александра**
+  - Ник: cmc-alexandra
+  - Prefix: sirbu_alexandra
+  - Сданы: `task_01`
+  - Отнято баллов: `15`
+- **Чжан Синьюй**
+  - Ник: YamyuCheung
+  - Prefix: zhang_xinyu
+  - Сданы: `task_01`
+  - Отнято баллов: `20`
+- **Юйлун Мао**
+  - Ник: yulongmao-stu
+  - Prefix: mao_yulong
+  - Сданы: `task_01`
+  - Отнято баллов: `20`
+- **Чжоу Хуншунь**
+  - Ник: ZhouHongshun
+  - Сданы: -
+  - Отнято баллов: `20`
 
 # Ушли в академ
 
-**Вересова Дарья**
-- Ник: agerria
-- Сданы: `task_01`
-- Отнято баллов: `5`
-
-**Ильичев Юрий**
-- Ник: gilerby
-- Сданы: `task_01`
-- Отнято баллов: `5`
+- **Вересова Дарья**
+  - Ник: agerria
+  - Сданы: `task_01`
+  - Отнято баллов: `5`
+- **Ильичев Юрий**
+  - Ник: gilerby
+  - Сданы: `task_01`
+  - Отнято баллов: `5`
