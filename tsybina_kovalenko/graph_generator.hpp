@@ -38,6 +38,7 @@ class GraphGenerator {
   static constexpr float GREEN_EDGE_GENERATION_CHANCE = 0.1f;
   static constexpr float RED_EDGE_GENERATION_CHANCE = 0.33f;
   static constexpr int kRedEdgeDepth = 2;
+  static constexpr int kYellowEdgeDepth = 1;
   Params params_ = Params(0, 0);
 
   mutable std::mt19937 generator_{std::random_device()()};
@@ -89,7 +90,8 @@ class GraphGenerator {
   void generate_yellow_edges(Graph& graph) const {
     for (const auto& vertex : graph.vertices()) {
       const auto vertex_depth = graph.depth_of(vertex.id());
-      if (vertex_depth != 1 && vertex_depth != params_.depth()) {
+      if (vertex_depth != 1 &&
+          vertex_depth <= params_.depth() - kYellowEdgeDepth) {
         const float success_chance =
             static_cast<float>(vertex_depth - 1) / (params_.depth() - 2);
         if (check_probability(success_chance)) {
@@ -102,7 +104,8 @@ class GraphGenerator {
   void add_yellow_edge(Graph& graph, Graph::VertexId from_vertex_id) const {
     std::vector<Graph::VertexId> probable_vertices;
     for (const Graph::Vertex& vertex : graph.vertices()) {
-      if (graph.depth_of(vertex.id()) == graph.depth_of(from_vertex_id) + 1 &&
+      if (graph.depth_of(vertex.id()) ==
+              graph.depth_of(from_vertex_id) + kYellowEdgeDepth &&
           !graph.is_connected(from_vertex_id, vertex.id())) {
         probable_vertices.push_back(vertex.id());
       }
