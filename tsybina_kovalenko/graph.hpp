@@ -50,7 +50,7 @@ class Graph {
 
   const auto& vertex_depths() const { return vertex_depths_; }
 
-  const auto& max_depth() const { return max_depth_; }
+  const auto& depth() const { return depth_; }
 
   Depth depth_of(VertexId vertex_id) const {
     return vertex_depths_.at(vertex_id);
@@ -112,7 +112,7 @@ class Graph {
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
 
-  Depth max_depth_ = 0;
+  Depth depth_ = 0;
 
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
@@ -142,7 +142,7 @@ class Graph {
 
   void set_vertex_depth(VertexId vertex_id, Depth depth) {
     vertex_depths_[vertex_id] = depth;
-    max_depth_ = std::max(max_depth_, depth);
+    depth_ = std::max(depth_, depth);
   }
 
   void update_vertex_depth(VertexId from_vertex_id, VertexId to_vertex_id) {

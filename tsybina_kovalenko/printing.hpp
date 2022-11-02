@@ -60,7 +60,7 @@ std::string print_edge(const Graph::Edge& edge) {
 std::string print_graph(const Graph& graph) {
   std::ostringstream stream;
   stream << "{";
-  stream << R"("depth":)" << graph.max_depth() << ",";
+  stream << R"("depth":)" << graph.depth() << ",";
 
   stream << R"("vertices":)"
          << "[";
