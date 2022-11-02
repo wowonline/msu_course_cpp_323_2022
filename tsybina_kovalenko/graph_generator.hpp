@@ -37,6 +37,7 @@ class GraphGenerator {
  private:
   static constexpr float GREEN_EDGE_GENERATION_CHANCE = 0.1f;
   static constexpr float RED_EDGE_GENERATION_CHANCE = 0.33f;
+  static constexpr int kRedEdgeDepth = 2;
   Params params_ = Params(0, 0);
 
   mutable std::mt19937 generator_{std::random_device()()};
@@ -114,7 +115,7 @@ class GraphGenerator {
   void generate_red_edges(Graph& graph) const {
     for (const auto& vertex : graph.vertices()) {
       const auto vertex_depth = graph.depth_of(vertex.id());
-      if (vertex_depth <= params_.depth() - 2) {
+      if (vertex_depth <= params_.depth() - kRedEdgeDepth) {
         if (check_probability(RED_EDGE_GENERATION_CHANCE)) {
           add_red_edge(graph, vertex.id());
         }
@@ -125,7 +126,8 @@ class GraphGenerator {
   void add_red_edge(Graph& graph, Graph::VertexId from_vertex_id) const {
     std::vector<Graph::VertexId> probable_vertices;
     for (const Graph::Vertex& vertex : graph.vertices()) {
-      if (graph.depth_of(vertex.id()) == graph.depth_of(from_vertex_id) + 2) {
+      if (graph.depth_of(vertex.id()) ==
+          graph.depth_of(from_vertex_id) + kRedEdgeDepth) {
         probable_vertices.push_back(vertex.id());
       }
     }
