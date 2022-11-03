@@ -1,9 +1,9 @@
 #include "graph.hpp"
 
+namespace uni_course_cpp {
+namespace {
 static constexpr Graph::Depth kGraphDefaultDepth = 1;
-static constexpr float kEdgeGreenProbability = 0.1;
-static constexpr float kEdgeRedProbability = 0.33;
-
+}  // namespace
 
 Graph::VertexId Graph::add_vertex() {
   const VertexId vertex_id = get_new_vertex_id();
@@ -138,3 +138,4 @@ void Graph::set_vertex_depth(Graph::VertexId vertex_id, Graph::Depth depth) {
   depth_vertices_list_[depth].push_back(vertex_id);
   vertex_depths_list_[vertex_id] = depth;
 }
+}  // namespace uni_course_cpp

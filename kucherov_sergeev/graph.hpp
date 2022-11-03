@@ -1,10 +1,10 @@
 #pragma once
 
-#include <vector>
-#include <unordered_map>
 #include <algorithm>
+#include <unordered_map>
+#include <vector>
 
-
+namespace uni_course_cpp {
 class Graph {
  public:
   using VertexId = int;
@@ -80,3 +80,4 @@ class Graph {
   std::unordered_map<VertexId, Depth> vertex_depths_list_;
   std::vector<std::vector<VertexId>> depth_vertices_list_;
 };
+}  // namespace uni_course_cpp

@@ -1,13 +1,13 @@
+#include <fstream>
+#include <iostream>
+#include "config.hpp"
 #include "graph.hpp"
+#include "graph_generator.hpp"
+#include "graph_json_printing.hpp"
+#include "graph_printing.hpp"
+#include "logger.hpp"
 
-
-bool get_random_bool(float true_probability) {
-  std::random_device random_device;
-  std::mt19937 generator(random_device());
-  std::bernoulli_distribution bernoulli_distribution(true_probability);
-  return bernoulli_distribution(generator);
-}
-
+namespace {
 void write_to_file(const std::string& graph_json,
                    const std::string& file_name) {
   std::ofstream json_file(file_name);
@@ -63,51 +63,18 @@ int handle_new_vertices_count_input() {
 
   return new_vertices_count;
 }
-
-
-
-Graph::VertexId get_random_vertex_id(
-    const std::vector<Graph::VertexId>& vertex_ids) {
-  assert((vertex_ids.empty() == false) &&
-         "Can't pick random vertex id from empty list");
-
-  std::random_device random_device;
-  std::mt19937 generator(random_device());
-  std::uniform_int_distribution<> uniform_int_distribution(
-      0, vertex_ids.size() - 1);
-
-  return vertex_ids[uniform_int_distribution(generator)];
-}
-
-std::vector<Graph::VertexId> get_unconnected_vertex_ids(
-    const Graph& graph,
-    Graph::VertexId vertex_id) {
-  std::vector<Graph::VertexId> unconnected_vertex_ids = {};
-  for (const auto next_depth_vertex_id :
-       graph.get_depth_vertex_ids(graph.get_vertex_depth(vertex_id) + 1)) {
-    if (graph.is_vertices_connected(vertex_id, next_depth_vertex_id) == false) {
-      unconnected_vertex_ids.push_back(next_depth_vertex_id);
-    }
-  }
-
-  return unconnected_vertex_ids;
-}
-
-
-
-
-
-
+}  // namespace
 
 int main() {
   const int depth = handle_depth_input();
   const int new_vertices_count = handle_new_vertices_count_input();
 
-  auto params = GraphGenerator::Params(depth, new_vertices_count);
-  const auto generator = GraphGenerator(std::move(params));
+  auto params =
+      uni_course_cpp::GraphGenerator::Params(depth, new_vertices_count);
+  const auto generator = uni_course_cpp::GraphGenerator(std::move(params));
   const auto graph = generator.generate();
 
-  const auto graph_json = printing::json::print_graph(graph);
+  const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
   std::cout << graph_json << std::endl;
   write_to_file(graph_json, "graph.json");
 

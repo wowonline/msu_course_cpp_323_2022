@@ -1,5 +1,8 @@
 #include "graph_json_printing.hpp"
 
+namespace uni_course_cpp {
+namespace printing {
+namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string vertex_json =
       "{\"id\":" + std::to_string(vertex.id()) + ",\"edge_ids\":[";
@@ -21,7 +24,6 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   return vertex_json;
 }
 
-
 std::string print_edge_color(Graph::Edge::Color color) {
   switch (color) {
     case Graph::Edge::Color::Grey:
@@ -37,7 +39,6 @@ std::string print_edge_color(Graph::Edge::Color color) {
   }
 }
 
-
 std::string print_edge(const Graph::Edge& edge) {
   std::string edge_json =
       "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":[";
@@ -49,7 +50,6 @@ std::string print_edge(const Graph::Edge& edge) {
 
   return edge_json;
 }
-
 
 std::string print_graph(const Graph& graph) {
   const auto& vertices = graph.get_vertices();
@@ -81,3 +81,6 @@ std::string print_graph(const Graph& graph) {
 
   return graph_json;
 }
+}  // namespace json
+}  // namespace printing
+}  // namespace uni_course_cpp
