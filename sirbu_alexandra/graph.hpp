@@ -39,7 +39,7 @@ class Graph {
     return new_vertex_id;
   }
 
-  EdgeId add_edge(const VertexId from_vertex_id, VertexId to_vertex_id) {
+  EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     const EdgeId new_edge_id = generate_edge_id();
 
     edges_.emplace(new_edge_id, Edge(new_edge_id, new_edge_id, to_vertex_id));
