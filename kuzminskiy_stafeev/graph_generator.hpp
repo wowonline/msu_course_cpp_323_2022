@@ -1,3 +1,4 @@
+#include <mutex>
 #include "graph.hpp"
 #pragma once
 
@@ -27,6 +28,10 @@ class GraphGenerator {
   void generate_green_edges(Graph& graph) const;
   void generate_yellow_edges(Graph& graph) const;
   void generate_red_edges(Graph& graph) const;
+  void generate_grey_branch(Graph& graph,
+                            std::mutex& graph_mutex,
+                            std::vector<Graph::VertexId> previous_vertex_ids,
+                            Graph::Depth cur_depth) const;
 
   Params params_ = Params(0, 0);
 };
