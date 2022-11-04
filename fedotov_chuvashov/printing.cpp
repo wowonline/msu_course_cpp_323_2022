@@ -1,6 +1,7 @@
 #include "printing.hpp"
 #include <sstream>
 
+namespace uni_course_cpp {
 namespace printing {
 std::string print_edge_color(Graph::Edge::Color color) {
   switch (color) {
@@ -70,5 +71,5 @@ std::string print_graph(const Graph& graph) {
   return result.str();
 }
 };  // namespace json
-
 };  // namespace printing
+}  // namespace uni_course_cpp

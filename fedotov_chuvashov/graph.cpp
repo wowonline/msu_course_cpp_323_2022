@@ -3,6 +3,8 @@
 #include <iostream>
 #include "printing.hpp"
 
+namespace uni_course_cpp {
+
 Graph::VertexId Graph::add_vertex() {
   const VertexId new_id = get_new_vertex_id();
   vertices_.emplace(new_id, new_id);
@@ -79,3 +81,5 @@ bool Graph::is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
   }
   return false;
 }
+
+}  // namespace uni_course_cpp

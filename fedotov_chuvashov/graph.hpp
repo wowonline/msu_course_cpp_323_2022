@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 
+namespace uni_course_cpp {
 class Graph {
  public:
   using Depth = int;
@@ -98,3 +99,4 @@ class Graph {
 constexpr Graph::Depth kYellowDepthDifference = 1;
 constexpr Graph::Depth kRedDepthDifference = 2;
 constexpr Graph::Depth kGraphBaseDepth = 1;
+}  // namespace uni_course_cpp

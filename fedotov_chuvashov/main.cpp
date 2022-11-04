@@ -4,6 +4,8 @@
 #include "graph_generator.hpp"
 #include "printing.hpp"
 
+namespace {
+
 void write_to_file(const std::string& output_string,
                    const std::string& file_name) {
   std::ofstream output(file_name);
@@ -39,17 +41,20 @@ int handle_new_vertices_count_input() {
   }
   return new_vertices_count;
 }
+}  // namespace
 
 int main() {
   const int depth = handle_depth_input();
   const int new_vertices_count = handle_new_vertices_count_input();
-  auto params = GraphGenerator::Params(depth, new_vertices_count);
-  const auto generator = GraphGenerator(std::move(params));
+  auto params =
+      uni_course_cpp::GraphGenerator::Params(depth, new_vertices_count);
+  const auto generator = uni_course_cpp::GraphGenerator(std::move(params));
   const auto graph = generator.generate();
 
-  const auto graph_json = printing::json::print_graph(graph);
+  const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
   std::cout << graph_json << std::endl;
   write_to_file(graph_json, "graph.json");
 
   return 0;
 }
+

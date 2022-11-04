@@ -1,5 +1,7 @@
+#pragma once
 #include "graph.hpp"
 
+namespace uni_course_cpp {
 class GraphGenerator {
  public:
   struct Params {
@@ -26,3 +28,4 @@ class GraphGenerator {
  private:
   Params params_ = Params(0, 0);
 };
+}  // namespace uni_course_cpp
