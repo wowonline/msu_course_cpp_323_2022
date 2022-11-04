@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+
 #include "config.hpp"
 #include "graph.hpp"
 #include "graph_generator.hpp"
@@ -87,25 +88,43 @@ int handle_graphs_count_input() {
 
   return graphs_count;
 }
+
+std::string generation_started_string(int graph_number) {
+  return "Graph " + std::to_string(graph_number) + ", Generation Started";
+}
+
+std::string generation_finished_string(int graph_number,
+                                       const std::string& graph_description) {
+  return "Graph " + std::to_string(graph_number) + ", Generation Finished " +
+         graph_description;
+}
 }  // namespace
 
 int main() {
+  using namespace uni_course_cpp;
+
   const int depth = handle_depth_input();
   const int new_vertices_count = handle_new_vertices_count_input();
   const int graphs_count = handle_graphs_count_input();
 
-  auto params =
-      uni_course_cpp::GraphGenerator::Params(depth, new_vertices_count);
+  auto params = GraphGenerator::Params(depth, new_vertices_count);
 
-  const auto generator = uni_course_cpp::GraphGenerator(std::move(params));
+  const auto generator = GraphGenerator(std::move(params));
+  auto& logger = Logger::get_logger();
 
   for (int i = 0; i < graphs_count; i++) {
+    logger.log(generation_started_string(i));
     const auto graph = generator.generate();
 
-    const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
-    std::cout << graph_json << std::endl;
+    logger.log(generation_finished_string(i, "Empty graph description"));
 
-    write_to_file(graph_json, "./temp/graph_" + std::to_string(i) + ".json");
+    const auto graph_json = printing::json::print_graph(graph);
+
+    const std::string graph_json_file_name =
+        "graph_" + std::to_string(i) + ".json";
+    const std::string graph_json_file_path =
+        config::kTempDirectoryPath + graph_json_file_name;
+    write_to_file(graph_json, graph_json_file_path);
   }
 
   return 0;
