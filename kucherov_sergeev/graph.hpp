@@ -1,9 +1,9 @@
 #pragma once
 
 #include <algorithm>
+#include <stdexcept>
 #include <unordered_map>
 #include <vector>
-#include <stdexcept>
 
 namespace uni_course_cpp {
 class Graph {
