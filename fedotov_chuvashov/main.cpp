@@ -6,6 +6,7 @@
 #include "graph_generator.hpp"
 #include "logger.hpp"
 #include "printing.hpp"
+#include "printing_json.hpp"
 
 namespace {
 
@@ -82,7 +83,7 @@ int main() {
     logger.log(
         uni_course_cpp::generation_finished_string(i, graph_description));
 
-    const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
+    const auto graph_json = uni_course_cpp::json::print_graph(graph);
     write_to_file(graph_json, "graph_" + std::to_string(i) + ".json");
   }
 
