@@ -54,7 +54,9 @@ class Graph {
 
   const auto& edges() const { return edges_; }
 
-  const auto& connections_of(VertexId vertex_id) const { return connections_.at(vertex_id); }
+  const auto& connections_of(VertexId vertex_id) const {
+    return connections_.at(vertex_id);
+  }
 
   const auto& depth() const { return depth_; }
 
