@@ -5,14 +5,11 @@
 
 class Logger {
  public:
-  static Logger& get_logger() {
-    static Logger instance;
-    return instance;
-  }
-
+  static Logger& get_logger();
   void log(const std::string& str);
 
  private:
-  Logger() { output_fstream.open(config::kLogFilePath, std::ios::app); }
-  std::ofstream output_fstream;
+  Logger();
+  ~Logger() = default;
+  std::ofstream output_fstream_;
 };

@@ -1,6 +1,9 @@
+#include <chrono>
+#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include "graph.hpp"
 #include "graph_generator.hpp"
@@ -19,14 +22,14 @@ std::string get_current_date_time() {
   return date_time_string.str();
 }
 
-std::string generation_started_string(int i) {
-  return get_current_date_time() + " Graph " + std::to_string(i) +
+std::string generation_started_string(int graph_id) {
+  return get_current_date_time() + " Graph " + std::to_string(graph_id) +
          ", Generation Started";
 }
 
-std::string generation_finished_string(int i,
+std::string generation_finished_string(int graph_id,
                                        const std::string& graph_description) {
-  return get_current_date_time() + " Graph " + std::to_string(i) +
+  return get_current_date_time() + " Graph " + std::to_string(graph_id) +
          ", Generation Finished {\n" + graph_description + "\n}";
 }
 

@@ -46,7 +46,6 @@ class Graph {
   VertexId add_vertex();
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
-  void add_edge_in_color(EdgeId edge_id, const Edge::Color& color);
 
   Depth get_graph_depth() const {
     return vertices_of_depth_.size() ? vertices_of_depth_.size() - 1 : 0;
@@ -66,14 +65,7 @@ class Graph {
     return connections_list_.at(vertex_id);
   }
 
-  std::vector<EdgeId> edges_ids_of_color(Edge::Color color) const {
-    if (edges_ids_of_color_.find(color) == edges_ids_of_color_.end()) {
-      static const std::vector<EdgeId> empty_result;
-      return empty_result;
-    }
-
-    return edges_ids_of_color_.at(color);
-  }
+  const std::vector<EdgeId>& edges_ids_of_color(Edge::Color color) const;
 
   bool has_vertex(VertexId id) const {
     return vertices_.find(id) != vertices_.end();
@@ -81,6 +73,7 @@ class Graph {
   bool has_edge(EdgeId id) const { return edges_.find(id) != edges_.end(); }
 
  private:
+  void add_edge_in_color(EdgeId edge_id, const Edge::Color& color);
   EdgeId gen_new_edge_id() { return next_edge_id_++; }
   VertexId gen_new_vertex_id() { return next_vertex_id_++; }
 

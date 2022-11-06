@@ -11,15 +11,25 @@ static constexpr Graph::Depth kBaseDepth = 1;
 
 }
 
+const std::vector<Graph::EdgeId>& Graph::edges_ids_of_color(
+    Graph::Edge::Color color) const {
+  if (edges_ids_of_color_.find(color) == edges_ids_of_color_.end()) {
+    static const std::vector<EdgeId> empty_result;
+    return empty_result;
+  }
+
+  return edges_ids_of_color_.at(color);
+}
+
 void Graph::add_edge_in_color(Graph::EdgeId edge_id,
                               const Graph::Edge::Color& color) {
   if (edges_ids_of_color_.find(color) == edges_ids_of_color_.end()) {
-    static std::vector<Graph::EdgeId> empty_vector;
+    std::vector<Graph::EdgeId> empty_vector;
     edges_ids_of_color_.insert(std::make_pair(color, empty_vector));
   }
 
-  auto& pull_of_edges = edges_ids_of_color_.at(color);
-  pull_of_edges.emplace_back(edge_id);
+  auto& set_of_edges = edges_ids_of_color_.at(color);
+  set_of_edges.emplace_back(edge_id);
 }
 
 Graph::Depth Graph::get_vertex_depth(Graph::VertexId id) const {
