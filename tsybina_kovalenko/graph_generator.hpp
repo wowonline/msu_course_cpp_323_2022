@@ -39,11 +39,11 @@ class GraphGenerator {
  private:
   static constexpr float kGreenEdgeGenerationChance = 0.1f;
   static constexpr float kRedEdgeGenerationChance = 0.33f;
-  static constexpr Graph::Depth kRedEdgeDepth = 2;
-  static constexpr Graph::Depth kYellowEdgeDepth = 1;
-  static constexpr int kRedEdgeDepthJump = 2;
-  static constexpr int kYellowEdgeDepthJump = 1;
+  static constexpr Graph::Depth kRedEdgeDepthJump = 2;
+  static constexpr Graph::Depth kYellowEdgeDepthJump = 1;
+  static constexpr Graph::Depth kRedEdgeStartDepth = 1;
   static constexpr Graph::Depth kYellowEdgeStartDepth = 2;
+
   Params params_ = Params(0, 0);
 
   mutable std::mt19937 generator_{std::random_device()()};
@@ -93,39 +93,41 @@ class GraphGenerator {
     return probable_vertices.at(distribution(generator_));
   }
 
+  std::vector<Graph::VertexId> get_unconnected_vertex_ids(
+      const Graph& graph,
+      Graph::Depth depth,
+      Graph::VertexId from_vertex_id) const {
+    std::vector<Graph::VertexId> unconnected_vertices;
+    for (auto vertex_id : graph.vertices_at_depth(depth)) {
+      if (!graph.is_connected(from_vertex_id, vertex_id)) {
+        unconnected_vertices.push_back(vertex_id);
+      }
+    }
+    return unconnected_vertices;
+  }
+
   void generate_yellow_edges(Graph& graph) const {
     for (Graph::Depth vertex_depth = kYellowEdgeStartDepth;
          vertex_depth <= params_.vertex_depth() - kYellowEdgeDepthJump;
          ++vertex_depth) {
       const float success_chance =
           static_cast<float>(vertex_depth - 1) / (params_.vertex_depth() - 2);
+      Graph::Depth required_depth = vertex_depth + kYellowEdgeDepthJump;
       for (Graph::VertexId vertex_id : graph.vertices_at_depth(vertex_depth)) {
         if (check_probability(success_chance)) {
-          add_yellow_edge(graph, vertex_id);
+          std::vector<Graph::VertexId> unconnected_vertices =
+              get_unconnected_vertex_ids(graph, required_depth, vertex_id);
+          if (unconnected_vertices.size() > 0) {
+            graph.add_edge(vertex_id,
+                           select_random_vertex(unconnected_vertices));
+          }
         }
       }
     }
   }
 
-  void add_yellow_edge(Graph& graph, Graph::VertexId from_vertex_id) const {
-    Graph::Depth required_depth =
-        graph.depth_of(from_vertex_id) + kYellowEdgeDepthJump;
-    const std::unordered_set<Graph::VertexId>& lower_layer_vertices =
-        graph.vertices_at_depth(required_depth);
-    std::vector<Graph::VertexId> probable_vertices;
-
-    for (auto vertex_id : lower_layer_vertices) {
-      if (!graph.is_connected(from_vertex_id, vertex_id)) {
-        probable_vertices.push_back(vertex_id);
-      }
-    }
-    if (probable_vertices.size() > 0) {
-      graph.add_edge(from_vertex_id, select_random_vertex(probable_vertices));
-    }
-  }
-
   void generate_red_edges(Graph& graph) const {
-    for (Graph::Depth vertex_depth = 1;
+    for (Graph::Depth vertex_depth = kRedEdgeStartDepth;
          vertex_depth <= params_.vertex_depth() - kRedEdgeDepthJump;
          ++vertex_depth) {
       const auto& probable_vertices_unordered_set =
