@@ -1,42 +1,19 @@
-#include <chrono>
-#include <ctime>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include "config.hpp"
-#include "graph.hpp"
 #pragma once
+#include <fstream>
+#include <string>
 
 class Logger {
  public:
-  static Logger* get_logger() {
-    if (NULL == _instance) {
-      _instance = new Logger();
-      _instance->ofs.open(config::kLogFilePath, std::ios::app);
-    }
-
-    return _instance;
-  }
-
+  static Logger& get_logger();
   void log(const std::string& str);
 
  private:
-  Logger(void) {}
-  virtual ~Logger(void) {}
-  static Logger* _instance;
-  std::ofstream ofs;
+  Logger();
+  ~Logger() = default;
+  Logger(const Logger& other) = delete;
+  void operator=(const Logger& other) = delete;
+  Logger(Logger&& other) = delete;
+  void operator=(Logger&& other) = delete;
 
-  class CGarbo {
-   public:
-    ~CGarbo() {
-      if (Logger::_instance) {
-        Logger::_instance->ofs.close();
-        delete Logger::_instance;
-        Logger::_instance = NULL;
-      }
-    }
-  };
-
-  static CGarbo Garbo;
+  std::ofstream output_fstream_;
 };

@@ -1,3 +1,6 @@
+#pragma once
+#include <string>
+
 namespace config {
 
 inline constexpr const char* kTempDirectoryPath = "./temp/";

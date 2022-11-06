@@ -1,7 +1,10 @@
+<<<<<<< HEAD
+=======
+#pragma once
+>>>>>>> 3dab9460508dd55d49a03564527fbcb682a4276d
 #include <set>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace uni_course_cpp {
 
@@ -65,9 +68,7 @@ class Graph {
     return connections_list_.at(vertex_id);
   }
 
-  int edges_of_color(Edge::Color color) const {
-    return edges_of_color_.at(color);
-  }
+  const std::vector<EdgeId>& edges_ids_of_color(Edge::Color color) const;
 
   bool has_vertex(VertexId id) const {
     return vertices_.find(id) != vertices_.end();
@@ -75,6 +76,7 @@ class Graph {
   bool has_edge(EdgeId id) const { return edges_.find(id) != edges_.end(); }
 
  private:
+  void add_edge_in_color(EdgeId edge_id, const Edge::Color& color);
   EdgeId gen_new_edge_id() { return next_edge_id_++; }
   VertexId gen_new_vertex_id() { return next_vertex_id_++; }
 
@@ -89,11 +91,7 @@ class Graph {
   std::unordered_map<VertexId, Vertex> vertices_;
   std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, std::set<EdgeId>> connections_list_;
-  std::unordered_map<Edge::Color, int> edges_of_color_ = {
-      {Edge::Color::Green, 0},
-      {Edge::Color::Red, 0},
-      {Edge::Color::Yellow, 0},
-      {Edge::Color::Grey, 0}};
+  std::unordered_map<Edge::Color, std::vector<EdgeId>> edges_ids_of_color_;
 };
 
 }  // namespace uni_course_cpp
