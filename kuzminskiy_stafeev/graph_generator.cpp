@@ -12,6 +12,30 @@ namespace uni_course_cpp {
 const int kMaxThreadsCount = std::thread::hardware_concurrency();
 
 namespace {
+
+using JobCallBack = std::function<void()>;
+
+bool has_job(std::mutex& jobs_mutex,
+             std::atomic<bool>& should_terminate,
+             const std::list<JobCallBack>& jobs) {
+  jobs_mutex.lock();
+
+  if (!jobs.empty()) {
+    return true;
+  } else {
+    should_terminate = true;
+    jobs_mutex.unlock();
+    return false;
+  }
+}
+
+JobCallBack get_job(std::mutex& jobs_mutex, std::list<JobCallBack>& jobs) {
+  auto job = jobs.front();
+  jobs.pop_front();
+  jobs_mutex.unlock();
+  return job;
+}
+
 std::vector<Graph::VertexId> get_unconnected_vertex_ids(
     const Graph& graph,
     Graph::VertexId vertex_id,
@@ -101,29 +125,6 @@ Graph GraphGenerator::generate() const {
   }
 
   return graph;
-}
-
-using JobCallBack = std::function<void()>;
-
-bool has_job(std::mutex& jobs_mutex,
-             std::atomic<bool>& should_terminate,
-             const std::list<JobCallBack>& jobs) {
-  jobs_mutex.lock();
-
-  if (!jobs.empty()) {
-    return true;
-  } else {
-    should_terminate = true;
-    jobs_mutex.unlock();
-    return false;
-  }
-}
-
-JobCallBack get_job(std::mutex& jobs_mutex, std::list<JobCallBack>& jobs) {
-  auto job = jobs.front();
-  jobs.pop_front();
-  jobs_mutex.unlock();
-  return job;
 }
 
 void GraphGenerator::generate_grey_branch(
