@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include "config.hpp"
 #include "graph.hpp"
 #include "graph_generator.hpp"
 #include "graph_json_printing.hpp"

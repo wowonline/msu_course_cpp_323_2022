@@ -1,5 +1,6 @@
 #include "graph_logger.hpp"
 #include <iostream>
+#include "config.hpp"
 
 Logger::Logger()
     : output_fstream_(std::ofstream(config::kLogFilePath, std::ios::app)) {}

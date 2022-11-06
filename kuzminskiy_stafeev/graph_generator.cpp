@@ -1,4 +1,5 @@
 #include "graph_generator.hpp"
+#include <iostream>
 #include <random>
 
 namespace uni_course_cpp {
@@ -82,8 +83,8 @@ Graph GraphGenerator::generate() const {
     graph.add_vertex();
     generate_grey_edges(graph);
     generate_green_edges(graph);
-    generate_yellow_edges(graph, params_.depth());
-    generate_red_edges(graph, params_.depth());
+    generate_yellow_edges(graph, graph.get_graph_depth());
+    generate_red_edges(graph, graph.get_graph_depth());
   }
   return graph;
 }

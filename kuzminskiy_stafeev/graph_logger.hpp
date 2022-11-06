@@ -1,7 +1,6 @@
 #pragma once
 #include <fstream>
-#include "config.hpp"
-#include "graph.hpp"
+#include <string>
 
 class Logger {
  public:
