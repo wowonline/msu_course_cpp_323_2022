@@ -12,8 +12,6 @@ class Graph {
   using EdgeId = int;
   using Depth = int;
 
-  static constexpr int kGraphBaseDepth = 1;
-
   VertexId add_vertex() {
     const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace(new_vertex_id, new_vertex_id);
@@ -29,11 +27,6 @@ class Graph {
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     assert(has_vertex(from_vertex_id));
     assert(has_vertex(to_vertex_id));
-    // The first edge added to the vertex must connect it with the main
-    // component. In other words, at any moment graph must be connected except
-    // for isolated vertices.
-    assert(from_vertex_id == 0 || to_vertex_id == 0 ||
-           !(depth_of(from_vertex_id) == 1 && depth_of(to_vertex_id) == 1));
 
     const auto edge_id = get_new_edge_id();
     const auto edge_color = define_edge_color(from_vertex_id, to_vertex_id);
@@ -46,7 +39,7 @@ class Graph {
     }
 
     if (edge_color == Edge::Color::Grey) {
-      update_vertex_depth(from_vertex_id, to_vertex_id);
+      set_vertex_depth(to_vertex_id, depth_of(from_vertex_id) + 1);
     }
   }
 
@@ -129,6 +122,10 @@ class Graph {
   std::unordered_map<Depth, std::unordered_set<VertexId>> depth_map_;
   static const std::unordered_set<VertexId> kEmptySet;
 
+  static constexpr int kGraphBaseDepth = 1;
+  static constexpr Graph::Depth kRedEdgeDepthJump = 2;
+  static constexpr Graph::Depth kYellowEdgeDepthJump = 1;
+
   Depth depth_ = 0;
 
   VertexId last_vertex_id_ = 0;
@@ -142,16 +139,15 @@ class Graph {
     if (from_vertex_id == to_vertex_id) {
       return Edge::Color::Green;
     }
-    if ((from_vertex_id != 0 && depth_of(from_vertex_id) == 1) ||
-        (to_vertex_id != 0 && depth_of(to_vertex_id) == 1)) {
+    if (depth_of(to_vertex_id) == kGraphBaseDepth) {
       return Edge::Color::Grey;
     }
-    int height_difference =
-        abs(depth_of(to_vertex_id) - depth_of(from_vertex_id));
-    if (height_difference == 1 && !is_connected(from_vertex_id, to_vertex_id)) {
+    int depth_jump = depth_of(to_vertex_id) - depth_of(from_vertex_id);
+    if (depth_jump == kYellowEdgeDepthJump &&
+        !is_connected(from_vertex_id, to_vertex_id)) {
       return Edge::Color::Yellow;
     }
-    if (height_difference == 2) {
+    if (depth_jump == kRedEdgeDepthJump) {
       return Edge::Color::Red;
     }
     throw std::runtime_error("Failed to determine color");
@@ -170,19 +166,6 @@ class Graph {
     vertex_depths_[vertex_id] = depth;
     depth_map_[depth].insert(vertex_id);
     depth_ = std::max(depth_, depth);
-  }
-
-  void update_vertex_depth(VertexId from_vertex_id, VertexId to_vertex_id) {
-    if (from_vertex_id == 0 || to_vertex_id == 0) {
-      const auto non_root_id = std::max(from_vertex_id, to_vertex_id);
-      if (non_root_id != 0) {
-        set_vertex_depth(non_root_id, 2);
-      }
-    } else if (depth_of(from_vertex_id) == kGraphBaseDepth) {
-      set_vertex_depth(from_vertex_id, depth_of(to_vertex_id) + 1);
-    } else if (depth_of(to_vertex_id) == kGraphBaseDepth) {
-      set_vertex_depth(to_vertex_id, depth_of(from_vertex_id) + 1);
-    }
   }
 
   VertexId other_end_of(EdgeId edge_id, VertexId vertex_id) const {
