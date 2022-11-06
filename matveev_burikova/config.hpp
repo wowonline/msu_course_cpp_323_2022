@@ -6,7 +6,6 @@
 
 namespace uni_course_cpp {
 namespace config {
-inline constexpr int kInitialDepth = 1;
 inline constexpr const char* kTempDirectoryPath = "./temp/";
 
 inline const std::string kLogFilename = "log.txt";

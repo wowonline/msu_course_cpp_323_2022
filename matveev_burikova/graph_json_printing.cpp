@@ -1,8 +1,6 @@
 #include "graph_json_printing.hpp"
 #include "graph_printing.hpp"
 
-#include <fstream>
-
 namespace uni_course_cpp {
 namespace printing {
 namespace json {
@@ -24,7 +22,7 @@ std::string print_edge(const Graph::Edge& edge) {
   return "\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
          std::to_string(edge.from_vertex_id()) + "," +
          std::to_string(edge.to_vertex_id()) + "],\"color\":\"" +
-         color_to_string(edge.color()) + "\"";
+         print_edge_color(edge.color()) + "\"";
 }
 
 std::string print_graph(const Graph& graph) {

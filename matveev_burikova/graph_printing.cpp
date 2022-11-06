@@ -23,7 +23,7 @@ std::string print_graph(const Graph& graph) {
   for (int color_number = 0; color_number < sizeof(Graph::Edge::Color);
        color_number++) {
     graph_info_string +=
-        printing::color_to_string((Graph::Edge::Color)color_number) + ": " +
+        printing::print_edge_color((Graph::Edge::Color)color_number) + ": " +
         std::to_string(color_distribution_counts[color_number]) + ", ";
   }
   graph_info_string.erase(graph_info_string.length() - 2,
@@ -31,7 +31,7 @@ std::string print_graph(const Graph& graph) {
   return graph_info_string + "}}\n}";
 }
 
-std::string color_to_string(Graph::Edge::Color color) {
+std::string print_edge_color(Graph::Edge::Color color) {
   switch (color) {
     case Graph::Edge::Color::Green:
       return "green";
@@ -43,11 +43,5 @@ std::string color_to_string(Graph::Edge::Color color) {
       return "grey";
   }
 }
-
-/*void write_to_file(const std::string& content, const std::string& file_name) {
-  std::ofstream new_file(file_name);
-
-  new_file << content;
-}*/
 }  // namespace printing
 }  // namespace uni_course_cpp

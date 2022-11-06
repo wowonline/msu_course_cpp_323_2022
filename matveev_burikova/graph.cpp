@@ -1,14 +1,15 @@
 #include "graph.hpp"
 #include "config.hpp"
 
+#include <cassert>
+
 namespace uni_course_cpp {
-const Graph::Depth Graph::initial_depth = config::kInitialDepth;
 
 Graph::VertexId Graph::add_vertex() {
   const VertexId new_vertex_id = generate_vertex_id();
   adjacency_list_[new_vertex_id] = {};
   vertices_.emplace(new_vertex_id, Vertex(new_vertex_id));
-  vertices_on_depth_[initial_depth].emplace_back(new_vertex_id);
+  vertices_on_depth_[kInitialDepth].emplace_back(new_vertex_id);
   return new_vertex_id;
 }
 
