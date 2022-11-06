@@ -10,5 +10,10 @@ class Logger {
  private:
   Logger();
   ~Logger() = default;
+  Logger(const Logger& other) = delete;
+  void operator=(const Logger& other) = delete;
+  Logger(Logger&& other) = delete;
+  void operator=(Logger&& other) = delete;
+
   std::ofstream output_fstream_;
 };
