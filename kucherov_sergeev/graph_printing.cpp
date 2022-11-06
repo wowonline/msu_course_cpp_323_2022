@@ -33,6 +33,21 @@ std::unordered_map<Graph::Edge::Color, int> get_edges_color_distribution(
 }
 }  // namespace
 
+std::string print_edge_color(Graph::Edge::Color color) {
+  switch (color) {
+    case Graph::Edge::Color::Grey:
+      return "grey";
+    case Graph::Edge::Color::Green:
+      return "green";
+    case Graph::Edge::Color::Yellow:
+      return "yellow";
+    case Graph::Edge::Color::Red:
+      return "red";
+    default:
+      return "invalid color";
+  }
+}
+
 std::string print_vertices_info(const Graph& graph) {
   const auto vertices_depth_distribution =
       get_vertices_depth_distribution(graph);

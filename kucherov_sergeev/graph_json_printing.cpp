@@ -1,4 +1,5 @@
 #include "graph_json_printing.hpp"
+#include "graph_printing.hpp"
 
 namespace uni_course_cpp {
 namespace printing {
@@ -22,21 +23,6 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   vertex_json += "}";
 
   return vertex_json;
-}
-
-std::string print_edge_color(Graph::Edge::Color color) {
-  switch (color) {
-    case Graph::Edge::Color::Grey:
-      return "grey";
-    case Graph::Edge::Color::Green:
-      return "green";
-    case Graph::Edge::Color::Yellow:
-      return "yellow";
-    case Graph::Edge::Color::Red:
-      return "red";
-    default:
-      return "invalid color";
-  }
 }
 
 std::string print_edge(const Graph::Edge& edge) {
