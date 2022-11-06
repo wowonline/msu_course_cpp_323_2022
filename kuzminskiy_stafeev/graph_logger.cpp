@@ -13,7 +13,7 @@ std::string get_current_date_time() {
   std::stringstream date_time_string;
   date_time_string << std::put_time(std::localtime(&date_time_t),
                                     "%Y.%m.%d %H:%M:%S");
-  return date_time_string.str();
+  return date_time_string.str() + " ";
 }
 
 }  // namespace
@@ -27,6 +27,7 @@ Logger& Logger::get_logger() {
 }
 
 void Logger::log(const std::string& str) {
-  std::cout << get_current_date_time() + " " + str << std::endl;
-  output_fstream_ << get_current_date_time() + " " + str << std::endl;
+  const auto& current_date_time = get_current_date_time();
+  std::cout << current_date_time + str << std::endl;
+  output_fstream_ << current_date_time + str << std::endl;
 }

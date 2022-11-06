@@ -104,7 +104,6 @@ int main() {
     logger.log(generation_finished_string(i, graph_description));
 
     const auto graph_json = printing::json::print_graph(graph);
-    std::cout << graph_json << std::endl;
     write_to_file(graph_json, std::string(config::kTempDirectoryPath) +
                                   "graph_" + std::to_string(i) + ".json");
   }
