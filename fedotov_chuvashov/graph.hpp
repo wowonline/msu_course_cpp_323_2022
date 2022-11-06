@@ -72,7 +72,7 @@ class Graph {
 
   int get_color_amount(Graph::Edge::Color color) const;
 
-  Depth depth() const { return vertices_at_depth_.size() - kGraphBaseDepth; }
+  Depth depth() const { return vertices_at_depth_.size(); }
 
   const std::set<VertexId>& vertices_at_depth(Depth depth) const {
     return vertices_at_depth_.at(depth - kGraphBaseDepth);
