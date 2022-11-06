@@ -3,10 +3,6 @@
 #include <stdexcept>
 
 namespace uni_course_cpp {
-namespace {
-static constexpr Graph::Depth kGraphDefaultDepth = 1;
-}  // namespace
-
 Graph::VertexId Graph::add_vertex() {
   const VertexId vertex_id = get_new_vertex_id();
 

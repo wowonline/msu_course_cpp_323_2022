@@ -1,11 +1,14 @@
 #include "graph_generator.hpp"
 #include <cassert>
 #include <random>
+#include "graph.hpp"
 
 namespace uni_course_cpp {
 namespace {
 static constexpr float kEdgeGreenProbability = 0.1;
 static constexpr float kEdgeRedProbability = 0.33;
+static constexpr int kYellowEdgeLength = 1;
+static constexpr int kRedEdgeLength = 2;
 
 bool get_random_bool(float true_probability) {
   std::random_device random_device;
@@ -40,6 +43,57 @@ Graph::VertexId get_random_vertex_id(
 
   return vertex_ids[uniform_int_distribution(generator)];
 }
+
+void generate_green_edges(Graph& graph) {
+  for (Graph::Depth current_depth = kGraphDefaultDepth;
+       current_depth <= graph.get_depth(); current_depth++) {
+    for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
+      if (get_random_bool(kEdgeGreenProbability)) {
+        graph.add_edge(vertex_id, vertex_id);
+      }
+    }
+  }
+}
+
+void generate_yellow_edges(Graph& graph) {
+  const auto graph_depth = graph.get_depth();
+
+  for (Graph::Depth current_depth = kGraphDefaultDepth;
+       current_depth <= graph_depth - kYellowEdgeLength; current_depth++) {
+    float new_edge_probability = current_depth / (graph_depth - 1.f);
+
+    for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
+      if (get_random_bool(new_edge_probability)) {
+        const auto& to_vertex_ids =
+            get_unconnected_vertex_ids(graph, vertex_id);
+
+        if (to_vertex_ids.empty() == false) {
+          const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
+          graph.add_edge(vertex_id, to_vertex_id);
+        }
+      }
+    }
+  }
+}
+
+void generate_red_edges(Graph& graph) {
+  for (Graph::Depth current_depth = kGraphDefaultDepth;
+       current_depth <= graph.get_depth() - kRedEdgeLength; current_depth++) {
+    const auto& to_vertex_ids =
+        graph.get_depth_vertex_ids(current_depth + kRedEdgeLength);
+
+    if (to_vertex_ids.empty()) {
+      break;
+    }
+
+    for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
+      if (get_random_bool(kEdgeRedProbability)) {
+        const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
+        graph.add_edge(vertex_id, to_vertex_id);
+      }
+    }
+  }
+}
 }  // namespace
 
 Graph GraphGenerator::generate() const {
@@ -57,8 +111,8 @@ Graph GraphGenerator::generate() const {
 }
 
 void GraphGenerator::generate_grey_edges(Graph& graph) const {
-  for (Graph::Depth current_depth = 1; current_depth < params_.depth();
-       current_depth++) {
+  for (Graph::Depth current_depth = kGraphDefaultDepth;
+       current_depth < params_.depth(); current_depth++) {
     float new_vertex_probability =
         1.f - (current_depth - 1.f) / (params_.depth() - 1.f);
 
@@ -68,54 +122,6 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
           const auto new_vertex_id = graph.add_vertex();
           graph.add_edge(vertex_id, new_vertex_id);
         }
-      }
-    }
-  }
-}
-
-void GraphGenerator::generate_green_edges(Graph& graph) const {
-  for (Graph::Depth current_depth = 1; current_depth <= params_.depth();
-       current_depth++) {
-    for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
-      if (get_random_bool(kEdgeGreenProbability)) {
-        graph.add_edge(vertex_id, vertex_id);
-      }
-    }
-  }
-}
-
-void GraphGenerator::generate_yellow_edges(Graph& graph) const {
-  for (Graph::Depth current_depth = 2; current_depth < params_.depth();
-       current_depth++) {
-    float new_edge_probability = current_depth / (params_.depth() - 1.f);
-
-    for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
-      if (get_random_bool(new_edge_probability)) {
-        const auto& to_vertex_ids =
-            get_unconnected_vertex_ids(graph, vertex_id);
-
-        if (to_vertex_ids.size() != 0) {
-          const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
-          graph.add_edge(vertex_id, to_vertex_id);
-        }
-      }
-    }
-  }
-}
-
-void GraphGenerator::generate_red_edges(Graph& graph) const {
-  for (Graph::Depth current_depth = 1; current_depth < params_.depth() - 1;
-       current_depth++) {
-    const auto& to_vertex_ids = graph.get_depth_vertex_ids(current_depth + 2);
-
-    if (to_vertex_ids.size() == 0) {
-      break;
-    }
-
-    for (const auto vertex_id : graph.get_depth_vertex_ids(current_depth)) {
-      if (get_random_bool(kEdgeRedProbability)) {
-        const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
-        graph.add_edge(vertex_id, to_vertex_id);
       }
     }
   }
