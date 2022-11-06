@@ -22,8 +22,8 @@ class Graph {
     return new_vertex_id;
   }
 
-  bool has_vertex(VertexId id) const {
-    return vertices_.find(id) != vertices_.end();
+  bool has_vertex(VertexId vertex_id) const {
+    return vertices_.find(vertex_id) != vertices_.end();
   }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
@@ -54,9 +54,7 @@ class Graph {
 
   const auto& edges() const { return edges_; }
 
-  const auto& connections() const { return connections_; }
-
-  const auto& vertex_depths() const { return vertex_depths_; }
+  const auto& connections_of(VertexId vertex_id) const { return connections_.at(vertex_id); }
 
   const auto& depth() const { return depth_; }
 
