@@ -4,6 +4,14 @@
 #include "graph.hpp"
 
 namespace uni_course_cpp {
+const std::initializer_list<Graph::Edge::Color>& Graph::Edge::get_color_list() {
+  return color_list_;
+}
+
+const std::initializer_list<Graph::Edge::Color> Graph::Edge::color_list_ = {
+    Graph::Edge::Color::Grey, Graph::Edge::Color::Green,
+    Graph::Edge::Color::Yellow, Graph::Edge::Color::Red};
+
 Graph::VertexId Graph::add_vertex() {
   const VertexId vertex_id = get_new_vertex_id();
 

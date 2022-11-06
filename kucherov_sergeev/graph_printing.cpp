@@ -1,4 +1,5 @@
 #include "graph_printing.hpp"
+#include <map>
 
 namespace uni_course_cpp {
 namespace printing {
@@ -14,13 +15,14 @@ std::vector<int> get_vertices_depth_distribution(const Graph& graph) {
   return vertices_depth_distribution;
 }
 
-std::vector<int> get_edges_color_distribution(const Graph& graph) {
-  std::vector<int> edges_color_distribution(sizeof(Graph::Edge::Color), 0);
+std::map<Graph::Edge::Color, int> get_edges_color_distribution(
+    const Graph& graph) {
+  std::map<Graph::Edge::Color, int> edges_color_distribution;
 
   const auto& edges = graph.get_edges();
 
   for (const auto& [edge_id, edge] : edges) {
-    edges_color_distribution[(int)edge.color()] += 1;
+    edges_color_distribution[edge.color()] += 1;
   }
 
   return edges_color_distribution;
@@ -67,18 +69,13 @@ std::string print_edges_info(const Graph& graph) {
       "edges: {amount: " + std::to_string(graph.get_edges().size()) +
       ", distribution: {";
 
-  for (int color_number = 0; color_number < sizeof(Graph::Edge::Color);
-       color_number++) {
-    Graph::Edge::Color color = (Graph::Edge::Color)color_number;
+  for (const auto color : Graph::Edge::get_color_list()) {
     edges_string += print_edge_color(color) + ": " +
-                    std::to_string(edges_color_distribution.at(color_number)) +
-                    ", ";
+                    std::to_string(edges_color_distribution.at(color)) + ", ";
   }
 
-  if (sizeof(Graph::Edge::Color) != 0) {
-    edges_string.pop_back();
-    edges_string.pop_back();
-  }
+  edges_string.pop_back();
+  edges_string.pop_back();
 
   edges_string += "}}";
 

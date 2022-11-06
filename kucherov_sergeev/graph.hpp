@@ -24,12 +24,14 @@ class Graph {
     VertexId from_vertex_id() const { return from_vertex_id_; }
     VertexId to_vertex_id() const { return to_vertex_id_; }
     Color color() const { return color_; }
+    static const std::initializer_list<Color>& get_color_list();
 
    private:
     EdgeId id_ = 0;
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
     Color color_ = Color::Grey;
+    static const std::initializer_list<Color> color_list_;
   };
 
   struct Vertex {
