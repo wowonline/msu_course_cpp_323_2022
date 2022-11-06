@@ -1,11 +1,7 @@
 #include "graph_generator.hpp"
-#include <stdlib.h>
-#include <array>
 #include <atomic>
-#include <chrono>
-#include <functional>
-#include <iostream>
 #include <list>
+#include <functional>
 #include <mutex>
 #include <optional>
 #include <random>
