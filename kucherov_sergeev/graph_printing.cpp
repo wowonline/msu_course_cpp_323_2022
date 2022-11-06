@@ -15,18 +15,13 @@ std::vector<int> get_vertices_depth_distribution(const Graph& graph) {
   return vertices_depth_distribution;
 }
 
-std::unordered_map<Graph::Edge::Color, int> get_edges_color_distribution(
-    const Graph& graph) {
-  std::unordered_map<Graph::Edge::Color, int> edges_color_distribution{
-      {Graph::Edge::Color::Green, 0},
-      {Graph::Edge::Color::Red, 0},
-      {Graph::Edge::Color::Yellow, 0},
-      {Graph::Edge::Color::Grey, 0}};
+std::vector<int> get_edges_color_distribution(const Graph& graph) {
+  std::vector<int> edges_color_distribution(sizeof(Graph::Edge::Color), 0);
 
   const auto& edges = graph.get_edges();
 
   for (const auto& [edge_id, edge] : edges) {
-    edges_color_distribution[edge.color()] += 1;
+    edges_color_distribution[(int)edge.color()] += 1;
   }
 
   return edges_color_distribution;
@@ -72,22 +67,16 @@ std::string print_edges_info(const Graph& graph) {
   std::string edges_string =
       "edges: {amount: " + std::to_string(graph.get_edges().size()) +
       ", distribution: {";
-  edges_string +=
-      "grey: " +
-      std::to_string(edges_color_distribution.at(Graph::Edge::Color::Grey)) +
-      ", ";
-  edges_string +=
-      "green: " +
-      std::to_string(edges_color_distribution.at(Graph::Edge::Color::Green)) +
-      ", ";
-  edges_string +=
-      "yellow: " +
-      std::to_string(edges_color_distribution.at(Graph::Edge::Color::Yellow)) +
-      ", ";
-  edges_string +=
-      "red: " +
-      std::to_string(edges_color_distribution.at(Graph::Edge::Color::Red)) +
-      "}}";
+
+  for (int color_number = 0; color_number < sizeof(Graph::Edge::Color);
+       color_number++) {
+    Graph::Edge::Color color = (Graph::Edge::Color)color_number;
+    edges_string += print_edge_color(color) + ": " +
+                    std::to_string(edges_color_distribution.at(color_number)) +
+                    ", ";
+  }
+
+  edges_string += "}}";
 
   return edges_string;
 }
