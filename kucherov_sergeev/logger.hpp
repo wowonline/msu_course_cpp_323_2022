@@ -9,9 +9,9 @@ class Logger {
  public:
   static Logger& get_logger() {
     static Logger logger;
-    logger.log_file.open(config::kLogFilePath, std::ios::out);
+    logger.log_file_.open(config::kLogFilePath, std::ios::out);
 
-    if (logger.log_file.fail()) {
+    if (logger.log_file_.fail()) {
       throw std::runtime_error("Failed to open " + config::kLogFilePath +
                                " for logging");
     }
@@ -22,8 +22,6 @@ class Logger {
   void log(const std::string& string);
 
  private:
-  void log_to_file(const std::string& string);
-
-  std::ofstream log_file;
+  std::ofstream log_file_;
 };
 }  // namespace uni_course_cpp

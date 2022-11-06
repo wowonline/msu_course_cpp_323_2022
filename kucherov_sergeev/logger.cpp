@@ -19,10 +19,6 @@ namespace uni_course_cpp {
 void Logger::log(const std::string& string) {
   const auto log_string = get_current_date_time() + " " + string;
   std::cout << log_string << std::endl;
-  log_to_file(log_string);
-}
-
-void Logger::log_to_file(const std::string& string) {
-  log_file << string << std::endl;
+  log_file_ << string << std::endl;
 }
 }  // namespace uni_course_cpp
