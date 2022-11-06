@@ -22,9 +22,13 @@ class Graph {
     return new_vertex_id;
   }
 
+  bool has_vertex(VertexId id) const {
+    return vertices_.find(id) != vertices_.end();
+  }
+
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    assert(from_vertex_id < vertices_.size());
-    assert(to_vertex_id < vertices_.size());
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
     // The first edge added to the vertex must connect it with the main
     // component. In other words, at any moment graph must be connected except
     // for isolated vertices.

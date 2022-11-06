@@ -9,10 +9,10 @@ class GraphGenerator {
  public:
   struct Params {
    public:
-    Params(Graph::Depth depth, int new_vertices_count)
-        : depth_(depth), new_vertices_count_(new_vertices_count) {}
+    Params(Graph::Depth vertex_depth, int new_vertices_count)
+        : depth_(vertex_depth), new_vertices_count_(new_vertices_count) {}
 
-    Graph::Depth depth() const { return depth_; }
+    Graph::Depth vertex_depth() const { return depth_; }
     int new_vertices_count() const { return new_vertices_count_; }
 
    private:
@@ -39,6 +39,9 @@ class GraphGenerator {
   static constexpr float kRedEdgeGenerationChance = 0.33f;
   static constexpr Graph::Depth kRedEdgeDepth = 2;
   static constexpr Graph::Depth kYellowEdgeDepth = 1;
+  static constexpr int kRedEdgeDepthJump = 2;
+  static constexpr int kYellowEdgeDepthJump = 1;
+  static constexpr Graph::Depth kYellowEdgeStartDepth = 2;
   Params params_ = Params(0, 0);
 
   mutable std::mt19937 generator_{std::random_device()()};
@@ -49,7 +52,7 @@ class GraphGenerator {
   }
 
   void generate_grey_edges(Graph& graph) const {
-    if (params_.depth() <= 1) {
+    if (params_.vertex_depth() <= 1) {
       return;
     }
     std::queue<Graph::VertexId> queue;
@@ -57,10 +60,11 @@ class GraphGenerator {
     while (!queue.empty()) {
       const auto vertex_id = queue.front();
       queue.pop();
-      const auto depth = graph.depth_of(vertex_id);
-      if (depth < params_.depth()) {
+      const auto vertex_depth = graph.depth_of(vertex_id);
+      if (vertex_depth < params_.vertex_depth()) {
         const float success_chance =
-            1.f - static_cast<float>(depth - 1) / (params_.depth() - 1);
+            1.f -
+            static_cast<float>(vertex_depth - 1) / (params_.vertex_depth() - 1);
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
           if (check_probability(success_chance)) {
             const auto new_vertex_id = graph.add_vertex();
@@ -88,12 +92,12 @@ class GraphGenerator {
   }
 
   void generate_yellow_edges(Graph& graph) const {
-    for (const auto& [vertex_id, vertex] : graph.vertices()) {
-      const auto vertex_depth = graph.depth_of(vertex_id);
-      if (vertex_depth != 1 &&
-          vertex_depth <= params_.depth() - kYellowEdgeDepth) {
+    for (Graph::Depth vertex_depth = kYellowEdgeStartDepth;
+         vertex_depth <= params_.vertex_depth() - kYellowEdgeDepthJump;
+         ++vertex_depth) {
+      for (Graph::VertexId vertex_id : graph.vertices_at_depth(vertex_depth)) {
         const float success_chance =
-            static_cast<float>(vertex_depth - 1) / (params_.depth() - 2);
+            static_cast<float>(vertex_depth - 1) / (params_.vertex_depth() - 2);
         if (check_probability(success_chance)) {
           add_yellow_edge(graph, vertex_id);
         }
@@ -102,11 +106,14 @@ class GraphGenerator {
   }
 
   void add_yellow_edge(Graph& graph, Graph::VertexId from_vertex_id) const {
+    Graph::Depth required_depth =
+        graph.depth_of(from_vertex_id) + kYellowEdgeDepthJump;
+    const std::unordered_set<Graph::VertexId>& lower_layer_vertices =
+        graph.vertices_at_depth(required_depth);
     std::vector<Graph::VertexId> probable_vertices;
-    for (const auto& [vertex_id, vertex] : graph.vertices()) {
-      if (graph.depth_of(vertex_id) ==
-              graph.depth_of(from_vertex_id) + kYellowEdgeDepth &&
-          !graph.is_connected(from_vertex_id, vertex_id)) {
+
+    for (auto vertex_id : lower_layer_vertices) {
+      if (!graph.is_connected(from_vertex_id, vertex_id)) {
         probable_vertices.push_back(vertex_id);
       }
     }
@@ -118,7 +125,7 @@ class GraphGenerator {
   void generate_red_edges(Graph& graph) const {
     for (const auto& [vertex_id, vertex] : graph.vertices()) {
       const auto vertex_depth = graph.depth_of(vertex_id);
-      if (vertex_depth <= params_.depth() - kRedEdgeDepth) {
+      if (vertex_depth <= params_.vertex_depth() - kRedEdgeDepthJump) {
         if (check_probability(kRedEdgeGenerationChance)) {
           add_red_edge(graph, vertex_id);
         }
@@ -130,7 +137,7 @@ class GraphGenerator {
     std::vector<Graph::VertexId> probable_vertices;
     for (const auto& [vertex_id, vertex] : graph.vertices()) {
       if (graph.depth_of(vertex_id) ==
-          graph.depth_of(from_vertex_id) + kRedEdgeDepth) {
+          graph.depth_of(from_vertex_id) + kRedEdgeDepthJump) {
         probable_vertices.push_back(vertex_id);
       }
     }
