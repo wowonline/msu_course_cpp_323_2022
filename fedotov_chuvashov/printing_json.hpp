@@ -1,7 +1,7 @@
 #pragma once
+#include <string>
 #include "graph.hpp"
 #include "printing.hpp"
-#include <string>
 
 namespace uni_course_cpp {
 namespace json {
