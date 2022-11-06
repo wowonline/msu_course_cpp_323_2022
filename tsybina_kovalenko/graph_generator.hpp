@@ -24,12 +24,14 @@ class GraphGenerator {
 
   Graph generate() const {
     auto graph = Graph();
+    if (params_.vertex_depth() != 0) {
     graph.add_vertex();
 
     generate_grey_edges(graph);
     generate_green_edges(graph);
     generate_yellow_edges(graph);
     generate_red_edges(graph);
+    }
 
     return graph;
   }
