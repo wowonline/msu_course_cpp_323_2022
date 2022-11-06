@@ -1,8 +1,6 @@
 #include "graph_printing.hpp"
 #include <map>
 
-namespace {}
-
 namespace uni_course_cpp {
 namespace printing {
 namespace {

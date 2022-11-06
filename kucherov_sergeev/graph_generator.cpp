@@ -2,6 +2,7 @@
 #include <cassert>
 #include <random>
 
+namespace uni_course_cpp {
 namespace {
 static constexpr float kEdgeGreenProbability = 0.1;
 static constexpr float kEdgeRedProbability = 0.33;
@@ -12,10 +13,7 @@ bool get_random_bool(float true_probability) {
   std::bernoulli_distribution bernoulli_distribution(true_probability);
   return bernoulli_distribution(generator);
 }
-}  // namespace
 
-namespace uni_course_cpp {
-namespace {
 std::vector<Graph::VertexId> get_unconnected_vertex_ids(
     const Graph& graph,
     Graph::VertexId vertex_id) {
