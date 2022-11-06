@@ -2,13 +2,27 @@
 #include <sstream>
 
 namespace printing {
-namespace json {
+std::string print_edge_color(Graph::Edge::Color color) {
+  switch (color) {
+    case Graph::Edge::Color::Grey:
+      return "grey";
+    case Graph::Edge::Color::Yellow:
+      return "yellow";
+    case Graph::Edge::Color::Red:
+      return "red";
+    case Graph::Edge::Color::Green:
+      return "green";
+  }
+}
 
+namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::ostringstream result;
   bool is_first = true;
   const auto& edges_ids = graph.connected_edge_ids(vertex.id());
-  result << "\n{ \"id\": " << vertex.id() << ", \"edges_ids\": [";
+  result << "\n{ \"id\": " << vertex.id()
+         << ", \"depth\": " << graph.get_vertex_depth(vertex.id())
+         << ", \"edge_ids\": [";
   for (const auto edge_id : edges_ids) {
     if (!is_first)
       result << ", " << edge_id;
@@ -23,35 +37,37 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 
 std::string print_edge(const Graph::Edge& edge) {
   std::ostringstream result;
-  result << "\n{\"id\": " << edge.id() << ", \"vertex_ids\": ["
+  result << "\n{\"id\": " << edge.id() << ", \"color\": \""
+         << print_edge_color(edge.color()) << "\", \"vertex_ids\": ["
          << edge.from_vertex_id() << ", " << edge.to_vertex_id() << "]}";
   return result.str();
 }
 
 std::string print_graph(const Graph& graph) {
-  std::string result = "{\"vertices\": [";
+  std::ostringstream result;
+  result << "{\"depth\": " << graph.depth() << ",\n \"vertices\": [";
   bool is_first = true;
   for (const auto& [_, vertex] : graph.vertices()) {
     if (!is_first) {
-      result.append(", ");
+      result << ", ";
     } else {
       is_first = false;
     }
-    result.append(print_vertex(vertex, graph));
+    result << print_vertex(vertex, graph);
   }
 
-  result.append("],\n\"edges\": [");
+  result << "],\n\"edges\": [";
   is_first = true;
   for (const auto& [_, edge] : graph.edges()) {
     if (!is_first) {
-      result.append(", ");
+      result << ", ";
     } else {
       is_first = false;
     }
-    result.append(print_edge(edge));
+    result << print_edge(edge);
   }
-  result.append("]}\n");
-  return result;
+  result << "]}\n";
+  return result.str();
 }
 };  // namespace json
 
