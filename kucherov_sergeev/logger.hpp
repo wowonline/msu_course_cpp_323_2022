@@ -1,27 +1,21 @@
 #pragma once
 
 #include <fstream>
-#include <iostream>
 #include "config.hpp"
 
 namespace uni_course_cpp {
 class Logger {
  public:
-  static Logger& get_logger() {
-    static Logger logger;
-    logger.log_file_.open(config::kLogFilePath, std::ios::out);
-
-    if (logger.log_file_.fail()) {
-      throw std::runtime_error("Failed to open " + config::kLogFilePath +
-                               " for logging");
-    }
-
-    return logger;
-  };
+  static Logger& get_logger();
 
   void log(const std::string& string);
 
  private:
+  Logger(){};
+  Logger(Logger const&){};
+  void operator=(Logger const&){};
+  ~Logger() = default;
+
   std::ofstream log_file_;
 };
 }  // namespace uni_course_cpp
