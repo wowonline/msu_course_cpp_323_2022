@@ -8,8 +8,8 @@ namespace uni_course_cpp {
 namespace {
 static constexpr float kEdgeGreenProbability = 0.1;
 static constexpr float kEdgeRedProbability = 0.33;
-static constexpr int kYellowEdgeLength = 1;
-static constexpr int kRedEdgeLength = 2;
+static constexpr Graph::Depth kYellowEdgeLength = 1;
+static constexpr Graph::Depth kRedEdgeLength = 2;
 
 bool get_random_bool(float true_probability) {
   std::random_device random_device;
