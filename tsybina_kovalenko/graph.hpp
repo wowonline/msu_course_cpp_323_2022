@@ -11,11 +11,13 @@ class Graph {
   using EdgeId = int;
   using Depth = int;
 
+  static constexpr int kGraphBaseDepth = 1;
+
   VertexId add_vertex() {
     const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(new_vertex_id);
     connections_[new_vertex_id] = {};
-    set_vertex_depth(new_vertex_id, 1);
+    set_vertex_depth(new_vertex_id, kGraphBaseDepth);
     return new_vertex_id;
   }
 
