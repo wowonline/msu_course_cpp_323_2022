@@ -10,11 +10,14 @@
 #include "graph_printing.hpp"
 #include "logger.hpp"
 
-using namespace uni_course_cpp;
+using Graph = uni_course_cpp::Graph;
+using GraphGenerator = uni_course_cpp::GraphGenerator;
+using Logger = uni_course_cpp::Logger;
 
 void write_to_file(const std::string& graph_json,
                    const std::string& file_name) {
-  std::string file_path = config::kTempDirectoryPath + file_name;
+  std::string file_path =
+      uni_course_cpp::config::kTempDirectoryPath + file_name;
   std::ofstream json_file(file_path);
 
   json_file << graph_json;
@@ -104,9 +107,10 @@ std::string generation_finished_string(int graph_number,
 }
 
 void prepare_temp_directory() {
-  if (std::filesystem::exists(config::kTempDirectoryPath) == false) {
-    if (std::filesystem::create_directory(config::kTempDirectoryPath) ==
-        false) {
+  if (std::filesystem::exists(uni_course_cpp::config::kTempDirectoryPath) ==
+      false) {
+    if (std::filesystem::create_directory(
+            uni_course_cpp::config::kTempDirectoryPath) == false) {
       throw std::runtime_error("Can't prepare temp directory");
     }
   }
@@ -126,10 +130,10 @@ int main() {
     logger.log(generation_started_string(i));
     const auto graph = generator.generate();
 
-    const auto graph_description = printing::print_graph(graph);
+    const auto graph_description = uni_course_cpp::printing::print_graph(graph);
     logger.log(generation_finished_string(i, graph_description));
 
-    const auto graph_json = printing::json::print_graph(graph);
+    const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
     write_to_file(graph_json, "graph_" + std::to_string(i) + ".json");
   }
 
