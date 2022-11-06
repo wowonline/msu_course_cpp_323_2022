@@ -1,4 +1,5 @@
 #include "graph_printing.hpp"
+#include <map>
 
 namespace {}
 

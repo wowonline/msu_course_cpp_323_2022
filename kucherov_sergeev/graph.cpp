@@ -1,4 +1,6 @@
 #include "graph.hpp"
+#include <algorithm>
+#include <stdexcept>
 
 namespace uni_course_cpp {
 namespace {

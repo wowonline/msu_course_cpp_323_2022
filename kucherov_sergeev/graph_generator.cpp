@@ -1,4 +1,6 @@
 #include "graph_generator.hpp"
+#include <cassert>
+#include <random>
 
 namespace {
 static constexpr float kEdgeGreenProbability = 0.1;

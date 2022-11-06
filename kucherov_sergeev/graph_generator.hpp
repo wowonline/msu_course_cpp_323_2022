@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cassert>
-#include <random>
 #include "graph.hpp"
 
 namespace uni_course_cpp {

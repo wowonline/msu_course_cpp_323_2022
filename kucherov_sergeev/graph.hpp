@@ -1,7 +1,5 @@
 #pragma once
 
-#include <algorithm>
-#include <stdexcept>
 #include <unordered_map>
 #include <vector>
 
