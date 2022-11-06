@@ -26,13 +26,13 @@ void Logger::log(const std::string& string) {
 
 Logger& Logger::get_logger() {
   static Logger logger;
-  logger.log_file_.open(config::kLogFilePath, std::ios::out);
-
-  if (logger.log_file_.fail()) {
-    throw std::runtime_error("Failed to open " + config::kLogFilePath +
-                             " for logging");
-  }
 
   return logger;
+};
+
+Logger::Logger() : log_file_(config::kLogFilePath) {
+  if (!log_file_.is_open()) {
+    throw std::runtime_error("Failed to create file stream");
+  }
 };
 }  // namespace uni_course_cpp

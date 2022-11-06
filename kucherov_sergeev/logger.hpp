@@ -11,7 +11,7 @@ class Logger {
   void log(const std::string& string);
 
  private:
-  Logger(){};
+  Logger();
   Logger(Logger const&){};
   void operator=(Logger const&){};
   ~Logger() = default;
