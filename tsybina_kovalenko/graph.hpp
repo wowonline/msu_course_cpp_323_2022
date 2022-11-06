@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class Graph {
@@ -57,6 +58,13 @@ class Graph {
 
   Depth depth_of(VertexId vertex_id) const {
     return vertex_depths_.at(vertex_id);
+  }
+
+  const std::unordered_set<VertexId>& vertices_at_depth(Depth depth) const {
+    if (depth_map_.find(depth) == depth_map_.end()) {
+      return kEmptySet;
+    }
+    return depth_map_.at(depth);
   }
 
   std::vector<VertexId> connected_vertices(VertexId vertex_id) const {
@@ -114,6 +122,8 @@ class Graph {
   std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
+  std::unordered_map<Depth, std::unordered_set<VertexId>> depth_map_;
+  const std::unordered_set<VertexId> kEmptySet;
 
   Depth depth_ = 0;
 
@@ -144,7 +154,17 @@ class Graph {
   }
 
   void set_vertex_depth(VertexId vertex_id, Depth depth) {
+    auto depth_iterator = vertex_depths_.find(vertex_id);
+    if (depth_iterator != vertex_depths_.end()) {
+      Depth old_depth = depth_iterator->second;
+      if (depth == old_depth) {
+        return;
+      }
+      depth_map_[old_depth].erase(vertex_id);
+    }
+
     vertex_depths_[vertex_id] = depth;
+    depth_map_[depth].insert(vertex_id);
     depth_ = std::max(depth_, depth);
   }
 
@@ -154,9 +174,9 @@ class Graph {
       if (non_root_id != 0) {
         set_vertex_depth(non_root_id, 2);
       }
-    } else if (depth_of(from_vertex_id) == 1) {
+    } else if (depth_of(from_vertex_id) == kGraphBaseDepth) {
       set_vertex_depth(from_vertex_id, depth_of(to_vertex_id) + 1);
-    } else if (depth_of(to_vertex_id) == 1) {
+    } else if (depth_of(to_vertex_id) == kGraphBaseDepth) {
       set_vertex_depth(to_vertex_id, depth_of(from_vertex_id) + 1);
     }
   }
