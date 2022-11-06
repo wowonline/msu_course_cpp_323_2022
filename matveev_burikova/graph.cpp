@@ -1,9 +1,16 @@
 #include "graph.hpp"
-#include "config.hpp"
 
 #include <cassert>
 
+namespace {
+
+using Vertex = uni_course_cpp::Graph::Vertex;
+
+}
+
 namespace uni_course_cpp {
+
+Vertex::Vertex(VertexId id) : id_(id), depth(kInitialDepth) {}
 
 Graph::VertexId Graph::add_vertex() {
   const VertexId new_vertex_id = generate_vertex_id();

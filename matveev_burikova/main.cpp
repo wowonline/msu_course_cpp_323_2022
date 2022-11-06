@@ -7,7 +7,6 @@
 
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 
 using Graph = uni_course_cpp::Graph;
 using GraphGenerator = uni_course_cpp::GraphGenerator;

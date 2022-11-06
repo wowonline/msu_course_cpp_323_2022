@@ -3,7 +3,6 @@
 #include "config.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <unordered_map>
 
 namespace uni_course_cpp {
@@ -12,13 +11,12 @@ class Graph {
   using VertexId = int;
   using EdgeId = int;
   using Depth = int;
-  static constexpr Graph::Depth kInitialDepth = 1;
 
   struct Vertex {
    public:
-    explicit Vertex(VertexId id) : id_(id) {}
+    explicit Vertex(VertexId id);
     VertexId id() const { return id_; }
-    Depth depth = kInitialDepth;
+    Depth depth;
 
    private:
     VertexId id_;
@@ -90,4 +88,7 @@ class Graph {
 
   void set_vertex_depth(VertexId vertex_id, Depth new_depth);
 };
+
+static constexpr Graph::Depth kInitialDepth = 1;
+
 }  // namespace uni_course_cpp
