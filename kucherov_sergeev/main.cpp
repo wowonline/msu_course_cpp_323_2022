@@ -16,7 +16,7 @@ using Logger = uni_course_cpp::Logger;
 
 void write_to_file(const std::string& graph_json,
                    const std::string& file_name) {
-  std::string file_path =
+  const std::string file_path =
       uni_course_cpp::config::kTempDirectoryPath + file_name;
   std::ofstream json_file(file_path);
 
