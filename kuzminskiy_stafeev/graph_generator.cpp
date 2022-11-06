@@ -4,7 +4,6 @@
 namespace uni_course_cpp {
 
 namespace {
-
 std::vector<Graph::VertexId> get_unconnected_vertex_ids(
     const Graph& graph,
     Graph::VertexId vertex_id,
@@ -33,23 +32,9 @@ bool check_probability(float prob) {
   return d(gen);
 }
 
-}  // namespace
-
-Graph GraphGenerator::generate() const {
-  auto graph = Graph();
-  if (params_.depth()) {
-    graph.add_vertex();
-    generate_grey_edges(graph);
-    generate_green_edges(graph);
-    generate_yellow_edges(graph);
-    generate_red_edges(graph);
-  }
-  return graph;
-}
-
-void GraphGenerator::generate_grey_edges(Graph& graph) const {
-  const auto depth = params_.depth();
-  const auto new_vertices_count = params_.new_vertices_count();
+void generate_grey_edges(Graph& graph,
+                         Graph::Depth depth,
+                         int new_vertices_count) {
   float step = 1.0 / (depth - 1);
 
   for (Graph::Depth cur_depth = 1; cur_depth <= depth; cur_depth++) {
@@ -71,7 +56,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
   }
 }
 
-void GraphGenerator::generate_green_edges(Graph& graph) const {
+void generate_green_edges(Graph& graph) {
   static float constexpr prob = 0.1;
   const auto& vertices = graph.vertices();
   for (const auto& [vertex_id, vertex] : vertices) {
@@ -81,8 +66,7 @@ void GraphGenerator::generate_green_edges(Graph& graph) const {
   }
 }
 
-void GraphGenerator::generate_yellow_edges(Graph& graph) const {
-  const auto depth = graph.get_graph_depth();
+void generate_yellow_edges(Graph& graph, Graph::Depth depth) {
   float step = 1.0 / (depth - 2);
   for (Graph::Depth cur_depth = 2; cur_depth <= depth - 1; cur_depth++) {
     float prob = (float)(step * (cur_depth - 1));
@@ -100,8 +84,7 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
   }
 }
 
-void GraphGenerator::generate_red_edges(Graph& graph) const {
-  const auto depth = graph.get_graph_depth();
+void generate_red_edges(Graph& graph, Graph::Depth depth) {
   static float constexpr prob = (float)1 / 3;
   for (Graph::Depth cur_depth = 1; cur_depth <= depth - 2; cur_depth++) {
     const auto& next_vertices_depth = graph.vertices_of_depth(cur_depth + 2);
@@ -113,6 +96,20 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
       }
     }
   }
+}
+
+}  // namespace
+
+Graph GraphGenerator::generate() const {
+  auto graph = Graph();
+  if (params_.depth()) {
+    graph.add_vertex();
+    generate_grey_edges(graph, params_.depth(), params_.new_vertices_count());
+    generate_green_edges(graph);
+    generate_yellow_edges(graph, params_.depth());
+    generate_red_edges(graph, params_.depth());
+  }
+  return graph;
 }
 
 }  // namespace uni_course_cpp
