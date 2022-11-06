@@ -75,6 +75,11 @@ std::string print_edges_info(const Graph& graph) {
                     ", ";
   }
 
+  if (sizeof(Graph::Edge::Color) != 0) {
+    edges_string.pop_back();
+    edges_string.pop_back();
+  }
+
   edges_string += "}}";
 
   return edges_string;
