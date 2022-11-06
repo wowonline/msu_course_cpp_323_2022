@@ -1,5 +1,7 @@
 #include "graph_printing.hpp"
 
+#include <array>
+
 namespace uni_course_cpp {
 namespace printing {
 std::string print_graph(const Graph& graph) {
@@ -17,7 +19,7 @@ std::string print_graph(const Graph& graph) {
   graph_info_string +=
       "]},\n  edges: {amount: " + std::to_string(graph.get_edges().size()) +
       ", distribution: {";
-  int color_distribution_counts[sizeof(Graph::Edge::Color)] = {0};
+  std::array<int, sizeof(Graph::Edge::Color)> color_distribution_counts = {0};
   for (const auto& [edge_id, edge] : graph.get_edges())
     color_distribution_counts[(int)edge.color()]++;
   for (int color_number = 0; color_number < sizeof(Graph::Edge::Color);

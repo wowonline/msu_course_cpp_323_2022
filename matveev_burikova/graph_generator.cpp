@@ -88,7 +88,7 @@ namespace uni_course_cpp {
 void GraphGenerator::generate_grey_edges(Graph& graph) const {
   const Graph::Depth depth = params_.depth();
   const float step = 1.0 / (depth - 1);
-  for (Graph::Depth current_depth = 0; current_depth < depth; ++current_depth)
+  for (Graph::Depth current_depth = 0; current_depth < depth; ++current_depth) {
     for (const auto vertex_id :
          graph.get_vertex_ids_on_depth(current_depth + 1))
       for (int j = 0; j < params_.new_vertices_count(); ++j) {
@@ -97,6 +97,9 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
           graph.add_edge(vertex_id, new_vertex_id);
         }
       }
+    if (graph.depth() < current_depth + 2)
+      break;
+  }
 }
 
 Graph GraphGenerator::generate() const {

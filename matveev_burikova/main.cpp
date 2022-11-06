@@ -7,6 +7,8 @@
 
 #include <filesystem>
 #include <fstream>
+#include <sstream>
+#include <string>
 
 using Graph = uni_course_cpp::Graph;
 using GraphGenerator = uni_course_cpp::GraphGenerator;
@@ -115,7 +117,6 @@ void prepare_temp_directory() {
   if (!std::filesystem::exists(uni_course_cpp::config::kTempDirectoryPath))
     std::filesystem::create_directory(
         uni_course_cpp::config::kTempDirectoryPath);
-  std::ofstream log_file(uni_course_cpp::config::kLogFilePath);
 }
 
 int main() {
@@ -126,7 +127,7 @@ int main() {
 
   auto params = GraphGenerator::Params(depth, new_vertices_count);
   const auto generator = GraphGenerator(std::move(params));
-  const auto& logger = Logger::get_logger();
+  auto& logger = Logger::get_logger();
 
   for (int number_of_graph = 0; number_of_graph < graphs_count;
        ++number_of_graph) {

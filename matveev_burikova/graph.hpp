@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <unordered_map>
+#include <vector>
 
 namespace uni_course_cpp {
 class Graph {
@@ -65,9 +66,7 @@ class Graph {
     return adjacency_list_.at(vertex_id);
   }
 
-  const std::vector<VertexId>& get_vertex_ids_on_depth(Depth depth) const {
-    return vertices_on_depth_.at(depth);
-  }
+  const std::vector<VertexId>& get_vertex_ids_on_depth(Depth asked_depth) const;
 
   bool has_vertex(VertexId vertex_id) const {
     return vertices_.find(vertex_id) != vertices_.end();

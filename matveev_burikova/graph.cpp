@@ -38,6 +38,12 @@ Graph::Edge::Color Graph::get_new_edge_color(VertexId from_vertex_id,
   throw std::runtime_error("Failed to determine color");
 }
 
+const std::vector<Graph::VertexId>& Graph::get_vertex_ids_on_depth(
+    Graph::Depth asked_depth) const {
+  assert(depth() >= asked_depth);
+  return vertices_on_depth_.at(asked_depth);
+}
+
 void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   assert(has_vertex(from_vertex_id));
   assert(has_vertex(to_vertex_id));

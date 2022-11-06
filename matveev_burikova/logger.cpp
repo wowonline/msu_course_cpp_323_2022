@@ -5,6 +5,8 @@
 #include <ctime>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
+#include <sstream>
 
 namespace {
 std::string get_current_date_time() {
@@ -15,8 +17,6 @@ std::string get_current_date_time() {
                                     "%Y.%m.%d %H:%M:%S");
   return date_time_string.str();
 }
-std::ofstream log_file(uni_course_cpp::config::kLogFilePath,
-                       std::ios_base::app);
 }  // namespace
 
 namespace uni_course_cpp {
@@ -25,9 +25,11 @@ Logger& Logger::get_logger() {
   return instance;
 }
 
-void Logger::log(const std::string& string) const {
+void Logger::log(const std::string& string) {
   const auto string_with_date_time = get_current_date_time() + " " + string;
   std::cout << string_with_date_time << std::endl;
+  if (!log_file.is_open())
+    log_file.open(config::kLogFilePath);
   log_file << string_with_date_time << std::endl;
 }
 }  // namespace uni_course_cpp
