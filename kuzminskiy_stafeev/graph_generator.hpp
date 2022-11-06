@@ -1,5 +1,7 @@
-#include "graph.hpp"
 #pragma once
+#include "graph.hpp"
+
+namespace uni_course_cpp {
 
 class GraphGenerator {
  public:
@@ -22,9 +24,7 @@ class GraphGenerator {
 
  private:
   void generate_grey_edges(Graph& graph) const;
-  void generate_green_edges(Graph& graph) const;
-  void generate_yellow_edges(Graph& graph) const;
-  void generate_red_edges(Graph& graph) const;
-
   Params params_ = Params(0, 0);
 };
+
+}  // namespace uni_course_cpp
