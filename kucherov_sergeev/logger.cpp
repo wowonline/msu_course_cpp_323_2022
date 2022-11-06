@@ -5,6 +5,7 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "config.hpp"
 #include "logger.hpp"
 
 namespace {

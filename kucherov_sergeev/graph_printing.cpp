@@ -19,6 +19,10 @@ std::map<Graph::Edge::Color, int> get_edges_color_distribution(
     const Graph& graph) {
   std::map<Graph::Edge::Color, int> edges_color_distribution;
 
+  for (const auto color : Graph::Edge::get_color_list()) {
+    edges_color_distribution[color] = 0;
+  }
+
   const auto& edges = graph.get_edges();
 
   for (const auto& [edge_id, edge] : edges) {

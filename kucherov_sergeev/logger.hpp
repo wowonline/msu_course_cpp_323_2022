@@ -9,10 +9,11 @@ class Logger {
 
   void log(const std::string& string);
 
+  Logger(const Logger& other) = delete;
+  void operator=(const Logger& other) = delete;
+
  private:
   Logger();
-  Logger(Logger const&){};
-  void operator=(Logger const&){};
   ~Logger() = default;
 
   std::ofstream log_file_;
