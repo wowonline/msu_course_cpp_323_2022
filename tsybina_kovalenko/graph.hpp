@@ -123,7 +123,7 @@ class Graph {
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
   std::unordered_map<Depth, std::unordered_set<VertexId>> depth_map_;
-  const std::unordered_set<VertexId> kEmptySet;
+  static const std::unordered_set<VertexId> kEmptySet;
 
   Depth depth_ = 0;
 
@@ -191,3 +191,5 @@ class Graph {
     return edge.from_vertex_id();
   }
 };
+
+const std::unordered_set<Graph::VertexId> Graph::kEmptySet = {};
