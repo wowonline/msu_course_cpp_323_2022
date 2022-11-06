@@ -8,7 +8,7 @@ std::vector<int> get_vertices_depth_distribution(const Graph& graph) {
   std::vector<int> vertices_depth_distribution = {};
   const auto depth = graph.get_depth();
 
-  for (Graph::Depth i = 0; i < depth; i++) {
+  for (Graph::Depth i = 0; i <= depth; i++) {
     vertices_depth_distribution.push_back(graph.get_depth_vertex_ids(i).size());
   }
 
