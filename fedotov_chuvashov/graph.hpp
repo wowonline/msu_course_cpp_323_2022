@@ -70,6 +70,8 @@ class Graph {
 
   void set_vertex_depth(VertexId vertex_id, Depth new_depth);
 
+  int get_color_amount(Graph::Edge::Color color) const;
+
   Depth depth() const { return vertices_at_depth_.size() - kGraphBaseDepth; }
 
   const std::set<VertexId>& vertices_at_depth(Depth depth) const {

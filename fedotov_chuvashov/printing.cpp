@@ -16,6 +16,28 @@ std::string print_edge_color(Graph::Edge::Color color) {
   }
 }
 
+std::string print_graph(const Graph& graph) {
+  std::ostringstream result;
+
+  result << "{\n\tdepth: " << graph.depth()
+         << ",\n\tvertices: {amount: " << graph.vertices().size()
+         << ", distribution: [";
+  for (int i = 1; i <= graph.depth(); ++i) {
+    result << graph.vertices_at_depth(i).size();
+    if (i != graph.depth())
+      result << ", ";
+  }
+  result << "]},\n\tedges: {amount: " << graph.edges().size()
+         << ", distribution: {grey: "
+         << graph.get_color_amount(Graph::Edge::Color::Grey)
+         << ", green: " << graph.get_color_amount(Graph::Edge::Color::Green)
+         << ", yellow: " << graph.get_color_amount(Graph::Edge::Color::Yellow)
+         << ", red: " << graph.get_color_amount(Graph::Edge::Color::Red)
+         << "}}\n}";
+
+  return result.str();
+}
+
 namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::ostringstream result;

@@ -42,6 +42,15 @@ void Graph::set_vertex_depth(VertexId vertex_id, Depth new_depth) {
   }
 }
 
+int Graph::get_color_amount(Edge::Color color) const {
+  int counter = 0;
+  for (auto c : edges()) {
+    if (c.second.color() == color)
+      ++counter;
+  }
+  return counter;
+}
+
 Graph::Edge::Color Graph::get_edge_color(VertexId from_vertex_id,
                                          VertexId to_vertex_id) const {
   const auto from_vertex_depth = get_vertex_depth(from_vertex_id);

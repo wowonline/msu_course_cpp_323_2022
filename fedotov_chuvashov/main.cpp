@@ -1,7 +1,10 @@
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include "config.hpp"
 #include "graph.hpp"
 #include "graph_generator.hpp"
+#include "logger.hpp"
 #include "printing.hpp"
 
 namespace {
@@ -41,20 +44,47 @@ int handle_new_vertices_count_input() {
   }
   return new_vertices_count;
 }
+
+int handle_graphs_count_input() {
+  std::cout << "Enter graph count: ";
+  int graph_count = 0;
+  while (!(std::cin >> graph_count) || graph_count < 0) {
+    std::cout << "Invalid value. Please, try again." << std::endl
+              << "Enter graph count: ";
+    std::cin.clear();
+    std::cin.ignore(kInputSize, '\n');
+  }
+  return graph_count;
+}
+
+void prepare_temp_directory() {
+  std::filesystem::create_directory(uni_course_cpp::config::kTempDirectoryPath);
+}
+
 }  // namespace
 
 int main() {
   const int depth = handle_depth_input();
   const int new_vertices_count = handle_new_vertices_count_input();
+  const int graphs_count = handle_graphs_count_input();
+  prepare_temp_directory();
+
   auto params =
       uni_course_cpp::GraphGenerator::Params(depth, new_vertices_count);
   const auto generator = uni_course_cpp::GraphGenerator(std::move(params));
-  const auto graph = generator.generate();
+  auto& logger = uni_course_cpp::Logger::get_logger();
 
-  const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
-  std::cout << graph_json << std::endl;
-  write_to_file(graph_json, "graph.json");
+  for (int i = 0; i < graphs_count; ++i) {
+    logger.log(uni_course_cpp::generation_started_string(i));
+    const auto graph = generator.generate();
+
+    const auto graph_description = uni_course_cpp::printing::print_graph(graph);
+    logger.log(
+        uni_course_cpp::generation_finished_string(i, graph_description));
+
+    const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
+    write_to_file(graph_json, "graph_" + std::to_string(i) + ".json");
+  }
 
   return 0;
 }
-
