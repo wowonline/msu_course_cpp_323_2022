@@ -1,5 +1,4 @@
 #include "graph_generator.hpp"
-#include <iostream>
 #include <random>
 
 namespace uni_course_cpp {

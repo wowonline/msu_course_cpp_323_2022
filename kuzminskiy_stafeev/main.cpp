@@ -1,9 +1,6 @@
-#include <chrono>
-#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <stdexcept>
 #include "config.hpp"
 #include "graph.hpp"
@@ -14,24 +11,14 @@
 
 namespace fs = std::filesystem;
 
-std::string get_current_date_time() {
-  const auto date_time = std::chrono::system_clock::now();
-  const auto date_time_t = std::chrono::system_clock::to_time_t(date_time);
-  std::stringstream date_time_string;
-  date_time_string << std::put_time(std::localtime(&date_time_t),
-                                    "%Y.%m.%d %H:%M:%S");
-  return date_time_string.str();
-}
-
 std::string generation_started_string(int graph_id) {
-  return get_current_date_time() + " Graph " + std::to_string(graph_id) +
-         ", Generation Started";
+  return "Graph " + std::to_string(graph_id) + ", Generation Started";
 }
 
 std::string generation_finished_string(int graph_id,
                                        const std::string& graph_description) {
-  return get_current_date_time() + " Graph " + std::to_string(graph_id) +
-         ", Generation Finished {\n" + graph_description + "\n}";
+  return "Graph " + std::to_string(graph_id) + ", Generation Finished {\n" +
+         graph_description + "\n}";
 }
 
 void write_to_file(const std::string& str, const std::string& filename) {
