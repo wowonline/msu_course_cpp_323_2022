@@ -37,8 +37,8 @@ class GraphGenerator {
  private:
   static constexpr float kGreenEdgeGenerationChance = 0.1f;
   static constexpr float kRedEdgeGenerationChance = 0.33f;
-  static constexpr int kRedEdgeDepth = 2;
-  static constexpr int kYellowEdgeDepth = 1;
+  static constexpr Graph::Depth kRedEdgeDepth = 2;
+  static constexpr Graph::Depth kYellowEdgeDepth = 1;
   Params params_ = Params(0, 0);
 
   mutable std::mt19937 generator_{std::random_device()()};
