@@ -1,5 +1,5 @@
-#include "graph.hpp"
 #pragma once
+#include "graph.hpp"
 
 namespace uni_course_cpp {
 

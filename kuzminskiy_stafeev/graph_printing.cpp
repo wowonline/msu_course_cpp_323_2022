@@ -23,6 +23,10 @@ std::string printing::print_graph(const Graph& graph) {
   const auto vertices = graph.vertices().size();
   const auto edges = graph.edges().size();
 
+  const std::vector<Graph::Edge::Color> edge_colors = {
+      Graph::Edge::Color::Grey, Graph::Edge::Color::Green,
+      Graph::Edge::Color::Yellow, Graph::Edge::Color::Red};
+
   std::string depths_s = "";
 
   for (int i = 1; i < depth + 1; i++) {
@@ -33,41 +37,20 @@ std::string printing::print_graph(const Graph& graph) {
     }
   }
 
-  std::string edges_s =
-      "grey: " +
-      std::to_string(graph.edges_of_color(Graph::Edge::Color::Grey)) + ", " +
-      "green: " +
-      std::to_string(graph.edges_of_color(Graph::Edge::Color::Green)) + ", " +
-      "yellow: " +
-      std::to_string(graph.edges_of_color(Graph::Edge::Color::Yellow)) + ", " +
-      "red: " + std::to_string(graph.edges_of_color(Graph::Edge::Color::Red));
+  std::string edges_s = "";
+  for (int i = 0; i < edge_colors.size(); i++) {
+    edges_s += print_edge_color(edge_colors[i]) + ": " +
+               std::to_string(graph.edges_ids_of_color(edge_colors[i]).size());
+    if (i != edge_colors.size() - 1) {
+      edges_s += ", ";
+    }
+  }
 
   return "  depth: " + std::to_string(depth) + ",\n" +
          "  vertices: {amount: " + std::to_string(vertices) +
          ", distribution: " + "[" + depths_s + "]},\n" +
          "  edges: {amount: " + std::to_string(edges) +
          ", distribution: " + "{" + edges_s + "}}";
-}
-
-std::string printing::get_current_date_time() {
-  const auto date_time = std::chrono::system_clock::now();
-  const auto date_time_t = std::chrono::system_clock::to_time_t(date_time);
-  std::stringstream date_time_string;
-  date_time_string << std::put_time(std::localtime(&date_time_t),
-                                    "%Y.%m.%d %H:%M:%S");
-  return date_time_string.str();
-}
-
-std::string printing::generation_started_string(int i) {
-  return get_current_date_time() + " Graph " + std::to_string(i) +
-         ", Generation Started";
-}
-
-std::string printing::generation_finished_string(
-    int i,
-    std::string graph_description) {
-  return get_current_date_time() + " Graph " + std::to_string(i) +
-         ", Generation Finished {\n" + graph_description + "\n}";
 }
 
 }  // namespace uni_course_cpp

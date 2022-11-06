@@ -1,9 +1,6 @@
-#include <chrono>
-#include <ctime>
-#include <iomanip>
+#pragma once
 #include "graph.hpp"
 #include "graph_printing.hpp"
-#pragma once
 
 namespace uni_course_cpp {
 

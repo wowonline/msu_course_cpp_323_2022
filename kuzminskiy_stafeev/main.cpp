@@ -1,6 +1,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include "graph.hpp"
 #include "graph_generator.hpp"
 #include "graph_json_printing.hpp"
@@ -8,6 +9,26 @@
 #include "graph_printing.hpp"
 
 namespace fs = std::filesystem;
+
+std::string get_current_date_time() {
+  const auto date_time = std::chrono::system_clock::now();
+  const auto date_time_t = std::chrono::system_clock::to_time_t(date_time);
+  std::stringstream date_time_string;
+  date_time_string << std::put_time(std::localtime(&date_time_t),
+                                    "%Y.%m.%d %H:%M:%S");
+  return date_time_string.str();
+}
+
+std::string generation_started_string(int i) {
+  return get_current_date_time() + " Graph " + std::to_string(i) +
+         ", Generation Started";
+}
+
+std::string generation_finished_string(int i,
+                                       const std::string& graph_description) {
+  return get_current_date_time() + " Graph " + std::to_string(i) +
+         ", Generation Finished {\n" + graph_description + "\n}";
+}
 
 void write_to_file(const std::string& str, const std::string& filename) {
   std::ofstream out(filename);
@@ -82,18 +103,19 @@ int main() {
 
   auto params = GraphGenerator::Params(depth, new_vertices_count);
   const auto generator = GraphGenerator(std::move(params));
-  auto logger = Logger::get_logger();
+  Logger& logger = Logger::get_logger();
 
   for (int i = 0; i < graphs_count; i++) {
-    logger->log(printing::generation_started_string(i));
+    logger.log(generation_started_string(i));
     const auto graph = generator.generate();
 
     const auto graph_description = printing::print_graph(graph);
-    logger->log(printing::generation_finished_string(i, graph_description));
+    logger.log(generation_finished_string(i, graph_description));
 
     const auto graph_json = printing::json::print_graph(graph);
     std::cout << graph_json << std::endl;
-    write_to_file(graph_json, "graph_" + std::to_string(i) + ".json");
+    write_to_file(graph_json, std::string(config::kTempDirectoryPath) +
+                                  "graph_" + std::to_string(i) + ".json");
   }
 
   return 0;
