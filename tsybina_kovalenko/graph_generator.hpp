@@ -73,9 +73,9 @@ class GraphGenerator {
   }
 
   void generate_green_edges(Graph& graph) const {
-    for (const auto& vertex : graph.vertices()) {
+    for (const auto& [vertex_id, vertex] : graph.vertices()) {
       if (check_probability(kGreenEdgeGenerationChance)) {
-        graph.add_edge(vertex.id(), vertex.id());
+        graph.add_edge(vertex_id, vertex_id);
       }
     }
   }
@@ -88,14 +88,14 @@ class GraphGenerator {
   }
 
   void generate_yellow_edges(Graph& graph) const {
-    for (const auto& vertex : graph.vertices()) {
-      const auto vertex_depth = graph.depth_of(vertex.id());
+    for (const auto& [vertex_id, vertex] : graph.vertices()) {
+      const auto vertex_depth = graph.depth_of(vertex_id);
       if (vertex_depth != 1 &&
           vertex_depth <= params_.depth() - kYellowEdgeDepth) {
         const float success_chance =
             static_cast<float>(vertex_depth - 1) / (params_.depth() - 2);
         if (check_probability(success_chance)) {
-          add_yellow_edge(graph, vertex.id());
+          add_yellow_edge(graph, vertex_id);
         }
       }
     }
@@ -103,11 +103,11 @@ class GraphGenerator {
 
   void add_yellow_edge(Graph& graph, Graph::VertexId from_vertex_id) const {
     std::vector<Graph::VertexId> probable_vertices;
-    for (const Graph::Vertex& vertex : graph.vertices()) {
-      if (graph.depth_of(vertex.id()) ==
+    for (const auto& [vertex_id, vertex] : graph.vertices()) {
+      if (graph.depth_of(vertex_id) ==
               graph.depth_of(from_vertex_id) + kYellowEdgeDepth &&
-          !graph.is_connected(from_vertex_id, vertex.id())) {
-        probable_vertices.push_back(vertex.id());
+          !graph.is_connected(from_vertex_id, vertex_id)) {
+        probable_vertices.push_back(vertex_id);
       }
     }
     if (probable_vertices.size() > 0) {
@@ -116,11 +116,11 @@ class GraphGenerator {
   }
 
   void generate_red_edges(Graph& graph) const {
-    for (const auto& vertex : graph.vertices()) {
-      const auto vertex_depth = graph.depth_of(vertex.id());
+    for (const auto& [vertex_id, vertex] : graph.vertices()) {
+      const auto vertex_depth = graph.depth_of(vertex_id);
       if (vertex_depth <= params_.depth() - kRedEdgeDepth) {
         if (check_probability(kRedEdgeGenerationChance)) {
-          add_red_edge(graph, vertex.id());
+          add_red_edge(graph, vertex_id);
         }
       }
     }
@@ -128,10 +128,10 @@ class GraphGenerator {
 
   void add_red_edge(Graph& graph, Graph::VertexId from_vertex_id) const {
     std::vector<Graph::VertexId> probable_vertices;
-    for (const Graph::Vertex& vertex : graph.vertices()) {
-      if (graph.depth_of(vertex.id()) ==
+    for (const auto& [vertex_id, vertex] : graph.vertices()) {
+      if (graph.depth_of(vertex_id) ==
           graph.depth_of(from_vertex_id) + kRedEdgeDepth) {
-        probable_vertices.push_back(vertex.id());
+        probable_vertices.push_back(vertex_id);
       }
     }
     if (probable_vertices.size() > 0) {

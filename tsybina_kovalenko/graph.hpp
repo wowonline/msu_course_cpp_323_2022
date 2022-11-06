@@ -15,7 +15,7 @@ class Graph {
 
   VertexId add_vertex() {
     const VertexId new_vertex_id = get_new_vertex_id();
-    vertices_.emplace_back(new_vertex_id);
+    vertices_.emplace(new_vertex_id, new_vertex_id);
     connections_[new_vertex_id] = {};
     set_vertex_depth(new_vertex_id, kGraphBaseDepth);
     return new_vertex_id;
@@ -32,7 +32,8 @@ class Graph {
 
     const auto edge_id = get_new_edge_id();
     const auto edge_color = define_edge_color(from_vertex_id, to_vertex_id);
-    edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, edge_color);
+    edges_.emplace(edge_id,
+                   Edge(edge_id, from_vertex_id, to_vertex_id, edge_color));
 
     connections_[from_vertex_id].push_back(edge_id);
     if (to_vertex_id != from_vertex_id) {
@@ -109,8 +110,8 @@ class Graph {
   };
 
  private:
-  std::vector<Vertex> vertices_;
-  std::vector<Edge> edges_;
+  std::unordered_map<VertexId, Vertex> vertices_;
+  std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
 

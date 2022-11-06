@@ -67,7 +67,7 @@ std::string print_graph(const Graph& graph) {
 
   std::string separator = "";
 
-  for (const auto& vertex : graph.vertices()) {
+  for (const auto& [vertex_id, vertex] : graph.vertices()) {
     stream << separator << print_vertex(vertex, graph);
     separator = ",";
   }
@@ -77,7 +77,7 @@ std::string print_graph(const Graph& graph) {
          << "[";
   separator = "";
 
-  for (const auto& edge : graph.edges()) {
+  for (const auto& [edge_id, edge] : graph.edges()) {
     stream << separator << print_edge(edge);
     separator = ",";
   }
