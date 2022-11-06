@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-#include <mutex>
-#include "graph.hpp"
-=======
->>>>>>> 3dab9460508dd55d49a03564527fbcb682a4276d
 #pragma once
+#include <mutex>
 #include "graph.hpp"
 
 namespace uni_course_cpp {
@@ -29,17 +25,11 @@ class GraphGenerator {
 
  private:
   void generate_grey_edges(Graph& graph) const;
-<<<<<<< HEAD
-  void generate_green_edges(Graph& graph) const;
-  void generate_yellow_edges(Graph& graph) const;
-  void generate_red_edges(Graph& graph) const;
   void generate_grey_branch(Graph& graph,
                             std::mutex& graph_mutex,
                             std::vector<Graph::VertexId> previous_vertex_ids,
                             Graph::Depth cur_depth) const;
 
-=======
->>>>>>> 3dab9460508dd55d49a03564527fbcb682a4276d
   Params params_ = Params(0, 0);
 };
 

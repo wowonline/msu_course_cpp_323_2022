@@ -93,22 +93,15 @@ Graph GraphGenerator::generate() const {
   if (params_.depth()) {
     graph.add_vertex();
     generate_grey_edges(graph);
-<<<<<<< HEAD
-    std::thread green_thread(&GraphGenerator::generate_green_edges, this,
-                             std::ref(graph));
-    std::thread yellow_thread(&GraphGenerator::generate_yellow_edges, this,
-                              std::ref(graph));
-    std::thread red_thread(&GraphGenerator::generate_red_edges, this,
-                           std::ref(graph));
+    std::thread green_thread(generate_green_edges, std::ref(graph));
+    std::thread yellow_thread(&generate_yellow_edges, std::ref(graph),
+                              graph.get_graph_depth());
+    std::thread red_thread(&generate_red_edges, std::ref(graph),
+                           graph.get_graph_depth());
 
     green_thread.join();
     yellow_thread.join();
     red_thread.join();
-=======
-    generate_green_edges(graph);
-    generate_yellow_edges(graph, graph.get_graph_depth());
-    generate_red_edges(graph, graph.get_graph_depth());
->>>>>>> 3dab9460508dd55d49a03564527fbcb682a4276d
   }
 
   return graph;

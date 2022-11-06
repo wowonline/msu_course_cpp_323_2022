@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 #pragma once
->>>>>>> 3dab9460508dd55d49a03564527fbcb682a4276d
 #include <set>
 #include <unordered_map>
 #include <vector>
