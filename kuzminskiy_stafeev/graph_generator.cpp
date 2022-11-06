@@ -32,30 +32,6 @@ bool check_probability(float prob) {
   return d(gen);
 }
 
-void generate_grey_edges(Graph& graph,
-                         Graph::Depth depth,
-                         int new_vertices_count) {
-  float step = 1.0 / (depth - 1);
-
-  for (Graph::Depth cur_depth = 1; cur_depth <= depth; cur_depth++) {
-    float prob = (float)(1 - step * (cur_depth - 1));
-    bool is_created = false;
-    for (const auto from_vertex_id : graph.vertices_of_depth(cur_depth)) {
-      for (Graph::VertexId cur_vertex_count = 0;
-           cur_vertex_count < new_vertices_count; cur_vertex_count++) {
-        if (check_probability(prob)) {
-          is_created = true;
-          auto vertex_id = graph.add_vertex();
-          graph.add_edge(from_vertex_id, vertex_id);
-        }
-      }
-    }
-
-    if (!is_created)
-      break;
-  }
-}
-
 void generate_green_edges(Graph& graph) {
   static float constexpr prob = 0.1;
   const auto& vertices = graph.vertices();
@@ -104,12 +80,36 @@ Graph GraphGenerator::generate() const {
   auto graph = Graph();
   if (params_.depth()) {
     graph.add_vertex();
-    generate_grey_edges(graph, params_.depth(), params_.new_vertices_count());
+    generate_grey_edges(graph);
     generate_green_edges(graph);
     generate_yellow_edges(graph, params_.depth());
     generate_red_edges(graph, params_.depth());
   }
   return graph;
+}
+
+void GraphGenerator::generate_grey_edges(Graph& graph) const {
+  const auto depth = params_.depth();
+  const auto new_vertices_count = params_.new_vertices_count();
+  float step = 1.0 / (depth - 1);
+
+  for (Graph::Depth cur_depth = 1; cur_depth <= depth; cur_depth++) {
+    float prob = (float)(1 - step * (cur_depth - 1));
+    bool is_created = false;
+    for (const auto from_vertex_id : graph.vertices_of_depth(cur_depth)) {
+      for (Graph::VertexId cur_vertex_count = 0;
+           cur_vertex_count < new_vertices_count; cur_vertex_count++) {
+        if (check_probability(prob)) {
+          is_created = true;
+          auto vertex_id = graph.add_vertex();
+          graph.add_edge(from_vertex_id, vertex_id);
+        }
+      }
+    }
+
+    if (!is_created)
+      break;
+  }
 }
 
 }  // namespace uni_course_cpp

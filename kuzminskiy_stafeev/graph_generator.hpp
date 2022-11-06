@@ -23,6 +23,7 @@ class GraphGenerator {
   Graph generate() const;
 
  private:
+  void generate_grey_edges(Graph& graph) const;
   Params params_ = Params(0, 0);
 };
 
