@@ -1,6 +1,7 @@
-#include "graph.hpp"
 #include <algorithm>
 #include <stdexcept>
+
+#include "graph.hpp"
 
 namespace uni_course_cpp {
 Graph::VertexId Graph::add_vertex() {

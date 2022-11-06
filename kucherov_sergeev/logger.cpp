@@ -1,10 +1,11 @@
-#include "logger.hpp"
 #include <chrono>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+
+#include "logger.hpp"
 
 namespace {
 std::string get_current_date_time() {

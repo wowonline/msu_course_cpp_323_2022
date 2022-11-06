@@ -1,5 +1,4 @@
 #include "graph_printing.hpp"
-#include <map>
 
 namespace uni_course_cpp {
 namespace printing {

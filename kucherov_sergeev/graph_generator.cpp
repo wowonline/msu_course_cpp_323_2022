@@ -1,7 +1,8 @@
-#include "graph_generator.hpp"
 #include <cassert>
 #include <random>
+
 #include "graph.hpp"
+#include "graph_generator.hpp"
 
 namespace uni_course_cpp {
 namespace {
