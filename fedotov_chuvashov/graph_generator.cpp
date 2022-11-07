@@ -84,7 +84,6 @@ void generate_yellow_edges(Graph& graph) {
   }
 }
 
-constexpr Graph::Depth kGreyDepthDifference = 1;
 
 }  // namespace
 

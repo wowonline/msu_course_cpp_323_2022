@@ -70,7 +70,13 @@ class Graph {
 
   void set_vertex_depth(VertexId vertex_id, Depth new_depth);
 
-  int get_color_amount(Graph::Edge::Color color) const;
+  const std::vector<EdgeId>& get_colored_edge_ids(Edge::Color color) const {
+    return colored_edge_ids_.at(color);
+  }
+
+  int get_color_amount(Graph::Edge::Color color) const {
+    return get_colored_edge_ids(color).size();
+  }
 
   Depth depth() const { return vertices_at_depth_.size(); }
 
@@ -92,6 +98,7 @@ class Graph {
 
   EdgeId get_new_edge_id() { return last_edge_id_++; };
 
+  std::unordered_map<Edge::Color, std::vector<EdgeId>> colored_edge_ids_;
   std::unordered_map<VertexId, Depth> depths_of_vertices_;
   std::vector<std::set<VertexId>> vertices_at_depth_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
@@ -104,4 +111,6 @@ class Graph {
 constexpr Graph::Depth kYellowDepthDifference = 1;
 constexpr Graph::Depth kRedDepthDifference = 2;
 constexpr Graph::Depth kGraphBaseDepth = 1;
+constexpr Graph::Depth kGreyDepthDifference = 1;
+
 }  // namespace uni_course_cpp

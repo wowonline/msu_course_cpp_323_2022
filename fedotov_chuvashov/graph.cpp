@@ -27,6 +27,11 @@ Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     adjacency_list_[to_vertex_id].emplace_back(new_id);
   }
   edges_.try_emplace(new_id, new_id, from_vertex_id, to_vertex_id, edge_color);
+  if (colored_edge_ids_.find(edge_color) != colored_edge_ids_.end()) {
+    colored_edge_ids_.at(edge_color).push_back(new_id);
+  } else {
+    colored_edge_ids_.emplace(edge_color, std::vector{new_id});
+  }
   return new_id;
 }
 
@@ -43,14 +48,6 @@ void Graph::set_vertex_depth(VertexId vertex_id, Depth new_depth) {
   }
 }
 
-int Graph::get_color_amount(Edge::Color color) const {
-  int counter = 0;
-  for (auto c : edges()) {
-    if (c.second.color() == color)
-      ++counter;
-  }
-  return counter;
-}
 
 Graph::Edge::Color Graph::get_edge_color(VertexId from_vertex_id,
                                          VertexId to_vertex_id) const {
