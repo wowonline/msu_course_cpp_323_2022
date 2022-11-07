@@ -51,10 +51,6 @@ Thumbs.db
 *.so
 
 # Temp, add here your `temp` folders
-<<<<<<< HEAD
 fedotov_chuvashov/temp
-=======
-/fedotov_chuvashov/temp
->>>>>>> 79942a6 (changed gitignore)
 matveev_burikova/temp
 kuzminskiy_stafeev/temp
