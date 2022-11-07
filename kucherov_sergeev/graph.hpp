@@ -79,7 +79,7 @@ class Graph {
   std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
   std::unordered_map<VertexId, Depth> vertex_depths_list_;
-  std::vector<std::vector<VertexId>> depth_vertices_list_;
+  std::vector<std::vector<VertexId>> depth_vertices_list_ = {{}};
 };
 
 static constexpr Graph::Depth kGraphDefaultDepth = 1;

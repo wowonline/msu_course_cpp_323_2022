@@ -4,8 +4,8 @@
 namespace uni_course_cpp {
 namespace printing {
 namespace {
-std::vector<int> get_vertices_depth_distribution(const Graph& graph) {
-  std::vector<int> vertices_depth_distribution = {};
+std::vector<Graph::Depth> get_vertices_depth_distribution(const Graph& graph) {
+  std::vector<Graph::Depth> vertices_depth_distribution = {};
   const auto depth = graph.get_depth();
 
   for (Graph::Depth i = 0; i <= depth; i++) {
