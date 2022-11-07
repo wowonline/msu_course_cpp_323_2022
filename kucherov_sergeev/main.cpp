@@ -73,7 +73,7 @@ int handle_new_vertices_count_input() {
 }
 
 int handle_graphs_count_input() {
-  const std::string init_message = "Type new grpahs count: ";
+  const std::string init_message = "Type new graphs count: ";
   const std::string err_format_message =
       "Graphs count must be a non-negative integer. Try again";
   int graphs_count;
