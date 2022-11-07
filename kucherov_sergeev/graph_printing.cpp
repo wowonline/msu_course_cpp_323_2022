@@ -4,8 +4,7 @@
 namespace uni_course_cpp {
 namespace printing {
 namespace {
-
-constexpr Graph::Edge::Color edge_colors_list[] = {
+static constexpr std::array<Graph::Edge::Color, 4> kEdgeColorList = {
     Graph::Edge::Color::Grey, Graph::Edge::Color::Green,
     Graph::Edge::Color::Yellow, Graph::Edge::Color::Red};
 
@@ -24,7 +23,7 @@ std::map<Graph::Edge::Color, int> get_edges_color_distribution(
     const Graph& graph) {
   std::map<Graph::Edge::Color, int> edges_color_distribution;
 
-  for (const auto color : edge_colors_list) {
+  for (const auto color : kEdgeColorList) {
     edges_color_distribution[color] = 0;
   }
 
@@ -78,7 +77,7 @@ std::string print_edges_info(const Graph& graph) {
       "edges: {amount: " + std::to_string(graph.get_edges().size()) +
       ", distribution: {";
 
-  for (const auto color : edge_colors_list) {
+  for (const auto color : kEdgeColorList) {
     edges_string += print_edge_color(color) + ": " +
                     std::to_string(edges_color_distribution.at(color)) + ", ";
   }
