@@ -28,10 +28,10 @@ std::string print_graph(const Graph& graph) {
   }
   result << "]},\n\tedges: {amount: " << graph.edges().size()
          << ", distribution: {grey: "
-         << graph.get_color_amount(Graph::Edge::Color::Grey)
-         << ", green: " << graph.get_color_amount(Graph::Edge::Color::Green)
-         << ", yellow: " << graph.get_color_amount(Graph::Edge::Color::Yellow)
-         << ", red: " << graph.get_color_amount(Graph::Edge::Color::Red)
+         << graph.get_colored_edge_ids(Graph::Edge::Color::Grey).size()
+         << ", green: " << graph.get_colored_edge_ids(Graph::Edge::Color::Green).size()
+         << ", yellow: " << graph.get_colored_edge_ids(Graph::Edge::Color::Yellow).size()
+         << ", red: " << graph.get_colored_edge_ids(Graph::Edge::Color::Red).size()
          << "}}\n}";
   return result.str();
 }

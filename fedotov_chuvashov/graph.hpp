@@ -74,10 +74,6 @@ class Graph {
     return colored_edge_ids_.at(color);
   }
 
-  int get_color_amount(Graph::Edge::Color color) const {
-    return get_colored_edge_ids(color).size();
-  }
-
   Depth depth() const { return vertices_at_depth_.size(); }
 
   const std::set<VertexId>& vertices_at_depth(Depth depth) const {
@@ -90,6 +86,7 @@ class Graph {
   std::set<VertexId>& get_vertex_ids_at_depth(Depth depth) {
     return vertices_at_depth_[depth - kGraphBaseDepth];
   }
+  
   bool has_vertex(VertexId id) const {
     return vertices_.find(id) != vertices_.end();
   };
