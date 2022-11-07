@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 
+namespace uni_course_cpp {
 class Logger {
  public:
   static Logger& get_logger();
@@ -17,3 +18,4 @@ class Logger {
 
   std::ofstream log_;
 };
+}  // namespace uni_course_cpp

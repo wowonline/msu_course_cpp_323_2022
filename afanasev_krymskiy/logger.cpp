@@ -18,10 +18,11 @@ std::string get_current_date_time() {
 }
 }  // namespace
 
+namespace uni_course_cpp {
 void Logger::log(const std::string& string) {
-  const auto& current_date_time = get_current_date_time();
-  std::cout << current_date_time + string << std::endl;
-  log_ << current_date_time + string << std::endl;
+  const auto& result = get_current_date_time() + string;
+  std::cout << result << std::endl;
+  log_ << result << std::endl;
 }
 
 Logger& Logger::get_logger() {
@@ -29,4 +30,5 @@ Logger& Logger::get_logger() {
   return logger;
 }
 
-Logger::Logger() : log_(std::ofstream(config::kLogFilePath, std::ios::app)) {}
+Logger::Logger() : log_(config::kLogFilePath, std::ios::app) {}
+}  // namespace uni_course_cpp

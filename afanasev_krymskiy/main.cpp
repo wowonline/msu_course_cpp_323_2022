@@ -118,9 +118,10 @@ int handle_graphs_count_input() {
 }
 
 void prepare_temp_directory() {
-  if (!file_system::is_directory(config::kTempDirectoryPath) ||
-      !file_system::exists(config::kTempDirectoryPath)) {
-    if (!file_system::create_directory(config::kTempDirectoryPath)) {
+  if (!file_system::is_directory(uni_course_cpp::config::kTempDirectoryPath) ||
+      !file_system::exists(uni_course_cpp::config::kTempDirectoryPath)) {
+    if (!file_system::create_directory(
+            uni_course_cpp::config::kTempDirectoryPath)) {
       throw std::runtime_error("Can't create directory!");
     }
   }
@@ -145,7 +146,7 @@ int main() {
   auto params =
       uni_course_cpp::GraphGenerator::Params(depth, new_vertices_count);
   const auto generator = uni_course_cpp::GraphGenerator(std::move(params));
-  auto& logger = Logger::get_logger();
+  auto& logger = uni_course_cpp::Logger::get_logger();
 
   for (int i = 0; i < graphs_count; i++) {
     logger.log(generation_started_string(i));
@@ -155,7 +156,7 @@ int main() {
     logger.log(generation_finished_string(i, graph_description));
 
     const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
-    write_to_file(graph_json, config::kTempDirectoryPath +
+    write_to_file(graph_json, uni_course_cpp::config::kTempDirectoryPath +
                                   std::string("graph_") + std::to_string(i) +
                                   ".json");
   }

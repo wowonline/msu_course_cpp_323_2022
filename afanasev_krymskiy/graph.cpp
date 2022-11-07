@@ -5,7 +5,6 @@
 #include <vector>
 
 namespace uni_course_cpp {
-
 Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   assert(has_vertex(from_vertex_id));
   assert(has_vertex(to_vertex_id));

@@ -34,6 +34,45 @@ std::vector<uni_course_cpp::Graph::VertexId> get_unconnected_vertices_ids(
   }
   return result;
 }
+
+void generate_green_edges(uni_course_cpp::Graph& graph) {
+  for (const auto& [vertex_id, vertex] : graph.vertices()) {
+    if (check_probability(kGreenEdgesProbability)) {
+      graph.add_edge(vertex_id, vertex_id);
+    }
+  }
+}
+
+void generate_yellow_edges(uni_course_cpp::Graph& graph) {
+  for (auto depth = uni_course_cpp::kDefaultDepth; depth < graph.depth();
+       ++depth) {
+    const float probability = (depth - 1) / (graph.depth() - 2.f);
+    for (const auto vertex_id : graph.vertices_at_depth(depth)) {
+      if (check_probability(probability)) {
+        const auto unconnected_vertices_ids = get_unconnected_vertices_ids(
+            graph, vertex_id,
+            graph.vertices_at_depth(depth + uni_course_cpp::kYellowEdgeDepth));
+        if (!unconnected_vertices_ids.empty()) {
+          graph.add_edge(vertex_id,
+                         get_random_vertex_id(unconnected_vertices_ids));
+        }
+      }
+    }
+  }
+}
+
+void generate_red_edges(uni_course_cpp::Graph& graph) {
+  for (auto depth = uni_course_cpp::kDefaultDepth; depth < graph.depth() - 1;
+       ++depth) {
+    for (const auto vertex_id : graph.vertices_at_depth(depth)) {
+      if (check_probability(kRedEdgesProbability) &&
+          !graph.vertices_at_depth(depth + 2).empty()) {
+        graph.add_edge(vertex_id, get_random_vertex_id(graph.vertices_at_depth(
+                                      depth + uni_course_cpp::kRedEdgeDepth)));
+      }
+    }
+  }
+}
 }  // namespace
 
 namespace uni_course_cpp {
@@ -60,43 +99,6 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
         if (check_probability(probability)) {
           graph.add_edge(vertex_id, graph.add_vertex());
         }
-      }
-    }
-  }
-}
-
-void GraphGenerator::generate_green_edges(Graph& graph) const {
-  for (const auto& [vertex_id, vertex] : graph.vertices()) {
-    if (check_probability(kGreenEdgesProbability)) {
-      graph.add_edge(vertex_id, vertex_id);
-    }
-  }
-}
-
-void GraphGenerator::generate_yellow_edges(Graph& graph) const {
-  for (auto depth = kDefaultDepth; depth < graph.depth(); ++depth) {
-    const float probability = (depth - 1) / (params_.get_depth() - 2.f);
-    for (const auto vertex_id : graph.vertices_at_depth(depth)) {
-      if (check_probability(probability)) {
-        const auto unconnected_vertices_ids = get_unconnected_vertices_ids(
-            graph, vertex_id,
-            graph.vertices_at_depth(depth + kYellowEdgeDepth));
-        if (!unconnected_vertices_ids.empty()) {
-          graph.add_edge(vertex_id,
-                         get_random_vertex_id(unconnected_vertices_ids));
-        }
-      }
-    }
-  }
-}
-
-void GraphGenerator::generate_red_edges(Graph& graph) const {
-  for (auto depth = kDefaultDepth; depth < graph.depth() - 1; ++depth) {
-    for (const auto vertex_id : graph.vertices_at_depth(depth)) {
-      if (check_probability(kRedEdgesProbability) &&
-          !graph.vertices_at_depth(depth + 2).empty()) {
-        graph.add_edge(vertex_id, get_random_vertex_id(graph.vertices_at_depth(
-                                      depth + kRedEdgeDepth)));
       }
     }
   }
