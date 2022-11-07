@@ -1,7 +1,7 @@
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 #include <sstream>
+#include "config.hpp"
 #include "graph.hpp"
 #include "graph_generator.hpp"
 #include "logger.hpp"
@@ -56,25 +56,19 @@ int handle_graphs_count_input() {
   return graph_count;
 }
 
-std::string get_current_date_time() {
-  const auto date_time = std::chrono::system_clock::now();
-  const auto date_time_t = std::chrono::system_clock::to_time_t(date_time);
-  std::stringstream date_time_string;
-  date_time_string << std::put_time(std::localtime(&date_time_t),
-                                    "%Y.%m.%d %H:%M:%S");
-  return date_time_string.str();
-}
-
-std::string generation_started_string(int num_of_graph) {
+std::string generation_started_string(int num_of_graph,
+                                      uni_course_cpp::Logger& logger) {
   std::stringstream start_string;
-  start_string << get_current_date_time() << " Graph " << num_of_graph
+  start_string << logger.get_current_date_time() << " Graph " << num_of_graph
                << ", Generation Started\n";
   return start_string.str();
 }
 
-std::string generation_finished_string(int num_of_graph, std::string content) {
+std::string generation_finished_string(int num_of_graph,
+                                       std::string content,
+                                       uni_course_cpp::Logger& logger) {
   std::stringstream finish_string;
-  finish_string << get_current_date_time() << " Graph " << num_of_graph
+  finish_string << logger.get_current_date_time() << " Graph " << num_of_graph
                 << ", Generation Finished " << content << "\n";
   return finish_string.str();
 }
@@ -95,11 +89,11 @@ int main() {
   auto& logger = uni_course_cpp::Logger::get_logger();
 
   for (int i = 0; i < graphs_count; ++i) {
-    logger.log(generation_started_string(i));
+    logger.log(generation_started_string(i, logger));
     const auto graph = generator.generate();
 
     const auto graph_description = uni_course_cpp::printing::print_graph(graph);
-    logger.log(generation_finished_string(i, graph_description));
+    logger.log(generation_finished_string(i, graph_description, logger));
 
     const auto graph_json = uni_course_cpp::json::print_graph(graph);
     write_to_file(graph_json,
