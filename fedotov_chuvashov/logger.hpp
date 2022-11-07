@@ -1,5 +1,7 @@
 #pragma once
+#include <fstream>
 #include <string>
+#include "config.hpp"
 
 namespace uni_course_cpp {
 class Logger {
@@ -8,12 +10,12 @@ class Logger {
   static Logger& get_logger();
   Logger(const Logger&) = delete;
   void operator=(const Logger&) = delete;
+  Logger(Logger&& other) = delete;
+  void operator=(Logger&& other) = delete;
 
  private:
-  Logger() {}
+  std::ofstream log_stream;
+  Logger() { log_stream.open(config::kLogFilePath, std::ofstream::app); };
+  ~Logger() { log_stream.close(); };
 };
-
-std::string generation_started_string(int i);
-std::string generation_finished_string(int i, std::string content);
-
 }  // namespace uni_course_cpp

@@ -51,4 +51,4 @@ Thumbs.db
 *.so
 
 # Temp, add here your `temp` folders
-temp
+/fedotov_chuvashov/temp
