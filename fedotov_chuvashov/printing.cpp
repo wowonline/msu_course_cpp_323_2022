@@ -21,7 +21,7 @@ std::string print_graph(const Graph& graph) {
   result << "{\n\tdepth: " << graph.depth()
          << ",\n\tvertices: {amount: " << graph.vertices().size()
          << ", distribution: [";
-  for (int i = 1; i <= graph.depth(); ++i) {
+  for (int i = kGraphBaseDepth; i <= graph.depth(); ++i) {
     result << graph.vertices_at_depth(i).size();
     if (i != graph.depth())
       result << ", ";

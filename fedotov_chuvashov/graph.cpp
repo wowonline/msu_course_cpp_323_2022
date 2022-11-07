@@ -32,12 +32,12 @@ Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
 
 void Graph::set_vertex_depth(VertexId vertex_id, Depth new_depth) {
   if (new_depth > kGraphBaseDepth) {
-    vertices_at_depth_[get_vertex_depth(vertex_id) - kGraphBaseDepth].erase(
+    get_vertex_ids_at_depth(get_vertex_depth(vertex_id)).erase(
         vertex_id);
   }
   depths_of_vertices_[vertex_id] = new_depth;
   if (new_depth <= vertices_at_depth_.size()) {
-    vertices_at_depth_[new_depth - kGraphBaseDepth].insert(vertex_id);
+    get_vertex_ids_at_depth(new_depth).insert(vertex_id);
   } else {
     vertices_at_depth_.emplace_back(std::set{vertex_id});
   }

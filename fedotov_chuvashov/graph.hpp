@@ -81,6 +81,9 @@ class Graph {
   std::set<VertexId> children_of_vertex(VertexId vertex_id) const;
 
  private:
+  std::set<VertexId>& get_vertex_ids_at_depth(Depth depth) {
+    return vertices_at_depth_[depth - kGraphBaseDepth];
+  }
   bool has_vertex(VertexId id) const {
     return vertices_.find(id) != vertices_.end();
   };
