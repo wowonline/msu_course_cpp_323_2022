@@ -12,6 +12,9 @@ class Logger {
   Logger(const Logger& other) = delete;
   void operator=(const Logger& other) = delete;
 
+  Logger(Logger&& other) = delete;
+  void operator=(Logger&& other) = delete;
+
  private:
   Logger();
   ~Logger() = default;
