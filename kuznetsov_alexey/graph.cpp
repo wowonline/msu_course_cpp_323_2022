@@ -1,6 +1,5 @@
 #include <cassert>
 #include <vector>
-#include <iostream>
 
 class Graph {
 public:
@@ -44,10 +43,8 @@ private:
 
     int count_vertices_ids_in_graph(const std::vector<VertexId> &v_ids) {
         int cnt = 0;
-        // std::cerr << vertices.size() <<  '\n';
         for (auto &v_id : v_ids) {
             for (auto &u : vertices) {
-                std::cerr << u.id() << ' ' << v_id << '\n';
                 if (u.id() == v_id) cnt++;
             }
         }
@@ -90,4 +87,3 @@ int main() {
     graph.add_edge(12, 13);
     return 0;
 }
-
