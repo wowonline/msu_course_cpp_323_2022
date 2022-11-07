@@ -3,6 +3,8 @@
 #include <iostream>
 #include "printing.hpp"
 
+namespace uni_course_cpp {
+
 Graph::VertexId Graph::add_vertex() {
   const VertexId new_id = get_new_vertex_id();
   vertices_.emplace(new_id, new_id);
@@ -25,16 +27,21 @@ Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     adjacency_list_[to_vertex_id].emplace_back(new_id);
   }
   edges_.try_emplace(new_id, new_id, from_vertex_id, to_vertex_id, edge_color);
+  if (colored_edge_ids_.find(edge_color) != colored_edge_ids_.end()) {
+    colored_edge_ids_.at(edge_color).push_back(new_id);
+  } else {
+    colored_edge_ids_.emplace(edge_color, std::vector{new_id});
+  }
   return new_id;
 }
 
 void Graph::set_vertex_depth(VertexId vertex_id, Depth new_depth) {
   if (new_depth > kGraphBaseDepth) {
-    vertices_at_depth_[get_vertex_depth(vertex_id)].erase(vertex_id);
+    get_vertex_ids_at_depth(get_vertex_depth(vertex_id)).erase(vertex_id);
   }
   depths_of_vertices_[vertex_id] = new_depth;
-  if (new_depth < vertices_at_depth_.size()) {
-    vertices_at_depth_[new_depth].insert(vertex_id);
+  if (new_depth <= vertices_at_depth_.size()) {
+    get_vertex_ids_at_depth(new_depth).insert(vertex_id);
   } else {
     vertices_at_depth_.emplace_back(std::set{vertex_id});
   }
@@ -70,6 +77,16 @@ std::set<Graph::VertexId> Graph::children_of_vertex(
   return children_of_vertex;
 }
 
+const std::vector<Graph::EdgeId>& Graph::get_colored_edge_ids(
+    Graph::Edge::Color color) const {
+  if (colored_edge_ids_.find(color) != colored_edge_ids_.end()) {
+    return colored_edge_ids_.at(color);
+  } else {
+    static const std::vector<Graph::EdgeId> empty_vector;
+    return empty_vector;
+  }
+}
+
 bool Graph::is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
   const auto children = children_of_vertex(from_vertex_id);
   for (const auto child_id : children) {
@@ -79,3 +96,5 @@ bool Graph::is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
   }
   return false;
 }
+
+}  // namespace uni_course_cpp
