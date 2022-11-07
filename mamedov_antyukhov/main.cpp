@@ -135,8 +135,9 @@ int main() {
         uni_course_cpp::generation_finished_string(i, graph_description));
 
     const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
-    uni_course_cpp::write_to_file(graph_json,
-                                  std::string(config::kTempDirectoryPath) + "graph_" + std::to_string(i) + ".json");
+    uni_course_cpp::write_to_file(
+        graph_json, std::string(config::kTempDirectoryPath) + "graph_" +
+                        std::to_string(i) + ".json");
   }
 
   return 0;
