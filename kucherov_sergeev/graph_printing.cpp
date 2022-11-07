@@ -4,6 +4,11 @@
 namespace uni_course_cpp {
 namespace printing {
 namespace {
+
+constexpr Graph::Edge::Color edge_colors_list[] = {
+    Graph::Edge::Color::Grey, Graph::Edge::Color::Green,
+    Graph::Edge::Color::Yellow, Graph::Edge::Color::Red};
+
 std::vector<Graph::Depth> get_vertices_depth_distribution(const Graph& graph) {
   std::vector<Graph::Depth> vertices_depth_distribution = {};
   const auto depth = graph.get_depth();
@@ -19,7 +24,7 @@ std::map<Graph::Edge::Color, int> get_edges_color_distribution(
     const Graph& graph) {
   std::map<Graph::Edge::Color, int> edges_color_distribution;
 
-  for (const auto color : Graph::Edge::get_color_list()) {
+  for (const auto color : edge_colors_list) {
     edges_color_distribution[color] = 0;
   }
 
@@ -73,7 +78,7 @@ std::string print_edges_info(const Graph& graph) {
       "edges: {amount: " + std::to_string(graph.get_edges().size()) +
       ", distribution: {";
 
-  for (const auto color : Graph::Edge::get_color_list()) {
+  for (const auto color : edge_colors_list) {
     edges_string += print_edge_color(color) + ": " +
                     std::to_string(edges_color_distribution.at(color)) + ", ";
   }
