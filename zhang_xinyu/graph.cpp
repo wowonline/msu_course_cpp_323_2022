@@ -1,5 +1,4 @@
 #include <cassert>
-#include <iostream>
 #include <vector>
 
 class Graph {
@@ -10,11 +9,11 @@ class Graph {
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
  private:
-  //  bool has_vertex(VertexId id) const {
-  //    return std::any_of(
-  //        vertexes_.begin(), vertexes_.end(),
-  //        [id](const Vertex& vertex) { return vertex.id() == id; });
-  //  }
+  bool has_vertex(VertexId id) const {
+    return std::any_of(
+        vertexes_.begin(), vertexes_.end(),
+        [id](const Vertex& vertex) { return vertex.id() == id; });
+  }
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -43,8 +42,8 @@ class Graph {
 
   std::vector<Vertex> vertexes_;
   std::vector<Edge> edges_;
-  int last_vertex_id_ = 0;
-  int last_edge_id_ = 0;
+  VertexId last_vertex_id_ = 0;
+  EdgeId last_edge_id_ = 0;
   VertexId get_new_vertex_id() { return last_vertex_id_++; }
   EdgeId get_new_edge_id() { return last_edge_id_++; }
 };
@@ -54,8 +53,8 @@ void Graph::add_vertex() {
 }
 
 void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-  // assert(has_vertex(from_vertex_id));
-  // assert(has_vertex(to_vertex_id));
+  assert(has_vertex(from_vertex_id));
+  assert(has_vertex(to_vertex_id));
   edges_.emplace_back(get_new_vertex_id(), from_vertex_id, to_vertex_id);
 }
 
