@@ -1,9 +1,13 @@
 #include "graph_printing.hpp"
 
 #include <array>
+#include <string>
 
 namespace uni_course_cpp {
 namespace printing {
+constexpr std::array<Graph::Edge::Color, 4> color_array = {
+    Graph::Edge::Color::Grey, Graph::Edge::Color::Green,
+    Graph::Edge::Color::Yellow, Graph::Edge::Color::Red};
 std::string print_graph(const Graph& graph) {
   std::string graph_info_string;
   graph_info_string =
@@ -19,7 +23,7 @@ std::string print_graph(const Graph& graph) {
   graph_info_string +=
       "]},\n  edges: {amount: " + std::to_string(graph.get_edges().size()) +
       ", distribution: {";
-  std::array<int, sizeof(Graph::Edge::Color)> color_distribution_counts = {0};
+  std::array<int, color_array.size()> color_distribution_counts = {0};
   for (const auto& [edge_id, edge] : graph.get_edges())
     color_distribution_counts[(int)edge.color()]++;
   for (int color_number = 0; color_number < sizeof(Graph::Edge::Color);

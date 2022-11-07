@@ -3,8 +3,6 @@
 #include <fstream>
 #include <string>
 
-#include "config.hpp"
-
 namespace uni_course_cpp {
 class Logger {
  public:
@@ -17,9 +15,9 @@ class Logger {
   void operator=(Logger&& other) = delete;
 
  private:
-  Logger(){};
+  Logger();
   ~Logger() = default;
 
-  std::ofstream log_file;
+  std::ofstream log_file_;
 };
 }  // namespace uni_course_cpp

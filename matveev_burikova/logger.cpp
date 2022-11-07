@@ -3,7 +3,6 @@
 
 #include <chrono>
 #include <ctime>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -25,11 +24,11 @@ Logger& Logger::get_logger() {
   return instance;
 }
 
+Logger::Logger() : log_file_(config::kLogFilePath) {}
+
 void Logger::log(const std::string& string) {
   const auto string_with_date_time = get_current_date_time() + " " + string;
   std::cout << string_with_date_time << std::endl;
-  if (!log_file.is_open())
-    log_file.open(config::kLogFilePath);
-  log_file << string_with_date_time << std::endl;
+  log_file_ << string_with_date_time << std::endl;
 }
 }  // namespace uni_course_cpp
