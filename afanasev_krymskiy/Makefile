@@ -5,14 +5,19 @@ LINTER = clang-format
 LINTER_OPTIONS = -style=Chromium
 
 SOURCE = $(wildcard *.cpp)
-OBJECT = $(patsubst %.cpp, %.o, $(SOURCE))
+HEADERS = $(wildcard *.hpp)
+OBJECTS = $(patsubst %.cpp, %.o, $(SOURCE))
 
-$(TARGET): $(OBJECT)
-	$(COMPILER) $< -o $@ $(COMPILER_FLAGS)
+$(TARGET): $(OBJECTS)
+	$(COMPILER) $(COMPILER_FLAGS) -o $@ $^
+
+%.o: %.cpp %.hpp
+	$(LINTER) -i $(LINTER_OPTIONS) $^
+	$(COMPILER) $(COMPILER_FLAGS) -c -o $@ $<
 
 %.o: %.cpp
 	$(LINTER) -i $(LINTER_OPTIONS) $<
-	$(COMPILER) -c $< -o $@ $(COMPILER_FLAGS)
+	$(COMPILER) $(COMPILER_FLAGS) -c -o $@ $<
 
 clean:
 	rm *.o $(TARGET)
