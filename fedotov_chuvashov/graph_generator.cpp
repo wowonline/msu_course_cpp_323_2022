@@ -84,7 +84,6 @@ void generate_yellow_edges(Graph& graph) {
   }
 }
 
-
 }  // namespace
 
 void GraphGenerator::generate_new_vertices(Graph& graph,

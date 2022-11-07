@@ -23,8 +23,8 @@ class GraphGenerator {
 
  private:
   void generate_new_vertices(Graph& graph,
-                            Graph::VertexId root_id,
-                            Graph::Depth depth) const;
+                             Graph::VertexId root_id,
+                             Graph::Depth depth) const;
   Params params_ = Params(0, 0);
 };
 }  // namespace uni_course_cpp

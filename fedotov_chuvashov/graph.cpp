@@ -37,8 +37,7 @@ Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
 
 void Graph::set_vertex_depth(VertexId vertex_id, Depth new_depth) {
   if (new_depth > kGraphBaseDepth) {
-    get_vertex_ids_at_depth(get_vertex_depth(vertex_id)).erase(
-        vertex_id);
+    get_vertex_ids_at_depth(get_vertex_depth(vertex_id)).erase(vertex_id);
   }
   depths_of_vertices_[vertex_id] = new_depth;
   if (new_depth <= vertices_at_depth_.size()) {
@@ -47,7 +46,6 @@ void Graph::set_vertex_depth(VertexId vertex_id, Depth new_depth) {
     vertices_at_depth_.emplace_back(std::set{vertex_id});
   }
 }
-
 
 Graph::Edge::Color Graph::get_edge_color(VertexId from_vertex_id,
                                          VertexId to_vertex_id) const {
