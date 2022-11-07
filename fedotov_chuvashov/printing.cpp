@@ -29,9 +29,12 @@ std::string print_graph(const Graph& graph) {
   result << "]},\n\tedges: {amount: " << graph.edges().size()
          << ", distribution: {grey: "
          << graph.get_colored_edge_ids(Graph::Edge::Color::Grey).size()
-         << ", green: " << graph.get_colored_edge_ids(Graph::Edge::Color::Green).size()
-         << ", yellow: " << graph.get_colored_edge_ids(Graph::Edge::Color::Yellow).size()
-         << ", red: " << graph.get_colored_edge_ids(Graph::Edge::Color::Red).size()
+         << ", green: "
+         << graph.get_colored_edge_ids(Graph::Edge::Color::Green).size()
+         << ", yellow: "
+         << graph.get_colored_edge_ids(Graph::Edge::Color::Yellow).size()
+         << ", red: "
+         << graph.get_colored_edge_ids(Graph::Edge::Color::Red).size()
          << "}}\n}";
   return result.str();
 }
