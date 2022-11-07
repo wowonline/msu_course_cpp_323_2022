@@ -9,8 +9,8 @@ constexpr Graph::Edge::Color edge_colors_list[] = {
     Graph::Edge::Color::Grey, Graph::Edge::Color::Green,
     Graph::Edge::Color::Yellow, Graph::Edge::Color::Red};
 
-std::vector<Graph::Depth> get_vertices_depth_distribution(const Graph& graph) {
-  std::vector<Graph::Depth> vertices_depth_distribution = {};
+std::vector<int> get_vertices_depth_distribution(const Graph& graph) {
+  std::vector<int> vertices_depth_distribution = {};
   const auto depth = graph.get_depth();
 
   for (Graph::Depth i = 0; i <= depth; i++) {
