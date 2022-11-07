@@ -1,8 +1,8 @@
 #pragma once
+
 #include "graph.hpp"
 
 namespace uni_course_cpp {
-
 class GraphGenerator {
  public:
   struct Params {
@@ -19,12 +19,11 @@ class GraphGenerator {
   };
 
   explicit GraphGenerator(Params&& params) : params_(std::move(params)) {}
-
   Graph generate() const;
 
  private:
   void generate_grey_edges(Graph& graph) const;
+
   Params params_ = Params(0, 0);
 };
-
 }  // namespace uni_course_cpp
