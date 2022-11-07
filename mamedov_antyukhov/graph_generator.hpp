@@ -2,6 +2,7 @@
 
 #include "graph.hpp"
 
+namespace uni_course_cpp {
 class GraphGenerator {
  public:
   struct Params {
@@ -43,3 +44,4 @@ namespace constants {
 static double green_edges_probability = 0.1;
 static double red_edges_probability = 0.33;
 };  // namespace constants
+}  // namespace uni_course_cpp

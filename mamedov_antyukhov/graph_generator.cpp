@@ -2,6 +2,7 @@
 #include <iostream>
 #include <random>
 
+namespace uni_course_cpp {
 bool check_probability(double probability) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -101,3 +102,4 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
     }
   }
 }
+}  // namespace uni_course_cpp

@@ -1,8 +1,8 @@
 CC = clang++
-FLAGS = -Wall -Werror -std=c++17
-PROGS.O = graph.o printing.o main.o graph_generator.o
-PROGS.CPP = graph.cpp printing.cpp graph_generator.cpp main.cpp
-PROGS.HPP = graph.hpp printing.hpp graph_generator.hpp
+FLAGS = -std=c++17 -Werror 
+PROGS.O = graph.o Logger.o graph_printing.o main.o graph_generator.o graph_json_printing.o
+PROGS.CPP = graph.cpp Logger.cpp graph_printing.cpp graph_generator.cpp graph_json_printing.cpp main.cpp
+PROGS.HPP = graph.hpp Logger.hpp graph_printing.hpp graph_generator.hpp graph_json_printing.hpp config.hpp
 RES = main
 GRAPH = graph.json
 
@@ -23,6 +23,9 @@ delete: clean
 
 erase: delete
 	rm -f $(GRAPH)
+
+ready:
+	rm -rf $(PROGS.O)
 
 clang-format:
 	clang-format -i -style=Chromium $(PROGS.CPP) $(PROGS.HPP)
