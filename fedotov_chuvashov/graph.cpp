@@ -77,11 +77,12 @@ std::set<Graph::VertexId> Graph::children_of_vertex(
   return children_of_vertex;
 }
 
-const std::vector<Graph::EdgeId>& Graph::get_colored_edge_ids(Graph::Edge::Color color) const {
+const std::vector<Graph::EdgeId>& Graph::get_colored_edge_ids(
+    Graph::Edge::Color color) const {
   if (colored_edge_ids_.find(color) != colored_edge_ids_.end()) {
     return colored_edge_ids_.at(color);
   } else {
-    static const std::vector<Graph::EdgeId> empty_vector; 
+    static const std::vector<Graph::EdgeId> empty_vector;
     return empty_vector;
   }
 }

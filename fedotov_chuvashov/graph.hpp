@@ -45,7 +45,6 @@ class Graph {
     Edge::Color color_ = Color::Grey;
   };
 
-
   VertexId add_vertex();
 
   EdgeId add_edge(VertexId first_vertex_id, VertexId second_vertex_id);
@@ -85,7 +84,7 @@ class Graph {
   std::set<VertexId>& get_vertex_ids_at_depth(Depth depth) {
     return vertices_at_depth_[depth - kGraphBaseDepth];
   }
-  
+
   bool has_vertex(VertexId id) const {
     return vertices_.find(id) != vertices_.end();
   };
