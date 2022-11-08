@@ -157,9 +157,7 @@ class Graph {
     const auto depth_iterator = vertex_depths_.find(vertex_id);
     if (depth_iterator != vertex_depths_.end()) {
       Depth old_depth = depth_iterator->second;
-      if (depth == old_depth) {
-        return;
-      }
+      assert(depth != old_depth);
       depth_map_[old_depth].erase(vertex_id);
     }
 
