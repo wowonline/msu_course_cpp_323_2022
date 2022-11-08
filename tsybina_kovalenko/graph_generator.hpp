@@ -65,8 +65,7 @@ class GraphGenerator {
       const auto vertex_depth = graph.depth_of(vertex_id);
       if (vertex_depth < params_.depth()) {
         const float success_chance =
-            1.f -
-            static_cast<float>(vertex_depth - 1) / (params_.depth() - 1);
+            1.f - static_cast<float>(vertex_depth - 1) / (params_.depth() - 1);
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
           if (check_probability(success_chance)) {
             const auto new_vertex_id = graph.add_vertex();
@@ -128,8 +127,7 @@ class GraphGenerator {
 
   void generate_red_edges(Graph& graph) const {
     for (Graph::Depth vertex_depth = kRedEdgeStartDepth;
-         vertex_depth <= params_.depth() - kRedEdgeDepthJump;
-         ++vertex_depth) {
+         vertex_depth <= params_.depth() - kRedEdgeDepthJump; ++vertex_depth) {
       const auto& probable_vertices_unordered_set =
           graph.vertices_at_depth(vertex_depth + kRedEdgeDepthJump);
 
