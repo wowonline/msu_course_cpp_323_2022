@@ -154,7 +154,7 @@ class Graph {
   }
 
   void set_vertex_depth(VertexId vertex_id, Depth depth) {
-    auto depth_iterator = vertex_depths_.find(vertex_id);
+    const auto depth_iterator = vertex_depths_.find(vertex_id);
     if (depth_iterator != vertex_depths_.end()) {
       Depth old_depth = depth_iterator->second;
       if (depth == old_depth) {
