@@ -12,7 +12,7 @@ class GraphGenerator {
     Params(Graph::Depth vertex_depth, int new_vertices_count)
         : depth_(vertex_depth), new_vertices_count_(new_vertices_count) {}
 
-    Graph::Depth vertex_depth() const { return depth_; }
+    Graph::Depth depth() const { return depth_; }
     int new_vertices_count() const { return new_vertices_count_; }
 
    private:
@@ -24,7 +24,7 @@ class GraphGenerator {
 
   Graph generate() const {
     auto graph = Graph();
-    if (params_.vertex_depth() != 0) {
+    if (params_.depth() != 0) {
       graph.add_vertex();
 
       generate_grey_edges(graph);
@@ -54,7 +54,7 @@ class GraphGenerator {
   }
 
   void generate_grey_edges(Graph& graph) const {
-    if (params_.vertex_depth() <= 1) {
+    if (params_.depth() <= 1) {
       return;
     }
     std::queue<Graph::VertexId> queue;
@@ -63,10 +63,10 @@ class GraphGenerator {
       const auto vertex_id = queue.front();
       queue.pop();
       const auto vertex_depth = graph.depth_of(vertex_id);
-      if (vertex_depth < params_.vertex_depth()) {
+      if (vertex_depth < params_.depth()) {
         const float success_chance =
             1.f -
-            static_cast<float>(vertex_depth - 1) / (params_.vertex_depth() - 1);
+            static_cast<float>(vertex_depth - 1) / (params_.depth() - 1);
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
           if (check_probability(success_chance)) {
             const auto new_vertex_id = graph.add_vertex();
@@ -108,10 +108,10 @@ class GraphGenerator {
 
   void generate_yellow_edges(Graph& graph) const {
     for (Graph::Depth vertex_depth = kYellowEdgeStartDepth;
-         vertex_depth <= params_.vertex_depth() - kYellowEdgeDepthJump;
+         vertex_depth <= params_.depth() - kYellowEdgeDepthJump;
          ++vertex_depth) {
       const float success_chance =
-          static_cast<float>(vertex_depth - 1) / (params_.vertex_depth() - 2);
+          static_cast<float>(vertex_depth - 1) / (params_.depth() - 2);
       Graph::Depth required_depth = vertex_depth + kYellowEdgeDepthJump;
       for (Graph::VertexId vertex_id : graph.vertices_at_depth(vertex_depth)) {
         if (check_probability(success_chance)) {
@@ -128,7 +128,7 @@ class GraphGenerator {
 
   void generate_red_edges(Graph& graph) const {
     for (Graph::Depth vertex_depth = kRedEdgeStartDepth;
-         vertex_depth <= params_.vertex_depth() - kRedEdgeDepthJump;
+         vertex_depth <= params_.depth() - kRedEdgeDepthJump;
          ++vertex_depth) {
       const auto& probable_vertices_unordered_set =
           graph.vertices_at_depth(vertex_depth + kRedEdgeDepthJump);
