@@ -51,7 +51,7 @@ class Graph {
     return connections_.at(vertex_id);
   }
 
-  const auto& depth() const { return depth_; }
+  Graph::Depth depth() const { return depth_; }
 
   Depth depth_of(VertexId vertex_id) const {
     return vertex_depths_.at(vertex_id);
