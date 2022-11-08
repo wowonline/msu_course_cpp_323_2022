@@ -122,7 +122,7 @@ class Graph {
   std::unordered_map<Depth, std::unordered_set<VertexId>> depth_map_;
   static const std::unordered_set<VertexId> kEmptySet;
 
-  static constexpr int kGraphBaseDepth = 1;
+  static constexpr Graph::Depth kGraphBaseDepth = 1;
   static constexpr Graph::Depth kRedEdgeDepthJump = 2;
   static constexpr Graph::Depth kYellowEdgeDepthJump = 1;
 
