@@ -142,7 +142,7 @@ class Graph {
     if (depth_of(to_vertex_id) == kGraphBaseDepth) {
       return Edge::Color::Grey;
     }
-    int depth_jump = depth_of(to_vertex_id) - depth_of(from_vertex_id);
+    const int depth_jump = depth_of(to_vertex_id) - depth_of(from_vertex_id);
     if (depth_jump == kYellowEdgeDepthJump &&
         !is_connected(from_vertex_id, to_vertex_id)) {
       return Edge::Color::Yellow;
