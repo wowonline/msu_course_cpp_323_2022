@@ -357,6 +357,8 @@ int handle_new_vertices_count_input() {
   return count_vertices;
 }
 
+
+
 int main() {
 
   const int depth = handle_depth_input();
@@ -367,7 +369,6 @@ int main() {
   const auto graph = generator.generate();
 
   const auto graph_json = printing::json::print_graph(graph);
-  std::cout << graph_json << std::endl;
   write_to_file(graph_json, "graph.json");
 
   return 0;
