@@ -156,7 +156,11 @@ void GraphGenerator::generate_grey_branch(
   generate_grey_branch(graph, jobs_mutex, cur_vertex_ids, cur_depth + 1);
 }
 
-void GraphGenerator::add_grey_edge(Graph& graph, Graph::VertexId from_vertex_id, std::mutex& jobs_mutex, std::vector<Graph::VertexId> &cur_vertex_ids) const{
+void GraphGenerator::add_grey_edge(
+    Graph& graph,
+    Graph::VertexId from_vertex_id,
+    std::mutex& jobs_mutex,
+    std::vector<Graph::VertexId>& cur_vertex_ids) const {
   std::lock_guard<std::mutex> guard(jobs_mutex);
 
   auto vertex_id = graph.add_vertex();
