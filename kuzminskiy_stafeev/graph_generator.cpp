@@ -18,24 +18,17 @@ using JobCallBack = std::function<void()>;
 bool has_job(std::mutex& jobs_mutex,
              std::atomic<bool>& should_terminate,
              const std::list<JobCallBack>& jobs) {
-  std::lock_guard<std::mutex> guard(jobs_mutex);
-
-  // jobs_mutex.lock();
-
   if (!jobs.empty()) {
     return true;
   } else {
     should_terminate = true;
-    // jobs_mutex.unlock();
     return false;
   }
 }
 
 JobCallBack get_job(std::mutex& jobs_mutex, std::list<JobCallBack>& jobs) {
-  std::lock_guard<std::mutex> guard(jobs_mutex);
   auto job = jobs.front();
   jobs.pop_front();
-  // jobs_mutex.unlock();
   return job;
 }
 
@@ -141,11 +134,7 @@ void GraphGenerator::generate_grey_branch(
   if (depth < cur_depth) {
     return;
   } else if (cur_depth == 2) {
-    // jobs_mutex.lock();
-    auto vertex_id = graph.add_vertex();
-    graph.add_edge(0, vertex_id);
-    // jobs_mutex.unlock();
-    cur_vertex_ids.emplace_back(vertex_id);
+    add_grey_edge(graph, 0, jobs_mutex, cur_vertex_ids);
     generate_grey_branch(graph, jobs_mutex, cur_vertex_ids, cur_depth + 1);
     return;
   }
@@ -159,17 +148,20 @@ void GraphGenerator::generate_grey_branch(
     for (Graph::VertexId cur_vertex_count = 0;
          cur_vertex_count < new_vertices_count; cur_vertex_count++) {
       if (check_probability(prob)) {
-        std::lock_guard<std::mutex> guard(jobs_mutex);
-        // jobs_mutex.lock();
-        auto vertex_id = graph.add_vertex();
-        graph.add_edge(from_vertex_id, vertex_id);
-        // jobs_mutex.unlock();
-        cur_vertex_ids.emplace_back(vertex_id);
+        add_grey_edge(graph, from_vertex_id, jobs_mutex, cur_vertex_ids);
       }
     }
   }
 
   generate_grey_branch(graph, jobs_mutex, cur_vertex_ids, cur_depth + 1);
+}
+
+void GraphGenerator::add_grey_edge(Graph& graph, Graph::VertexId from_vertex_id, std::mutex& jobs_mutex, std::vector<Graph::VertexId> &cur_vertex_ids) const{
+  std::lock_guard<std::mutex> guard(jobs_mutex);
+
+  auto vertex_id = graph.add_vertex();
+  graph.add_edge(from_vertex_id, vertex_id);
+  cur_vertex_ids.emplace_back(vertex_id);
 }
 
 void GraphGenerator::generate_grey_edges(Graph& graph) const {
@@ -198,6 +190,8 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
 
       const auto job_optional = [&jobs_mutex, &should_terminate,
                                  &jobs]() -> std::optional<JobCallBack> {
+        std::lock_guard<std::mutex> guard(jobs_mutex);
+
         if (has_job(jobs_mutex, should_terminate, jobs)) {
           return get_job(jobs_mutex, jobs);
         }

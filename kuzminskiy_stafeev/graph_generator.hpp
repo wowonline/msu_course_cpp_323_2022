@@ -29,6 +29,7 @@ class GraphGenerator {
                             std::mutex& graph_mutex,
                             std::vector<Graph::VertexId> previous_vertex_ids,
                             Graph::Depth cur_depth) const;
+  void add_grey_edge(Graph& graph, Graph::VertexId from_vertex_id, std::mutex& jobs_mutex, std::vector<Graph::VertexId> &cur_vertex_ids) const;
 
   Params params_ = Params(0, 0);
 };
