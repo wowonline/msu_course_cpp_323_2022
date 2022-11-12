@@ -1,7 +1,9 @@
 #pragma once
+#include <mutex>
 #include "graph.hpp"
 
 namespace uni_course_cpp {
+
 class GraphGenerator {
  public:
   struct Params {
@@ -22,6 +24,11 @@ class GraphGenerator {
   Graph generate() const;
 
  private:
+  void generate_branch(Graph& graph,
+                       Graph::VertexId root_id,
+                       Graph::Depth depth,
+                       std::mutex& mutex) const;
+
   void generate_new_vertices(Graph& graph,
                              Graph::VertexId root_id,
                              Graph::Depth depth) const;
