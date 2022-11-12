@@ -86,7 +86,7 @@ void prepare_temp_directory() {
 
 int main() {
   using namespace uni_course_cpp;
-
+  std::mutex graph_mutex;
   const int depth = handle_depth_input();
   const int new_vertices_count = handle_new_vertices_count_input();
   const int graphs_count = handle_graphs_count_input();
@@ -98,7 +98,7 @@ int main() {
 
   for (int i = 0; i < graphs_count; i++) {
     logger.log(generation_started_string(i));
-    const auto graph = generator.generate();
+    const auto graph = generator.generate(graph_mutex);
 
     const auto graph_description = printing::print_graph(graph);
     logger.log(generation_finished_string(i, graph_description));
