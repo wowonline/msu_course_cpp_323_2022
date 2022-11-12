@@ -110,10 +110,12 @@ void GraphGenerator::generate_branch(Graph& graph,
   if (depth <= 0) {
     return;
   }
+  mutex.lock();
   const float probabilty_of_grey_edge =
       1.0 - static_cast<float>(
                 (graph.get_vertex_depth(root_id) - kGreyDepthDifference)) /
                 (params_.depth() - kGreyDepthDifference);
+  mutex.unlock();
   for (int i = 0; i < params_.new_vertices_count(); ++i) {
     if (check_probabilty(probabilty_of_grey_edge)) {
       mutex.lock();
@@ -141,24 +143,23 @@ void GraphGenerator::generate_new_vertices(Graph& graph,
   }
 
   const int number_of_threads =
-      std::min(kMaxThreadsCount, params_.new_vertices_count());
+      std::min(params_.new_vertices_count(), kMaxThreadsCount);
   std::vector<std::thread> workers;
   std::mutex queue_mutex;
   workers.reserve(number_of_threads);
   for (int i = 0; i < number_of_threads; ++i) {
     workers.emplace_back([&]() {
-      std::optional<JobCallback> task_optional = std::nullopt;
+      JobCallback task;
       while (true) {
         queue_mutex.lock();
-        if (task_queue.size() != 0) {
-          task_optional = task_queue.back();
+        if (!task_queue.empty()) {
+          task = task_queue.back();
           task_queue.pop_back();
         } else {
           queue_mutex.unlock();
           return;
         }
         queue_mutex.unlock();
-        const auto& task = task_optional.value();
         task();
       }
     });
@@ -174,15 +175,15 @@ Graph GraphGenerator::generate() const {
     const Graph::VertexId root_id = graph.add_vertex();
     generate_new_vertices(graph, root_id, params_.depth());
   }
-  std::mutex mutex;
-  auto green_thread =
-      std::thread([&]() { generate_green_edges(graph, mutex); });
-  auto red_thread = std::thread([&]() { generate_red_edges(graph, mutex); });
-  auto yellow_thread =
-      std::thread([&]() { generate_yellow_edges(graph, mutex); });
-  green_thread.join();
-  red_thread.join();
-  yellow_thread.join();
+  /*   std::mutex mutex;
+    auto green_thread =
+        std::thread([&]() { generate_green_edges(graph, mutex); });
+    auto red_thread = std::thread([&]() { generate_red_edges(graph, mutex); });
+    auto yellow_thread =
+        std::thread([&]() { generate_yellow_edges(graph, mutex); });
+    green_thread.join();
+    red_thread.join();
+    yellow_thread.join(); */
 
   return graph;
 }
