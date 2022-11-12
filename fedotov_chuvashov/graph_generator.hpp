@@ -29,9 +29,7 @@ class GraphGenerator {
                        Graph::Depth depth,
                        std::mutex& mutex) const;
 
-  void generate_new_vertices(Graph& graph,
-                             Graph::VertexId root_id,
-                             Graph::Depth depth) const;
+  void generate_new_vertices(Graph& graph, Graph::VertexId root_id) const;
   Params params_ = Params(0, 0);
 };
 }  // namespace uni_course_cpp
