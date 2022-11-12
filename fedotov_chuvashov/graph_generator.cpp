@@ -175,15 +175,15 @@ Graph GraphGenerator::generate() const {
     const Graph::VertexId root_id = graph.add_vertex();
     generate_new_vertices(graph, root_id, params_.depth());
   }
-  /*   std::mutex mutex;
-    auto green_thread =
-        std::thread([&]() { generate_green_edges(graph, mutex); });
-    auto red_thread = std::thread([&]() { generate_red_edges(graph, mutex); });
-    auto yellow_thread =
-        std::thread([&]() { generate_yellow_edges(graph, mutex); });
-    green_thread.join();
-    red_thread.join();
-    yellow_thread.join(); */
+  std::mutex mutex;
+  auto green_thread =
+      std::thread([&]() { generate_green_edges(graph, mutex); });
+  auto red_thread = std::thread([&]() { generate_red_edges(graph, mutex); });
+  auto yellow_thread =
+      std::thread([&]() { generate_yellow_edges(graph, mutex); });
+  green_thread.join();
+  red_thread.join();
+  yellow_thread.join();
 
   return graph;
 }
