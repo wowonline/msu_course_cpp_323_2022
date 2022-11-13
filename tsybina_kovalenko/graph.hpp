@@ -51,7 +51,7 @@ class Graph {
     return connections_.at(vertex_id);
   }
 
-  Graph::Depth depth() const { return depth_; }
+  Graph::Depth depth() const { return depth_map_.size() - 1; }
 
   Depth depth_of(VertexId vertex_id) const {
     return vertex_depths_.at(vertex_id);
@@ -123,8 +123,6 @@ class Graph {
   static constexpr Graph::Depth kRedEdgeDepthJump = 2;
   static constexpr Graph::Depth kYellowEdgeDepthJump = 1;
 
-  Depth depth_ = 0;
-
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
 
@@ -163,7 +161,6 @@ class Graph {
       depth_map_.resize(depth + 1);
     }
     depth_map_[depth].insert(vertex_id);
-    depth_ = std::max(depth_, depth);
   }
 
   VertexId other_end_of(EdgeId edge_id, VertexId vertex_id) const {
