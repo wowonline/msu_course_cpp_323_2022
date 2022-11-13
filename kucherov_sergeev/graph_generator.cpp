@@ -232,7 +232,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
   threads.reserve(threads_count);
 
   for (int i = 0; i < threads_count; i++) {
-    threads.emplace_back(std::thread(worker));
+    threads.emplace_back(worker);
   }
 
   while (!jobs.empty()) {
