@@ -156,7 +156,7 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
 
 void GraphGenerator::generate_grey_edges(Graph& graph,
                                          Graph::VertexId base_vertex_id) const {
-  std::mutex graph_mutex;
+  std::mutex graph_mutex, jobs_mutex;
   std::atomic<bool> should_terminate = false;
   auto jobs = std::queue<JobCallback>();
 
@@ -178,13 +178,14 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
     jobs.push(job);
   }
 
-  const auto worker = [&should_terminate, &jobs_atomic, &jobs]() {
+  const auto worker = [&should_terminate, &jobs_atomic, &jobs_mutex, &jobs]() {
     while (true) {
       if (should_terminate) {
         return;
       }
-      const auto job_optional = [&jobs_atomic, &should_terminate,
+      const auto job_optional = [&jobs_atomic, &jobs_mutex, &should_terminate,
                                  &jobs]() -> std::optional<JobCallback> {
+        const std::lock_guard<std::mutex> guard(jobs_mutex);
         if (!jobs.empty()) {
           jobs_atomic = jobs_atomic.load() - 1;
           return get_job(jobs);
