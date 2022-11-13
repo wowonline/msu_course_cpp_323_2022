@@ -22,7 +22,7 @@ class GraphGenerator {
   Graph generate() const;
 
  private:
-  void generate_grey_edges(Graph& graph) const;
+  void generate_grey_edges(Graph& graph, Graph::VertexId base_vertex_id) const;
 
   Params params_ = Params(0, 0);
 };
