@@ -116,8 +116,10 @@ void generate_red_edges(Graph& graph,
 
 }  // namespace
 
-Graph GraphGenerator::generate(std::mutex& graph_mutex) const {
+Graph GraphGenerator::generate() const {
+  std::mutex graph_mutex;
   auto graph = Graph();
+
   if (params_.depth()) {
     graph.add_vertex();
     generate_grey_edges(graph, graph_mutex);
