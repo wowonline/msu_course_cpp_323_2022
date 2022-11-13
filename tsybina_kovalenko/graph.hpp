@@ -58,9 +58,7 @@ class Graph {
   }
 
   const std::unordered_set<VertexId>& vertices_at_depth(Depth depth) const {
-    if (depth_map_.find(depth) == depth_map_.end()) {
-      return kEmptySet;
-    }
+    assert(depth < depth_map_.size());
     return depth_map_.at(depth);
   }
 
@@ -119,8 +117,7 @@ class Graph {
   std::unordered_map<EdgeId, Edge> edges_;
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
-  std::unordered_map<Depth, std::unordered_set<VertexId>> depth_map_;
-  static const std::unordered_set<VertexId> kEmptySet;
+  std::vector<std::unordered_set<VertexId>> depth_map_;
 
   static constexpr Graph::Depth kGraphBaseDepth = 1;
   static constexpr Graph::Depth kRedEdgeDepthJump = 2;
@@ -162,6 +159,9 @@ class Graph {
     }
 
     vertex_depths_[vertex_id] = depth;
+    if (depth_map_.size() <= depth) {
+      depth_map_.resize(depth + 1);
+    }
     depth_map_[depth].insert(vertex_id);
     depth_ = std::max(depth_, depth);
   }
@@ -176,5 +176,3 @@ class Graph {
     return edge.from_vertex_id();
   }
 };
-
-const std::unordered_set<Graph::VertexId> Graph::kEmptySet = {};
