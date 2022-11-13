@@ -10,7 +10,7 @@
 namespace uni_course_cpp {
 
 const int kMaxThreadsCount = std::thread::hardware_concurrency();
-const int kStartDepth = 2;
+constexpr Graph::Depth kGraphBaseDepth = 1;
 
 namespace {
 
@@ -60,8 +60,9 @@ void generate_green_edges(Graph& graph, std::mutex& graph_mutex) {
   const auto& vertices = graph.vertices();
 
   std::for_each(vertices.begin(), vertices.end(),
-                [&](const std::pair<Graph::VertexId, Graph::Vertex>& element) {
-                  Graph::VertexId vertex_id = element.first;
+                [&graph, &graph_mutex](
+                    const std::pair<Graph::VertexId, Graph::Vertex>& element) {
+                  const Graph::VertexId vertex_id = element.first;
                   if (check_probability(prob)) {
                     const std::lock_guard<std::mutex> guard(graph_mutex);
                     graph.add_edge(vertex_id, vertex_id);
@@ -73,13 +74,15 @@ void generate_yellow_edges(Graph& graph,
                            Graph::Depth depth,
                            std::mutex& graph_mutex) {
   const float step = 1.0 / (depth - 2);
-  for (Graph::Depth cur_depth = 2; cur_depth <= depth - 1; cur_depth++) {
+  for (Graph::Depth cur_depth = kGraphBaseDepth + 1; cur_depth <= depth - 1;
+       cur_depth++) {
     const float prob = (float)(step * (cur_depth - 1));
     const auto vertices = graph.vertices_of_depth(cur_depth);
 
     std::for_each(
         vertices.begin(), vertices.end(),
-        [&](const Graph::VertexId from_vertex_id) {
+        [&graph, &graph_mutex, cur_depth,
+         prob](const Graph::VertexId from_vertex_id) {
           if (check_probability(prob)) {
             const auto unconnected_vertices_ids = get_unconnected_vertex_ids(
                 graph, from_vertex_id, graph.vertices_of_depth(cur_depth + 1));
@@ -98,12 +101,14 @@ void generate_red_edges(Graph& graph,
                         Graph::Depth depth,
                         std::mutex& graph_mutex) {
   static float constexpr prob = (float)1 / 3;
-  for (Graph::Depth cur_depth = 1; cur_depth <= depth - 2; cur_depth++) {
+  for (Graph::Depth cur_depth = kGraphBaseDepth; cur_depth <= depth - 2;
+       cur_depth++) {
     const auto& depth_vertices = graph.vertices_of_depth(cur_depth);
     const auto& deeper_vertices = graph.vertices_of_depth(cur_depth + 2);
 
     std::for_each(depth_vertices.begin(), depth_vertices.end(),
-                  [&](const Graph::VertexId from_vertex_id) {
+                  [&graph, &graph_mutex,
+                   &deeper_vertices](const Graph::VertexId from_vertex_id) {
                     const auto to_vertex_id =
                         get_random_vertex(deeper_vertices);
                     if (check_probability(prob)) {
@@ -121,8 +126,8 @@ Graph GraphGenerator::generate() const {
   auto graph = Graph();
 
   if (params_.depth()) {
-    graph.add_vertex();
-    generate_grey_edges(graph, graph_mutex);
+    const auto root_id = graph.add_vertex();
+    generate_grey_edges(graph, root_id, graph_mutex);
     std::thread green_thread(generate_green_edges, std::ref(graph),
                              std::ref(graph_mutex));
     std::thread yellow_thread(&generate_yellow_edges, std::ref(graph),
@@ -148,32 +153,27 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
     return;
   }
 
-  if (cur_depth == kStartDepth) {
-    graph_mutex.lock();
-    const Graph::VertexId child_id = graph.add_vertex();
-    graph.add_edge(root_id, child_id);
-    graph_mutex.unlock();
-
-    generate_grey_branch(graph, graph_mutex, child_id, cur_depth + 1);
-    return;
-  }
-
   const float step = 1.0 / (depth - 1);
   const float prob = (float)(1 - step * (cur_depth - 2));
 
   for (Graph::VertexId cur_vertex_count = 0;
        cur_vertex_count < params_.new_vertices_count(); cur_vertex_count++) {
     if (check_probability(prob)) {
-      graph_mutex.lock();
-      const Graph::VertexId child_id = graph.add_vertex();
-      graph.add_edge(root_id, child_id);
-      graph_mutex.unlock();
+      Graph::VertexId child_id;
+
+      {
+        const std::lock_guard<std::mutex> guard(graph_mutex);
+        child_id = graph.add_vertex();
+        graph.add_edge(root_id, child_id);
+      }
+
       generate_grey_branch(graph, graph_mutex, child_id, cur_depth + 1);
     }
   }
 }
 
 void GraphGenerator::generate_grey_edges(Graph& graph,
+                                         Graph::VertexId root_id,
                                          std::mutex& graph_mutex) const {
   const auto depth = params_.depth();
   if (depth == 1) {
@@ -182,11 +182,20 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
 
   auto jobs = std::list<JobCallBack>();
   const auto new_vertices_count = params_.new_vertices_count();
-  Graph::VertexId root_id = 0;
 
   for (int i = 0; i < new_vertices_count; i++) {
     jobs.push_back([&graph, &graph_mutex, &root_id, this]() {
-      generate_grey_branch(graph, graph_mutex, root_id, kStartDepth);
+      if (params_.depth() > kGraphBaseDepth) {
+        Graph::VertexId child_id;
+
+        {
+          const std::lock_guard<std::mutex> guard(graph_mutex);
+          child_id = graph.add_vertex();
+          graph.add_edge(root_id, child_id);
+        }
+
+        generate_grey_branch(graph, graph_mutex, child_id, kGraphBaseDepth + 2);
+      }
     });
   }
 
@@ -202,7 +211,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
                                  &jobs]() -> std::optional<JobCallBack> {
         const std::lock_guard<std::mutex> guard(jobs_mutex);
 
-        if (has_job(should_terminate, jobs)) {
+        if (!jobs.empty()) {
           return get_job(jobs);
         }
 
@@ -225,12 +234,12 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
   }
 
   while (true) {
-    const std::lock_guard<std::mutex> guard(jobs_mutex);
     if (jobs.empty()) {
-      should_terminate = true;
       break;
     }
   }
+
+  should_terminate = true;
 
   for (auto& thread : threads) {
     thread.join();

@@ -24,7 +24,9 @@ class GraphGenerator {
   Graph generate() const;
 
  private:
-  void generate_grey_edges(Graph& graph, std::mutex& graph_mutex) const;
+  void generate_grey_edges(Graph& graph,
+                           Graph::VertexId root_id,
+                           std::mutex& graph_mutex) const;
   void generate_grey_branch(Graph& graph,
                             std::mutex& graph_mutex,
                             Graph::VertexId root_id,
