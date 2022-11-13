@@ -60,7 +60,7 @@ void generate_green_edges(Graph& graph, std::mutex& graph_mutex) {
                   current_depth_vertex_ids.end(),
                   [&graph, &graph_mutex](Graph::VertexId vertex_id) {
                     if (get_random_bool(kEdgeGreenProbability)) {
-                      std::lock_guard lock(graph_mutex);
+                      const std::lock_guard lock(graph_mutex);
                       graph.add_edge(vertex_id, vertex_id);
                     }
                   });
@@ -88,7 +88,7 @@ void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) {
             if (to_vertex_ids.empty() == false) {
               const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
 
-              std::lock_guard lock(graph_mutex);
+              const std::lock_guard lock(graph_mutex);
               graph.add_edge(vertex_id, to_vertex_id);
             }
           }
@@ -116,7 +116,7 @@ void generate_red_edges(Graph& graph, std::mutex& graph_mutex) {
           if (get_random_bool(kEdgeRedProbability)) {
             const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
 
-            std::lock_guard lock(graph_mutex);
+            const std::lock_guard lock(graph_mutex);
             graph.add_edge(vertex_id, to_vertex_id);
           }
         });
@@ -130,7 +130,7 @@ void generate_grey_branch(Graph& graph,
                           std::mutex& graph_mutex,
                           bool one_vertex_start = false) {
   graph_mutex.lock();
-  Graph::Depth current_depth = graph.get_vertex_depth(root_vertex_id);
+  const Graph::Depth current_depth = graph.get_vertex_depth(root_vertex_id);
   graph_mutex.unlock();
 
   float new_vertex_probability =
@@ -189,10 +189,10 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
   using JobCallback = std::function<void()>;
   auto jobs = std::list<JobCallback>();
 
-  Graph::VertexId root_vertex_id =
+  const Graph::VertexId root_vertex_id =
       graph.get_depth_vertex_ids(kGraphDefaultDepth)[0];
-  Graph::Depth max_depth = params_.depth();
-  int new_vertices_count = params_.new_vertices_count();
+  const Graph::Depth max_depth = params_.depth();
+  const int new_vertices_count = params_.new_vertices_count();
   for (int i = 0; i < new_vertices_count; i++) {
     jobs.push_back([&graph, root_vertex_id, max_depth, new_vertices_count,
                     &graph_mutex]() {
