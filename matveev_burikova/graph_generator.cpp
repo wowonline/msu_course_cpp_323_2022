@@ -108,7 +108,7 @@ void generate_red_edges(Graph& graph) {
 }
 
 bool has_job(const std::queue<JobCallback>& jobs) {
-    return !jobs.empty();
+  return !jobs.empty();
 }
 
 JobCallback get_job(std::queue<JobCallback>& jobs) {
