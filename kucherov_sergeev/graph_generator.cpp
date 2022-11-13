@@ -185,18 +185,18 @@ Graph GraphGenerator::generate() const {
 
 void GraphGenerator::generate_grey_edges(
     Graph& graph,
-    const Graph::VertexId root_vertex_id) const {
+    const Graph::VertexId root_id) const {
   std::mutex jobs_mutex, graph_mutex;
 
   using JobCallback = std::function<void()>;
-  auto jobs = std::list<JobCallback>();
+  std::atomic<auto> jobs = std::list<JobCallback>();
 
   const Graph::Depth max_depth = params_.depth();
   const int new_vertices_count = params_.new_vertices_count();
   for (int i = 0; i < new_vertices_count; i++) {
-    jobs.push_back([&graph, root_vertex_id, max_depth, new_vertices_count,
+    jobs.push_back([&graph, root_id, max_depth, new_vertices_count,
                     &graph_mutex]() {
-      generate_grey_branch(graph, max_depth, new_vertices_count, root_vertex_id,
+      generate_grey_branch(graph, max_depth, new_vertices_count, root_id,
                            graph_mutex, true);
     });
   }
