@@ -30,7 +30,7 @@ std::vector<Graph::VertexId> get_unconnected_vertex_ids(
   std::vector<Graph::VertexId> unconnected_vertex_ids = {};
   for (const auto next_depth_vertex_id :
        graph.get_depth_vertex_ids(graph.get_vertex_depth(vertex_id) + 1)) {
-    if (graph.is_vertices_connected(vertex_id, next_depth_vertex_id) == false) {
+    if (!graph.is_vertices_connected(vertex_id, next_depth_vertex_id)) {
       unconnected_vertex_ids.push_back(next_depth_vertex_id);
     }
   }
@@ -40,7 +40,7 @@ std::vector<Graph::VertexId> get_unconnected_vertex_ids(
 
 Graph::VertexId get_random_vertex_id(
     const std::vector<Graph::VertexId>& vertex_ids) {
-  assert((vertex_ids.empty() == false) &&
+  assert((!vertex_ids.empty()) &&
          "Can't pick random vertex id from empty list");
 
   std::random_device random_device;
@@ -212,7 +212,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
       std::lock_guard lock(jobs_mutex);
 
       const auto job_optional = [&jobs]() -> std::optional<JobCallback> {
-        if (jobs.empty() == false) {
+        if (!jobs.empty()) {
           auto job = jobs.back();
           jobs.pop_back();
           return job;
@@ -235,7 +235,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
     threads.emplace_back(std::thread(worker));
   }
 
-  while (jobs.empty() == false) {
+  while (!jobs.empty()) {
   }
 
   should_terminate = true;
