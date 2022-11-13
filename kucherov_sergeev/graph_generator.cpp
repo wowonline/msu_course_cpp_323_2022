@@ -160,8 +160,8 @@ Graph GraphGenerator::generate() const {
   auto graph = Graph();
 
   if (params_.depth() != 0) {
-    graph.add_vertex();
-    generate_grey_edges(graph);
+    const auto root_id = graph.add_vertex();
+    generate_grey_edges(graph, root_id);
 
     std::mutex graph_mutex;
 
@@ -183,14 +183,14 @@ Graph GraphGenerator::generate() const {
   return graph;
 }
 
-void GraphGenerator::generate_grey_edges(Graph& graph) const {
+void GraphGenerator::generate_grey_edges(
+    Graph& graph,
+    const Graph::VertexId root_vertex_id) const {
   std::mutex jobs_mutex, graph_mutex;
 
   using JobCallback = std::function<void()>;
   auto jobs = std::list<JobCallback>();
 
-  const Graph::VertexId root_vertex_id =
-      graph.get_depth_vertex_ids(kGraphDefaultDepth)[0];
   const Graph::Depth max_depth = params_.depth();
   const int new_vertices_count = params_.new_vertices_count();
   for (int i = 0; i < new_vertices_count; i++) {
