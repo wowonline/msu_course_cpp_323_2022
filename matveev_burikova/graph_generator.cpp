@@ -117,13 +117,6 @@ void generate_red_edges(Graph& graph, std::mutex& graph_mutex) {
   }
 }
 
-<<<<<<< HEAD
-=======
-bool has_job(const std::queue<JobCallback>& jobs) {
-  return !jobs.empty();
-}
-
->>>>>>> task_06
 JobCallback get_job(std::queue<JobCallback>& jobs) {
   assert(!jobs.empty());
   auto job = jobs.front();
