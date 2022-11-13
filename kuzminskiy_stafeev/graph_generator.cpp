@@ -72,7 +72,7 @@ void generate_yellow_edges(Graph& graph,
   for (Graph::Depth cur_depth = kGraphBaseDepth + 1; cur_depth <= depth - 1;
        cur_depth++) {
     const float prob = (float)(step * (cur_depth - 1));
-    const auto vertices = graph.vertices_of_depth(cur_depth);
+    const auto& vertices = graph.vertices_of_depth(cur_depth);
 
     std::for_each(
         vertices.begin(), vertices.end(),
