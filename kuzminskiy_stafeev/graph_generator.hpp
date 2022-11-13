@@ -27,7 +27,7 @@ class GraphGenerator {
   void generate_grey_edges(Graph& graph, std::mutex& graph_mutex) const;
   void generate_grey_branch(Graph& graph,
                             std::mutex& graph_mutex,
-                            std::vector<Graph::VertexId> previous_vertex_ids,
+                            Graph::VertexId root_id,
                             Graph::Depth cur_depth) const;
 
   Params params_ = Params(0, 0);
