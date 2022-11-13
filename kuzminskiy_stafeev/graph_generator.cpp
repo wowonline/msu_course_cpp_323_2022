@@ -16,11 +16,6 @@ namespace {
 
 using JobCallBack = std::function<void()>;
 
-bool has_job(std::atomic<bool>& should_terminate,
-             const std::list<JobCallBack>& jobs) {
-  return !jobs.empty();
-}
-
 JobCallBack get_job(std::list<JobCallBack>& jobs) {
   auto job = jobs.front();
   jobs.pop_front();
