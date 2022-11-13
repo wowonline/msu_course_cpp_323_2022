@@ -16,12 +16,6 @@ namespace {
 
 using JobCallBack = std::function<void()>;
 
-JobCallBack get_job(std::list<JobCallBack>& jobs) {
-  auto job = jobs.front();
-  jobs.pop_front();
-  return job;
-}
-
 std::vector<Graph::VertexId> get_unconnected_vertex_ids(
     const Graph& graph,
     Graph::VertexId vertex_id,
@@ -207,7 +201,9 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
         const std::lock_guard<std::mutex> guard(jobs_mutex);
 
         if (!jobs.empty()) {
-          return get_job(jobs);
+          auto job = jobs.front();
+          jobs.pop_front();
+          return job;
         }
 
         return std::nullopt;
