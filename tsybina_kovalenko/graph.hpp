@@ -12,6 +12,10 @@ class Graph {
   using EdgeId = int;
   using Depth = int;
 
+  static constexpr Graph::Depth kGraphBaseDepth = 1;
+  static constexpr Graph::Depth kRedEdgeDepthJump = 2;
+  static constexpr Graph::Depth kYellowEdgeDepthJump = 1;
+
   VertexId add_vertex() {
     const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace(new_vertex_id, new_vertex_id);
@@ -118,10 +122,6 @@ class Graph {
   std::unordered_map<VertexId, std::vector<EdgeId>> connections_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
   std::vector<std::unordered_set<VertexId>> depth_map_;
-
-  static constexpr Graph::Depth kGraphBaseDepth = 1;
-  static constexpr Graph::Depth kRedEdgeDepthJump = 2;
-  static constexpr Graph::Depth kYellowEdgeDepthJump = 1;
 
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
