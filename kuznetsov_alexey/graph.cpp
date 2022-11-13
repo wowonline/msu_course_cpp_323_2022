@@ -2,30 +2,29 @@
 #include <vector>
 
 class Graph {
- public:
+public:
   using VertexId = int;
   using EdgeId = int;
 
   struct Vertex {
-   public:
+  public:
     explicit Vertex(VertexId id) : id_(id) {}
     VertexId id() const { return id_; }
 
-   private:
+  private:
     VertexId id_ = 0;
   };
 
   struct Edge {
-   public:
+  public:
     Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
-        : id_(id),
-          from_vertex_id_(from_vertex_id),
+        : id_(id), from_vertex_id_(from_vertex_id),
           to_vertex_id_(to_vertex_id) {}
     EdgeId id() const { return id_; }
     VertexId from_vertex_id() const { return from_vertex_id_; }
     VertexId to_vertex_id() const { return to_vertex_id_; }
 
-   private:
+  private:
     EdgeId id_ = 0;
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
@@ -38,11 +37,11 @@ class Graph {
     edges.push_back(Edge(vertices.size(), from_vertex_id, to_vertex_id));
   }
 
- private:
-  int count_vertices_ids_in_graph(const std::vector<VertexId>& v_ids) {
+private:
+  int count_vertices_ids_in_graph(const std::vector<VertexId> &v_ids) {
     int cnt = 0;
-    for (auto& v_id : v_ids) {
-      for (auto& u : vertices) {
+    for (auto &v_id : v_ids) {
+      for (auto &u : vertices) {
         if (u.id() == v_id)
           cnt++;
       }
