@@ -54,7 +54,7 @@ class GraphGenerator {
   }
 
   void generate_grey_edges(Graph& graph) const {
-    if (params_.depth() <= 1) {
+    if (params_.depth() <= Graph::kGraphBaseDepth) {
       return;
     }
     std::queue<Graph::VertexId> queue;
