@@ -18,12 +18,7 @@ using JobCallBack = std::function<void()>;
 
 bool has_job(std::atomic<bool>& should_terminate,
              const std::list<JobCallBack>& jobs) {
-  if (!jobs.empty()) {
-    return true;
-  } else {
-    should_terminate = true;
-    return false;
-  }
+  return !jobs.empty();
 }
 
 JobCallBack get_job(std::list<JobCallBack>& jobs) {
@@ -230,9 +225,19 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
   };
 
   const auto threads_count = std::min(kMaxThreadsCount, new_vertices_count);
-  auto threads = std::vector<std::thread>();
+  std::vector<std::thread> threads;
+  threads.reserve(threads_count);
+
   for (int i = 0; i < threads_count; i++) {
     threads.emplace_back(worker);
+  }
+
+  while (true) {
+    const std::lock_guard<std::mutex> guard(jobs_mutex);
+    if (jobs.empty()) {
+      should_terminate = true;
+      break;
+    }
   }
 
   for (auto& thread : threads) {
