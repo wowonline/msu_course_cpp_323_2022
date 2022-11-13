@@ -49,7 +49,7 @@ void generate_green_edges(Graph& graph, std::mutex& graph_mutex) {
                     const std::pair<Graph::VertexId, Graph::Vertex>& element) {
                   Graph::VertexId vertex_id = element.first;
                   if (check_probabilty(probabilty_of_green_edge)) {
-                    std::lock_guard graph_guard(graph_mutex);
+                    const std::lock_guard graph_guard(graph_mutex);
                     graph.add_edge(vertex_id, vertex_id);
                   }
                 });
@@ -69,7 +69,7 @@ void generate_red_edges(Graph& graph, std::mutex& graph_mutex) {
             if (deeper_vertices.size() > 0) {
               const Graph::VertexId random_vertex_id =
                   get_random_vertex_id(deeper_vertices);
-              std::lock_guard graph_guard(graph_mutex);
+              const std::lock_guard graph_guard(graph_mutex);
               graph.add_edge(vertex_id, random_vertex_id);
             }
           }
@@ -89,7 +89,7 @@ void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) {
               static_cast<float>((current_depth - kYellowDepthDifference)) /
               (graph.depth() - kYellowDepthDifference - kGraphBaseDepth);
           if (check_probabilty(probabilty_of_yellow_edge)) {
-            std::lock_guard graph_guard(graph_mutex);
+            const std::lock_guard graph_guard(graph_mutex);
             std::set<Graph::VertexId> unconnected_vertices =
                 get_unconnected_vertex_ids(graph, current_depth, vertex_id);
             if (unconnected_vertices.size() > 0) {
@@ -104,10 +104,10 @@ void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) {
 
 }  // namespace
 
-void GraphGenerator::generate_children(Graph& graph,
-                                       Graph::VertexId root_id,
-                                       Graph::Depth root_depth,
-                                       std::mutex& graph_mutex) const {
+void GraphGenerator::generate_branch(Graph& graph,
+                                     Graph::VertexId root_id,
+                                     Graph::Depth root_depth,
+                                     std::mutex& graph_mutex) const {
   if (root_depth == params_.depth()) {
     return;
   }
@@ -115,34 +115,17 @@ void GraphGenerator::generate_children(Graph& graph,
   const float probabilty_of_grey_edge =
       1.0 - static_cast<float>((root_depth - kGreyDepthDifference)) /
                 (params_.depth() - kGreyDepthDifference);
+  const Graph::VertexId branch_root_id = [&graph, &graph_mutex, root_id]() {
+    const std::lock_guard graph_guard(graph_mutex);
+    const Graph::VertexId child_id = graph.add_vertex();
+    graph.add_edge(root_id, child_id);
+    return child_id;
+  }();
   for (int i = 0; i < params_.new_vertices_count(); ++i) {
     if (check_probabilty(probabilty_of_grey_edge)) {
-      Graph::VertexId child_id;
-      {
-        std::lock_guard graph_guard(graph_mutex);
-        child_id = graph.add_vertex();
-        graph.add_edge(root_id, child_id);
-      }
-      generate_children(graph, child_id, root_depth + 1, graph_mutex);
+      generate_branch(graph, branch_root_id, root_depth + 1, graph_mutex);
     }
   }
-}
-
-void GraphGenerator::generate_branch(Graph& graph,
-                                     Graph::VertexId root_id,
-                                     std::mutex& graph_mutex) const {
-  if (params_.depth() == kGraphBaseDepth) {
-    return;
-  }
-  Graph::VertexId child_id;
-  Graph::Depth child_depth;
-  {
-    std::lock_guard graph_guard(graph_mutex);
-    child_id = graph.add_vertex();
-    graph.add_edge(root_id, child_id);
-    child_depth = graph.get_vertex_depth(child_id);
-  }
-  generate_children(graph, child_id, child_depth, graph_mutex);
 }
 
 using JobCallback = std::function<void()>;
@@ -155,7 +138,7 @@ void GraphGenerator::generate_new_vertices(Graph& graph,
   std::atomic<int> tasks_count = params_.new_vertices_count();
   for (int i = 0; i < params_.new_vertices_count(); ++i) {
     tasks.push_front([&graph, &graph_mutex, root_id, this]() {
-      generate_branch(graph, root_id, graph_mutex);
+      generate_branch(graph, root_id, kGraphBaseDepth, graph_mutex);
     });
   }
 
@@ -171,7 +154,7 @@ void GraphGenerator::generate_new_vertices(Graph& graph,
           while (!should_terminate) {
             const auto task_optional =
                 [&tasks, &tasks_mutex]() -> std::optional<JobCallback> {
-              std::lock_guard graph_guard(tasks_mutex);
+              const std::lock_guard graph_guard(tasks_mutex);
               if (!tasks.empty()) {
                 auto task = tasks.back();
                 tasks.pop_back();

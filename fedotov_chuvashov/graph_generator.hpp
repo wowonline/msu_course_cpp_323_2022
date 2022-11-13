@@ -24,13 +24,10 @@ class GraphGenerator {
   Graph generate() const;
 
  private:
-  void generate_children(Graph& graph,
-                         Graph::VertexId root_id,
-                         Graph::Depth root_depth,
-                         std::mutex& mutex) const;
   void generate_branch(Graph& graph,
                        Graph::VertexId root_id,
-                       std::mutex& graph_mutex) const;
+                       Graph::Depth root_depth,
+                       std::mutex& mutex) const;
 
   void generate_new_vertices(Graph& graph, Graph::VertexId root_id) const;
   Params params_ = Params(0, 0);
