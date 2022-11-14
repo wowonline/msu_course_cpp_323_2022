@@ -56,14 +56,16 @@ void generate_green_edges(Graph& graph, std::mutex& graph_mutex) {
        current_depth <= graph.get_depth(); current_depth++) {
     const auto& current_depth_vertex_ids =
         graph.get_depth_vertex_ids(current_depth);
-    std::for_each(current_depth_vertex_ids.begin(),
-                  current_depth_vertex_ids.end(),
-                  [&graph, &graph_mutex](Graph::VertexId vertex_id) {
-                    if (get_random_bool(kEdgeGreenProbability)) {
-                      const std::lock_guard lock(graph_mutex);
-                      graph.add_edge(vertex_id, vertex_id);
-                    }
-                  });
+    if (!current_depth_vertex_ids.empty()) {
+      std::for_each(current_depth_vertex_ids.begin(),
+                    current_depth_vertex_ids.end(),
+                    [&graph, &graph_mutex](Graph::VertexId vertex_id) {
+                      if (get_random_bool(kEdgeGreenProbability)) {
+                        const std::lock_guard lock(graph_mutex);
+                        graph.add_edge(vertex_id, vertex_id);
+                      }
+                    });
+    }
   }
 }
 
@@ -77,28 +79,31 @@ void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) {
     const auto& current_depth_vertex_ids =
         graph.get_depth_vertex_ids(current_depth);
 
-    std::for_each(
-        current_depth_vertex_ids.begin(), current_depth_vertex_ids.end(),
-        [&graph, &graph_mutex,
-         new_edge_probability](Graph::VertexId vertex_id) {
-          if (get_random_bool(new_edge_probability)) {
-            const auto& to_vertex_ids =
-                get_unconnected_vertex_ids(graph, vertex_id);
+    if (!current_depth_vertex_ids.empty()) {
+      std::for_each(
+          current_depth_vertex_ids.begin(), current_depth_vertex_ids.end(),
+          [&graph, &graph_mutex,
+           new_edge_probability](Graph::VertexId vertex_id) {
+            if (get_random_bool(new_edge_probability)) {
+              graph_mutex.lock();
+              const auto& to_vertex_ids =
+                  get_unconnected_vertex_ids(graph, vertex_id);
+              graph_mutex.unlock();
 
-            if (to_vertex_ids.empty() == false) {
-              const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
+              if (to_vertex_ids.empty() == false) {
+                const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
 
-              const std::lock_guard lock(graph_mutex);
-              graph.add_edge(vertex_id, to_vertex_id);
+                const std::lock_guard lock(graph_mutex);
+                graph.add_edge(vertex_id, to_vertex_id);
+              }
             }
-          }
-        });
+          });
+    }
   }
 }
 
 void generate_red_edges(Graph& graph, std::mutex& graph_mutex) {
   const auto max_depth = graph.get_depth() - kRedEdgeLength;
-
   for (Graph::Depth current_depth = kGraphDefaultDepth;
        current_depth <= max_depth; current_depth++) {
     const auto& to_vertex_ids =
@@ -110,16 +115,17 @@ void generate_red_edges(Graph& graph, std::mutex& graph_mutex) {
 
     const auto& current_depth_vertex_ids =
         graph.get_depth_vertex_ids(current_depth);
-    std::for_each(
-        current_depth_vertex_ids.begin(), current_depth_vertex_ids.end(),
-        [&graph, &graph_mutex, &to_vertex_ids](Graph::VertexId vertex_id) {
-          if (get_random_bool(kEdgeRedProbability)) {
-            const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
-
-            const std::lock_guard lock(graph_mutex);
-            graph.add_edge(vertex_id, to_vertex_id);
-          }
-        });
+    if (!current_depth_vertex_ids.empty()) {
+      std::for_each(
+          current_depth_vertex_ids.begin(), current_depth_vertex_ids.end(),
+          [&graph, &graph_mutex, &to_vertex_ids](Graph::VertexId vertex_id) {
+            if (get_random_bool(kEdgeRedProbability)) {
+              const std::lock_guard lock(graph_mutex);
+              const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
+              graph.add_edge(vertex_id, to_vertex_id);
+            }
+          });
+    }
   }
 }
 
@@ -183,22 +189,21 @@ Graph GraphGenerator::generate() const {
   return graph;
 }
 
-void GraphGenerator::generate_grey_edges(
-    Graph& graph,
-    const Graph::VertexId root_id) const {
+void GraphGenerator::generate_grey_edges(Graph& graph,
+                                         const Graph::VertexId root_id) const {
   std::mutex jobs_mutex, graph_mutex;
 
   using JobCallback = std::function<void()>;
-  std::atomic<auto> jobs = std::list<JobCallback>();
+  auto jobs = std::list<JobCallback>();
 
   const Graph::Depth max_depth = params_.depth();
   const int new_vertices_count = params_.new_vertices_count();
   for (int i = 0; i < new_vertices_count; i++) {
-    jobs.push_back([&graph, root_id, max_depth, new_vertices_count,
-                    &graph_mutex]() {
-      generate_grey_branch(graph, max_depth, new_vertices_count, root_id,
-                           graph_mutex, true);
-    });
+    jobs.push_back(
+        [&graph, root_id, max_depth, new_vertices_count, &graph_mutex]() {
+          generate_grey_branch(graph, max_depth, new_vertices_count, root_id,
+                               graph_mutex, true);
+        });
   }
 
   std::atomic<bool> should_terminate = false;
