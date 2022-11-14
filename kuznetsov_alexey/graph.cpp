@@ -131,7 +131,7 @@ std::string print_graph(const Graph& graph) {
   }
   if (edge_strings.size())
     result.pop_back();
-  result += "]}";
+  result += "]}\n";
   return result;
 }
 }  // namespace json
