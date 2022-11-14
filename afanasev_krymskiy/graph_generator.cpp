@@ -132,14 +132,14 @@ void GraphGenerator::generate_grey_branch(
       (params_.get_depth() - parent_vertex_depth) / (params_.get_depth() - 1.f);
   for (int i = 0; i < params_.new_vertices_count(); ++i) {
     if (check_probability(probability)) {
-      const auto children_vertex_id = [&graph, &mutex_for_graph,
+      const auto child_vertex_id = [&graph, &mutex_for_graph,
                                        parent_vertex_id]() {
         const std::lock_guard lock(mutex_for_graph);
-        const auto children_vertex_id = graph.add_vertex();
-        graph.add_edge(parent_vertex_id, children_vertex_id);
-        return children_vertex_id;
+        const auto child_vertex_id = graph.add_vertex();
+        graph.add_edge(parent_vertex_id, child_vertex_id);
+        return child_vertex_id;
       }();
-      generate_grey_branch(graph, mutex_for_graph, children_vertex_id,
+      generate_grey_branch(graph, mutex_for_graph, child_vertex_id,
                            parent_vertex_depth + 1);
     }
   }
