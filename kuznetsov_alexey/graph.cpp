@@ -1,12 +1,12 @@
+#include <algorithm>
 #include <cassert>
 #include <fstream>
 #include <iostream>
-#include <string>
-#include <vector>
-#include <random>
 #include <map>
+#include <random>
+#include <string>
 #include <unordered_map>
-#include <algorithm>
+#include <vector>
 
 class Graph {
  public:
@@ -19,7 +19,7 @@ class Graph {
     explicit Vertex(VertexId id) : id_(id) {}
     VertexId id() const { return id_; }
     Depth depth() const { return depth_; }
-    void set_depth(Depth depth) {depth_ = depth; }
+    void set_depth(Depth depth) { depth_ = depth; }
 
    private:
     Depth depth_ = 1;
@@ -27,8 +27,7 @@ class Graph {
   };
 
   struct Edge {
-
-   enum class Color { Grey, Green, Yellow, Red };
+    enum class Color { Grey, Green, Yellow, Red };
 
    public:
     Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id, Color color)
@@ -39,7 +38,7 @@ class Graph {
     EdgeId id() const { return id_; }
     VertexId from_vertex_id() const { return from_vertex_id_; }
     VertexId to_vertex_id() const { return to_vertex_id_; }
-    Color color() const {return color_; }
+    Color color() const { return color_; }
 
    private:
     EdgeId id_ = 0;
@@ -53,7 +52,7 @@ class Graph {
   const std::vector<Vertex>& get_vertices() const { return vertices; }
 
   void add_vertex() {
-    vertices.push_back(Vertex(vertices.size())); 
+    vertices.push_back(Vertex(vertices.size()));
     adjacency_ids_list.push_back({});
   }
 
@@ -64,10 +63,12 @@ class Graph {
   }
 
   bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
-    return std::count(adjacency_ids_list[from_vertex_id].begin(), adjacency_ids_list[from_vertex_id].end(), to_vertex_id);
+    return std::count(adjacency_ids_list[from_vertex_id].begin(),
+                      adjacency_ids_list[from_vertex_id].end(), to_vertex_id);
   }
 
-  Edge::Color get_edge_color(VertexId from_vertex_id, VertexId to_vertex_id) const {
+  Edge::Color get_edge_color(VertexId from_vertex_id,
+                             VertexId to_vertex_id) const {
     const auto from_vertex_depth = vertices.at(from_vertex_id).depth();
     const auto to_vertex_depth = vertices.at(to_vertex_id).depth();
     if (from_vertex_id == to_vertex_id) {
@@ -76,7 +77,7 @@ class Graph {
     if (adjacency_ids_list[to_vertex_id].size() == 0) {
       return Edge::Color::Grey;
     }
-    if (to_vertex_depth - from_vertex_depth == 1 && 
+    if (to_vertex_depth - from_vertex_depth == 1 &&
         !is_connected(from_vertex_id, to_vertex_id)) {
       return Edge::Color::Yellow;
     }
@@ -105,22 +106,20 @@ class Graph {
     }
   }
 
-  Depth depth() const {
-    return graph_depth;
+  Depth depth() const { return graph_depth; }
+
+ private:
+  int count_vertices_ids_in_graph(const std::vector<VertexId>& v_ids) {
+    int cnt = 0;
+    for (auto& v_id : v_ids) {
+      for (auto& u : vertices) {
+        if (u.id() == v_id)
+          cnt++;
+      }
+    }
+    return cnt;
   }
 
-  private:
-    int count_vertices_ids_in_graph(const std::vector<VertexId>& v_ids) {
-      int cnt = 0;
-      for (auto& v_id : v_ids) {
-        for (auto& u : vertices) {
-          if (u.id() == v_id)
-            cnt++;
-        }
-      }
-      return cnt;
-    }
-  
   Depth graph_depth = -1;
   std::unordered_map<Depth, std::vector<Vertex> > depth_to_vertices;
   std::vector<std::vector<VertexId> > adjacency_ids_list;
@@ -128,14 +127,14 @@ class Graph {
   std::vector<Edge> edges;
 };
 
-//graph generator
+// graph generator
 
 class GraphGenerator {
  public:
   struct Params {
    public:
-    Params(Graph::Depth depth, int new_vertices_count) :
-      depth_(depth), new_vertices_count_(new_vertices_count) {}
+    Params(Graph::Depth depth, int new_vertices_count)
+        : depth_(depth), new_vertices_count_(new_vertices_count) {}
 
     Graph::Depth depth() const { return depth_; }
     int new_vertices_count() const { return new_vertices_count_; }
@@ -160,15 +159,17 @@ class GraphGenerator {
   }
 
  private:
-
   double generate_random(double a, double b) const {
-     std::random_device rd;  // Will be used to obtain a seed for the random number engine
-     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
-     std::uniform_real_distribution<> dis(a, b);
-     return dis(gen);
+    std::random_device
+        rd;  // Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(
+        rd());  // Standard mersenne_twister_engine seeded with rd()
+    std::uniform_real_distribution<> dis(a, b);
+    return dis(gen);
   }
 
-  double probaility_generate_grey_edge(Graph::Depth current_depth, Graph::Depth graph_depth) const {
+  double probaility_generate_grey_edge(Graph::Depth current_depth,
+                                       Graph::Depth graph_depth) const {
     if (graph_depth == 0) {
       return 0;
     } else {
@@ -176,11 +177,15 @@ class GraphGenerator {
     }
   }
 
-  bool try_generate_grey_edge(Graph& graph, Graph::Depth graph_depth,
-                              Graph::Depth current_depth, Graph::VertexId vertex_id,
-                              Graph::VertexId& next_vertex_id) const { // generate grey edge: (vertex_id, next_vertex_id)
-    if (probaility_generate_grey_edge(current_depth, graph_depth) > generate_random(0, 1)) {
-      graph.add_vertex(); // add vertex with id = vertex_id
+  bool try_generate_grey_edge(Graph& graph,
+                              Graph::Depth graph_depth,
+                              Graph::Depth current_depth,
+                              Graph::VertexId vertex_id,
+                              Graph::VertexId& next_vertex_id)
+      const {  // generate grey edge: (vertex_id, next_vertex_id)
+    if (probaility_generate_grey_edge(current_depth, graph_depth) >
+        generate_random(0, 1)) {
+      graph.add_vertex();  // add vertex with id = vertex_id
       graph.add_edge(vertex_id, next_vertex_id);
       next_vertex_id++;
       return 1;
@@ -190,13 +195,15 @@ class GraphGenerator {
   }
 
   void generate_grey_edges(Graph& graph) const {
-    std::vector<Graph::VertexId> vertices_with_last_depth = {0}; // root = 0
+    std::vector<Graph::VertexId> vertices_with_last_depth = {0};  // root = 0
     Graph::VertexId next_vertex_id = 1;
-    for (Graph::Depth current_depth = 1; current_depth <= params_.depth(); current_depth++) {
+    for (Graph::Depth current_depth = 1; current_depth <= params_.depth();
+         current_depth++) {
       std::vector<Graph::VertexId> new_vertices_with_current_depth;
-      for (auto& vertex_id: vertices_with_last_depth) {
+      for (auto& vertex_id : vertices_with_last_depth) {
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
-          if (try_generate_grey_edge(graph, params_.depth(), current_depth, vertex_id, next_vertex_id)) {
+          if (try_generate_grey_edge(graph, params_.depth(), current_depth,
+                                     vertex_id, next_vertex_id)) {
             new_vertices_with_current_depth.emplace_back(next_vertex_id - 1);
           }
         }
@@ -205,9 +212,13 @@ class GraphGenerator {
     }
   }
 
-  void try_generate_yellow_edge(Graph &graph, Graph::Depth graph_depth, const Graph::Vertex &vertex_from, Graph::Vertex &vertex_to) const {
+  void try_generate_yellow_edge(Graph& graph,
+                                Graph::Depth graph_depth,
+                                const Graph::Vertex& vertex_from,
+                                Graph::Vertex& vertex_to) const {
     Graph::Depth vertex_from_depth = vertex_from.depth();
-    double probability_generate = static_cast<double>((vertex_from_depth - 1)) / (graph_depth - 1);
+    double probability_generate =
+        static_cast<double>((vertex_from_depth - 1)) / (graph_depth - 1);
     if (generate_random(0, 1) > probability_generate) {
       if (graph.is_connected(vertex_from.id(), vertex_to.id())) {
         return;
@@ -217,15 +228,19 @@ class GraphGenerator {
   }
 
   void generate_yellow_edges(Graph& graph) const {
-    for (auto &vertex_from : graph.get_vertices()) {
+    for (auto& vertex_from : graph.get_vertices()) {
       Graph::Depth vertex_depth = vertex_from.depth();
-      for (auto &vertex_to : graph.get_vertices_with_depth(vertex_from.depth() + 1)) {
-        try_generate_yellow_edge(graph, params_.depth(), vertex_from, vertex_to);
+      for (auto& vertex_to :
+           graph.get_vertices_with_depth(vertex_from.depth() + 1)) {
+        try_generate_yellow_edge(graph, params_.depth(), vertex_from,
+                                 vertex_to);
       }
     }
   }
 
-  void try_generate_red_edge(Graph &graph, const Graph::Vertex &vertex_from, Graph::Vertex &vertex_to) const {
+  void try_generate_red_edge(Graph& graph,
+                             const Graph::Vertex& vertex_from,
+                             Graph::Vertex& vertex_to) const {
     Graph::Depth vertex_from_depth = vertex_from.depth();
     if (generate_random(0, 1) < 0.33) {
       graph.add_edge(vertex_from.id(), vertex_to.id());
@@ -233,30 +248,30 @@ class GraphGenerator {
   }
 
   void generate_red_edges(Graph& graph) const {
-    for (auto &vertex_from : graph.get_vertices()) {
+    for (auto& vertex_from : graph.get_vertices()) {
       Graph::Depth vertex_depth = vertex_from.depth();
-      for (auto &vertex_to : graph.get_vertices_with_depth(vertex_from.depth() + 2)) {
+      for (auto& vertex_to :
+           graph.get_vertices_with_depth(vertex_from.depth() + 2)) {
         try_generate_red_edge(graph, vertex_from, vertex_to);
       }
     }
   }
 
-  void try_generate_green_edge(Graph& graph, const Graph::Vertex &vertex) const {
+  void try_generate_green_edge(Graph& graph,
+                               const Graph::Vertex& vertex) const {
     if (generate_random(0, 1) < 0.1) {
       graph.add_edge(vertex.id(), vertex.id());
     }
   }
 
   void generate_green_edges(Graph& graph) const {
-    for (auto &vertex: graph.get_vertices()) {
+    for (auto& vertex : graph.get_vertices()) {
       try_generate_green_edge(graph, vertex);
     }
   }
 
   Params params_ = Params(0, 0);
 };
-
-
 
 namespace printing {
 namespace json {
@@ -288,9 +303,10 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
 }
 
 std::string print_edge(const Graph::Edge& edge) {
-  std::string result_json_edge = "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
-         std::to_string(edge.from_vertex_id()) + "," +
-         std::to_string(edge.to_vertex_id()) + "]," + "\"color\":";
+  std::string result_json_edge =
+      "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
+      std::to_string(edge.from_vertex_id()) + "," +
+      std::to_string(edge.to_vertex_id()) + "]," + "\"color\":";
   std::string edge_color;
   switch (edge.color()) {
     case Graph::Edge::Color::Grey:
@@ -340,7 +356,8 @@ std::string print_graph(const Graph& graph) {
 }  // namespace json
 }  // namespace printing
 
-void write_to_file(const std::string &graph_json, const std::string &file_name) {
+void write_to_file(const std::string& graph_json,
+                   const std::string& file_name) {
   std::ofstream file(file_name);
   file << graph_json;
 }
@@ -357,10 +374,7 @@ int handle_new_vertices_count_input() {
   return count_vertices;
 }
 
-
-
 int main() {
-
   const int depth = handle_depth_input();
   const int new_vertices_count = handle_new_vertices_count_input();
 
