@@ -4,12 +4,12 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "Logger.hpp"
 #include "config.hpp"
 #include "graph.hpp"
 #include "graph_generator.hpp"
 #include "graph_json_printing.hpp"
 #include "graph_printing.hpp"
+#include "logger.hpp"
 
 namespace uni_course_cpp {
 int handle_depth_input() {
@@ -92,7 +92,7 @@ void write_to_file(const std::string& graph_str, const std::string& file_name) {
 
 void prepare_temp_directory() {
   if (!std::filesystem::create_directory("temp"))
-    std::runtime_error("Can not create temp directory");
+    throw std::runtime_error("Can not create temp directory");
   return;
 }
 
@@ -136,8 +136,8 @@ int main() {
 
     const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
     uni_course_cpp::write_to_file(
-        graph_json, std::string(config::kTempDirectoryPath) + "graph_" +
-                        std::to_string(i) + ".json");
+        graph_json, std::string(uni_course_cpp::config::kTempDirectoryPath) +
+                        "graph_" + std::to_string(i) + ".json");
   }
 
   return 0;

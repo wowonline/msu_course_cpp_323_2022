@@ -70,6 +70,9 @@ class Graph {
 
   std::unordered_map<int, int> get_colors_amount() const;
 
+  const std::vector<EdgeId>& get_colored_edge_ids(
+      const Edge::Color color) const;
+
  private:
   VertexId get_new_vertex_id() { return last_vertex_id_++; }
 
@@ -95,7 +98,9 @@ class Graph {
 
   std::unordered_map<VertexId, Depth> vertices_depth_ = {};
 
+  std::unordered_map<Edge::Color, std::vector<EdgeId>> colored_edge_ids_;
+
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
 };
-}  // namespace uni_course_cpp
+};  // namespace uni_course_cpp

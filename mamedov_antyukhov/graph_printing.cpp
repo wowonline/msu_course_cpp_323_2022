@@ -2,6 +2,7 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include "graph.hpp"
 
 namespace uni_course_cpp {
@@ -17,6 +18,8 @@ std::string print_edge_color(Graph::Edge::Color color) {
     case Graph::Edge::Color::Yellow:
       return "yellow";
   }
+
+  return "";
 }
 
 std::string print_graph(const Graph& graph) {
@@ -32,19 +35,20 @@ std::string print_graph(const Graph& graph) {
   data_graph << vertices_depth[vertices_depth.size() - 1].size() << "]},\n";
   data_graph << "\tedges: {amount: " << edges.size() << ", distribution: {";
 
-  std::unordered_map<int, int> colors_amount = graph.get_colors_amount();
-  data_graph << "grey: "
-             << colors_amount[static_cast<int>(Graph::Edge::Color::Grey)]
-             << ", ";
-  data_graph << "green: "
-             << colors_amount[static_cast<int>(Graph::Edge::Color::Green)]
-             << ", ";
-  data_graph << "yellow: "
-             << colors_amount[static_cast<int>(Graph::Edge::Color::Yellow)]
-             << ", ";
-  data_graph << "red: "
-             << colors_amount[static_cast<int>(Graph::Edge::Color::Red)]
-             << "}}\n}";
+  std::vector<std::pair<Graph::Edge::Color, std::string>> colors = {
+      {Graph::Edge::Color::Grey, "grey: "},
+      {Graph::Edge::Color::Green, "green: "},
+      {Graph::Edge::Color::Yellow, "yellow: "},
+      {Graph::Edge::Color::Red, "red: "}};
+
+  for (const auto& p : colors) {
+    data_graph << p.second << graph.get_colored_edge_ids(p.first).size();
+
+    if (p.first == Graph::Edge::Color::Red)
+      data_graph << "}}\n}";
+    else
+      data_graph << ", ";
+  }
 
   return data_graph.str();
 }

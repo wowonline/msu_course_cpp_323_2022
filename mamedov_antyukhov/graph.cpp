@@ -38,6 +38,8 @@ Graph::EdgeId Graph::add_edge(VertexId first_vertex_id,
   }
   connections_[first_vertex_id].emplace_back(new_edge_id);
 
+  colored_edge_ids_[color].push_back(new_edge_id);
+
   edges_.insert({new_edge_id,
                  Edge(new_edge_id, first_vertex_id, second_vertex_id, color)});
 
@@ -113,33 +115,9 @@ bool Graph::has_edge(VertexId first_vertex_id,
   }
 }
 
-std::unordered_map<int, int> Graph::get_colors_amount() const {
-  int grey = 0, green = 0, yellow = 0, red = 0;
-
-  for (auto& p : edges_) {
-    switch (p.second.color()) {
-      case Edge::Color::Grey:
-        ++grey;
-        break;
-
-      case Edge::Color::Green:
-        ++green;
-        break;
-
-      case Edge::Color::Yellow:
-        ++yellow;
-        break;
-
-      case Edge::Color::Red:
-        ++red;
-        break;
-    }
-  }
-  return std::unordered_map<int, int>{
-      {static_cast<int>(Edge::Color::Grey), grey},
-      {static_cast<int>(Edge::Color::Green), green},
-      {static_cast<int>(Edge::Color::Red), red},
-      {static_cast<int>(Edge::Color::Yellow), yellow}};
+const std::vector<Graph::EdgeId>& Graph::get_colored_edge_ids(
+    const Graph::Edge::Color color) const {
+  return colored_edge_ids_.at(color);
 }
 
 }  // namespace uni_course_cpp
