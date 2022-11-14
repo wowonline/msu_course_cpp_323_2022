@@ -31,27 +31,21 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  void add_vertex() { vertices.push_back(Vertex(vertices.size())); }
+  void add_vertex() { vertices_.emplace_back(get_new_vertex_id_()); }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    assert(count_vertices_ids_in_graph({from_vertex_id, to_vertex_id}) >= 2);
-    edges.push_back(Edge(vertices.size(), from_vertex_id, to_vertex_id));
+    edges_.emplace_back(get_new_edge_id_(), from_vertex_id, to_vertex_id);
   }
 
  private:
-  int count_vertices_ids_in_graph(const std::vector<VertexId>& v_ids) {
-    int cnt = 0;
-    for (auto& v_id : v_ids) {
-      for (auto& u : vertices) {
-        if (u.id() == v_id)
-          cnt++;
-      }
-    }
-    return cnt;
-  }
+  VertexId get_new_vertex_id_() { return vertex_id_counter_++; }
 
-  std::vector<Vertex> vertices;
-  std::vector<Edge> edges;
+  EdgeId get_new_edge_id_() { return edge_id_counter_++; }
+
+  VertexId vertex_id_counter_ = 0;
+  EdgeId edge_id_counter_ = 0;
+  std::vector<Vertex> vertices_;
+  std::vector<Edge> edges_;
 };
 
 int main() {
