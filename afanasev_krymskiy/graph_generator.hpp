@@ -27,7 +27,7 @@ class GraphGenerator {
                             Graph::Depth) const;
 
  private:
-  void generate_grey_edges(Graph&) const;
+  void generate_grey_edges(Graph& graph, Graph::VertexId root_vertex_id) const;
 
   Params params_ = Params(0, 0);
 };

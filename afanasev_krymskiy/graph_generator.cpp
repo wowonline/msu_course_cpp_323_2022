@@ -104,8 +104,7 @@ Graph GraphGenerator::generate() const {
   auto graph = Graph();
   if (params_.get_depth() == 0)
     return graph;
-  graph.add_vertex();
-  generate_grey_edges(graph);
+  generate_grey_edges(graph, graph.add_vertex());
 
   std::mutex mutex_for_graph;
   std::thread green_thread(generate_green_edges, std::ref(graph),
@@ -145,7 +144,8 @@ void GraphGenerator::generate_grey_branch(
   }
 }
 
-void GraphGenerator::generate_grey_edges(Graph& graph) const {
+void GraphGenerator::generate_grey_edges(Graph& graph,
+                                         Graph::VertexId root_vertex_id) const {
   if (params_.get_depth() <= kDefaultDepth)
     return;
 
@@ -156,9 +156,8 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
   std::atomic<int> number_of_jobs = params_.new_vertices_count();
 
   for (int i = 0; i < number_of_jobs; ++i) {
-    jobs.push_back([&graph, &mutex_for_graph, this]() {
-      generate_grey_branch(graph, mutex_for_graph,
-                           graph.vertices_at_depth(kDefaultDepth)[0],
+    jobs.push_back([&graph, &mutex_for_graph, root_vertex_id, this]() {
+      generate_grey_branch(graph, mutex_for_graph, root_vertex_id,
                            kDefaultDepth);
     });
   }
