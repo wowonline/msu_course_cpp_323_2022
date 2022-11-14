@@ -137,6 +137,12 @@ std::string print_graph(const Graph& graph) {
 }  // namespace json
 }  // namespace printing
 
+void write_to_file(const std::string& graph_json,
+                   const std::string& file_name) {
+  std::ofstream file(file_name);
+  file << graph_json;
+}
+
 int main() {
   auto graph = Graph();
 
@@ -166,9 +172,6 @@ int main() {
   graph.add_edge(12, 13);
 
   const auto graph_json = printing::json::print_graph(graph);
-  std::cout << graph_json << std::endl;
-
-  std::ofstream file("graph.json");
-  file << graph_json;
+  write_to_file(graph_json, "graph.json");
   return 0;
 }
