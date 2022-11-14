@@ -1,10 +1,10 @@
+#include <algorithm>
 #include <cassert>
-#include <vector>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <map>
 #include <unordered_map>
-#include <algorithm>
+#include <vector>
 
 class Graph {
  public:
@@ -54,15 +54,10 @@ class Graph {
   bool has_vertex(VertexId vertex_id) {
     return adjacency_list_.count(vertex_id);
   }
-  
-  const std::vector<Vertex> & get_vertices() const {
-    return vertices_;
-  }
 
-  const std::vector<Edge> & get_edges() const {
-    return edges_;
-  }
+  const std::vector<Vertex>& get_vertices() const { return vertices_; }
 
+  const std::vector<Edge>& get_edges() const { return edges_; }
 
   const std::vector<EdgeId>& connected_edges_ids(VertexId vertex_id) const {
     if (adjacency_list_.count(vertex_id) == 0) {
@@ -91,7 +86,8 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string result = "{\"id\":";
   result += std::to_string(vertex.id()) + ",";
 
-  const std::vector<Graph::EdgeId> &edge_ids = graph.connected_edges_ids(vertex.id());
+  const std::vector<Graph::EdgeId>& edge_ids =
+      graph.connected_edges_ids(vertex.id());
 
   result += "\"edge_ids\":[";
   for (const auto& id : edge_ids) {
@@ -125,6 +121,9 @@ std::string print_graph(const Graph& graph) {
   }
   for (auto& s : edge_strings) {
     result += s + ",";
+  }
+  if (result.back() == ',') {
+    result.pop_back();
   }
   if (edge_strings.size())
     result.pop_back();
