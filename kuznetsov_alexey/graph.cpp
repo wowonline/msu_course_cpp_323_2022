@@ -5,37 +5,38 @@
 #include <vector>
 
 class Graph {
-public:
+ public:
   using VertexId = int;
   using EdgeId = int;
 
   struct Vertex {
-  public:
+   public:
     explicit Vertex(VertexId id) : id_(id) {}
     VertexId id() const { return id_; }
 
-  private:
+   private:
     VertexId id_ = 0;
   };
 
   struct Edge {
-  public:
+   public:
     Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id)
-        : id_(id), from_vertex_id_(from_vertex_id),
+        : id_(id),
+          from_vertex_id_(from_vertex_id),
           to_vertex_id_(to_vertex_id) {}
     EdgeId id() const { return id_; }
     VertexId from_vertex_id() const { return from_vertex_id_; }
     VertexId to_vertex_id() const { return to_vertex_id_; }
 
-  private:
+   private:
     EdgeId id_ = 0;
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
   };
 
-  const std::vector<Edge> &get_edges() const { return edges; }
+  const std::vector<Edge>& get_edges() const { return edges; }
 
-  const std::vector<Vertex> &get_vertices() const { return vertices; }
+  const std::vector<Vertex>& get_vertices() const { return vertices; }
 
   void add_vertex() { vertices.push_back(Vertex(vertices.size())); }
 
@@ -44,11 +45,11 @@ public:
     edges.push_back(Edge(edges.size(), from_vertex_id, to_vertex_id));
   }
 
-private:
-  int count_vertices_ids_in_graph(const std::vector<VertexId> &v_ids) {
+ private:
+  int count_vertices_ids_in_graph(const std::vector<VertexId>& v_ids) {
     int cnt = 0;
-    for (auto &v_id : v_ids) {
-      for (auto &u : vertices) {
+    for (auto& v_id : v_ids) {
+      for (auto& u : vertices) {
         if (u.id() == v_id)
           cnt++;
       }
@@ -63,16 +64,16 @@ private:
 namespace printing {
 namespace json {
 
-std::string print_graph(const Graph &graph);
-std::string print_vertex(const Graph::Vertex &vertex, const Graph &graph);
-std::string print_edge(const Graph::Edge &edge);
+std::string print_graph(const Graph& graph);
+std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph);
+std::string print_edge(const Graph::Edge& edge);
 
-std::string print_vertex(const Graph::Vertex &vertex, const Graph &graph) {
+std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string res = "{\"id\":";
   res += std::to_string(vertex.id()) + ",";
 
   std::vector<Graph::EdgeId> edge_ids;
-  for (const auto &edge : graph.get_edges()) {
+  for (const auto& edge : graph.get_edges()) {
     if (edge.to_vertex_id() == vertex.id() ||
         edge.from_vertex_id() == vertex.id()) {
       edge_ids.push_back(edge.id());
@@ -80,7 +81,7 @@ std::string print_vertex(const Graph::Vertex &vertex, const Graph &graph) {
   }
 
   res += "\"edge_ids\":[";
-  for (const auto &id : edge_ids) {
+  for (const auto& id : edge_ids) {
     res += std::to_string(id) + ",";
   }
   if (edge_ids.size())
@@ -89,19 +90,19 @@ std::string print_vertex(const Graph::Vertex &vertex, const Graph &graph) {
   return res;
 }
 
-std::string print_edge(const Graph::Edge &edge) {
+std::string print_edge(const Graph::Edge& edge) {
   return "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
          std::to_string(edge.from_vertex_id()) + "," +
          std::to_string(edge.to_vertex_id()) + "]}";
 }
 
-std::string print_graph(const Graph &graph) {
+std::string print_graph(const Graph& graph) {
   std::string res = "{\"vertices\":[";
   std::vector<std::string> vertex_strings;
-  for (const auto &vertex : graph.get_vertices()) {
+  for (const auto& vertex : graph.get_vertices()) {
     vertex_strings.push_back(print_vertex(vertex, graph));
   }
-  for (auto &s : vertex_strings) {
+  for (auto& s : vertex_strings) {
     res += s + ",";
   }
   if (vertex_strings.size())
@@ -109,10 +110,10 @@ std::string print_graph(const Graph &graph) {
   res += "],\"edges\":[";
 
   std::vector<std::string> edge_strings;
-  for (const auto &edge : graph.get_edges()) {
+  for (const auto& edge : graph.get_edges()) {
     edge_strings.push_back(print_edge(edge));
   }
-  for (auto &s : edge_strings) {
+  for (auto& s : edge_strings) {
     res += s + ",";
   }
   if (edge_strings.size())
@@ -120,8 +121,8 @@ std::string print_graph(const Graph &graph) {
   res += "]}";
   return res;
 }
-} // namespace json
-} // namespace printing
+}  // namespace json
+}  // namespace printing
 
 int main() {
   auto graph = Graph();
