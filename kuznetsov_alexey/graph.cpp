@@ -107,26 +107,19 @@ std::string print_edge(const Graph::Edge& edge) {
 
 std::string print_graph(const Graph& graph) {
   std::string result = "{\"vertices\":[";
-  std::vector<std::string> vertex_strings;
   for (const auto& vertex : graph.get_vertices()) {
     result += print_vertex(vertex, graph) + ",";
-  }
-  if (vertex_strings.size())
-    result.pop_back();
-  result += "],\"edges\":[";
-
-  std::vector<std::string> edge_strings;
-  for (const auto& edge : graph.get_edges()) {
-    edge_strings.push_back(print_edge(edge));
-  }
-  for (auto& s : edge_strings) {
-    result += s + ",";
   }
   if (result.back() == ',') {
     result.pop_back();
   }
-  if (edge_strings.size())
+  result += "],\"edges\":[";
+  for (const auto& edge : graph.get_edges()) {
+    result += print_edge(edge) + ",";
+  }
+  if (result.back() == ',') {
     result.pop_back();
+  }
   result += "]}\n";
   return result;
 }
