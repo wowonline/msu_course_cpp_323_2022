@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <fstream>
-#include <iostram>
+#include <iostream>
 #include <string>
 #include <vector>
 
