@@ -15,7 +15,6 @@ const int kMaxThreadsCount = std::thread::hardware_concurrency();
 constexpr Graph::Depth kGraphBaseDepth = 1;
 constexpr Graph::Depth kYellowEdgesDiff = 1;
 constexpr Graph::Depth kRedEdgesDiff = 2;
-constexpr Graph::Depth kStartThreads = 3;
 
 using JobCallBack = std::function<void()>;
 
@@ -143,23 +142,23 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
                                           Graph::Depth cur_depth) const {
   const auto depth = params_.depth();
 
-  if (depth < cur_depth) {
+  if (depth - 1 < cur_depth) {
     return;
   }
 
   const float step = 1.0 / (depth - kGraphBaseDepth);
-  const float prob = (float)(1 - step * (cur_depth - kGraphBaseDepth - 1));
+  const float prob = (float)(1 - step * cur_depth);
+
+  const Graph::VertexId child_id = [&graph, &graph_mutex, root_id]() {
+    const std::lock_guard<std::mutex> guard(graph_mutex);
+    const Graph::VertexId child_id = graph.add_vertex();
+    graph.add_edge(root_id, child_id);
+    return child_id;
+  }();
 
   for (Graph::VertexId cur_vertex_count = 0;
        cur_vertex_count < params_.new_vertices_count(); cur_vertex_count++) {
     if (check_probability(prob)) {
-      const Graph::VertexId child_id = [&graph, &graph_mutex, root_id]() {
-        const std::lock_guard<std::mutex> guard(graph_mutex);
-        const Graph::VertexId child_id = graph.add_vertex();
-        graph.add_edge(root_id, child_id);
-        return child_id;
-      }();
-
       generate_grey_branch(graph, graph_mutex, child_id, cur_depth + 1);
     }
   }
@@ -181,14 +180,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
   for (int i = 0; i < new_vertices_count; i++) {
     jobs.push_back([&graph, &graph_mutex, &root_id, this]() {
       if (params_.depth() > kGraphBaseDepth) {
-        const Graph::VertexId child_id = [&graph_mutex, &graph, root_id]() {
-          const std::lock_guard<std::mutex> guard(graph_mutex);
-          const Graph::VertexId child_id = graph.add_vertex();
-          graph.add_edge(root_id, child_id);
-          return (Graph::VertexId)child_id;
-        }();
-
-        generate_grey_branch(graph, graph_mutex, child_id, kStartThreads);
+        generate_grey_branch(graph, graph_mutex, root_id, kGraphBaseDepth);
       }
     });
   }
