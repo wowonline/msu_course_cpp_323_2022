@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <fstream>
+#include <iostram>
 #include <string>
 #include <vector>
 
