@@ -195,7 +195,6 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
 
   using JobCallback = std::function<void()>;
   auto jobs = std::list<JobCallback>();
-  std::atomic<int> jobs_count = jobs.size();
 
   const Graph::Depth max_depth = params_.depth();
   const int new_vertices_count = params_.new_vertices_count();
@@ -205,11 +204,11 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
           generate_grey_branch(graph, max_depth, new_vertices_count, root_id,
                                graph_mutex, true);
         });
-    jobs_count++;
   }
 
   std::atomic<bool> should_terminate = false;
-
+  std::atomic<int> jobs_count = jobs.size();
+  
   const auto worker = [&should_terminate, &jobs_mutex, &jobs_count, &jobs]() {
     while (true) {
       if (should_terminate) {
@@ -223,7 +222,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
         if (!jobs.empty()) {
           auto job = jobs.back();
           jobs.pop_back();
-          jobs_count--;
+          jobs_count = jobs.size();
           return job;
         }
         return std::nullopt;
