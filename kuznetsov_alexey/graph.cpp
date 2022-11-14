@@ -27,7 +27,7 @@ class Graph {
   };
 
   struct Edge {
-    enum class Color { Grey, Green, Yellow, Red };
+   enum class Color { Grey, Green, Yellow, Red };
 
    public:
     Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id, Color color)
