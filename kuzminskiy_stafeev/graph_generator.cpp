@@ -142,7 +142,7 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
                                           Graph::Depth cur_depth) const {
   const auto depth = params_.depth();
 
-  if (depth - 1 < cur_depth) {
+  if (depth < cur_depth) {
     return;
   }
 
