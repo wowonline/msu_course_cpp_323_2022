@@ -66,7 +66,7 @@ void generate_green_edges(Graph& graph, std::mutex& graph_mutex) {
 void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) {
   const Graph::Depth depth = graph.depth();
   const float step = 1.0 / (depth - 2);
-  for (Graph::Depth current_depth = uni_course_cpp::kInitialDepth + 1;
+  for (Graph::Depth current_depth = uni_course_cpp::kInitialDepth;
        current_depth < depth; ++current_depth) {
     const auto& vertex_ids_on_current_depth =
         graph.get_vertex_ids_on_depth(current_depth);
@@ -143,11 +143,11 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
   if (current_depth > params_.depth())
     return;
   float step = 1.0 / (depth - 1);
+  const auto new_vertex_id =
+      safe_add_connected_vertex(graph, from_vertex_id, graph_mutex);
   for (int vertices_count = 0; vertices_count < params_.new_vertices_count();
        ++vertices_count) {
-    if (check_probability(1 - (current_depth - 2) * step)) {
-      const auto new_vertex_id =
-          safe_add_connected_vertex(graph, from_vertex_id, graph_mutex);
+    if (check_probability(1 - (current_depth - 1) * step)) {
       generate_grey_branch(graph, graph_mutex, new_vertex_id,
                            current_depth + 1);
     }
@@ -166,14 +166,9 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
   std::atomic<int> jobs_atomic = new_vertices_count;
 
   for (int i = 0; i < new_vertices_count; ++i) {
-    int current_depth = kInitialDepth;
-    const auto new_vertex_id = graph.add_vertex();
-    graph.add_edge(base_vertex_id, new_vertex_id);
-    current_depth++;
-    const auto job = [this, current_depth, new_vertex_id, &graph,
-                      &graph_mutex]() {
-      generate_grey_branch(graph, graph_mutex, new_vertex_id,
-                           current_depth + 1);
+    const auto job = [this, base_vertex_id, &graph, &graph_mutex]() {
+      generate_grey_branch(graph, graph_mutex, base_vertex_id,
+                           kInitialDepth + 1);
     };
     jobs.push(job);
   }
@@ -186,15 +181,14 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
       const auto job_optional = [&jobs_atomic, &jobs_mutex, &should_terminate,
                                  &jobs]() -> std::optional<JobCallback> {
         const std::lock_guard<std::mutex> guard(jobs_mutex);
-        if (!jobs.empty()) {
-          jobs_atomic = jobs_atomic.load() - 1;
+        if (!jobs.empty())
           return get_job(jobs);
-        }
         return std::nullopt;
       }();
       if (job_optional.has_value()) {
         const auto& job = job_optional.value();
         job();
+        jobs_atomic = jobs_atomic - 1;
       }
     }
   };
@@ -205,7 +199,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
   for (int i = 0; i < threads_count; ++i)
     threads.push_back(std::thread(worker));
 
-  while (jobs_atomic.load() != 0) {
+  while (jobs_atomic > 0) {
   }
   should_terminate = true;
   for (auto& thread : threads) {
