@@ -1,6 +1,6 @@
 TARGET = prog
 COMPILER = clang++
-COMPILER_FLAGS = -std=c++17 -Werror
+COMPILER_FLAGS = -std=c++17 -Werror -pthread
 LINTER = clang-format
 LINTER_OPTIONS = -style=Chromium
 

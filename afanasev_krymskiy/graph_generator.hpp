@@ -1,4 +1,5 @@
 #pragma once
+#include <mutex>
 #include "graph.hpp"
 
 namespace uni_course_cpp {
@@ -20,9 +21,13 @@ class GraphGenerator {
   explicit GraphGenerator(Params&& params) : params_(std::move(params)) {}
 
   Graph generate() const;
+  void generate_grey_branch(Graph&,
+                            std::mutex&,
+                            Graph::VertexId,
+                            Graph::Depth) const;
 
  private:
-  void generate_grey_edges(Graph& graph) const;
+  void generate_grey_edges(Graph& graph, Graph::VertexId root_vertex_id) const;
 
   Params params_ = Params(0, 0);
 };
