@@ -1,5 +1,7 @@
+#pragma once
 #include "graph.hpp"
 
+namespace uni_course_cpp {
 class GraphGenerator {
  public:
   struct Params {
@@ -19,10 +21,10 @@ class GraphGenerator {
 
   Graph generate() const;
 
+ private:
   void generate_new_vertices(Graph& graph,
                              Graph::VertexId root_id,
                              Graph::Depth depth) const;
-
- private:
   Params params_ = Params(0, 0);
 };
+}  // namespace uni_course_cpp
