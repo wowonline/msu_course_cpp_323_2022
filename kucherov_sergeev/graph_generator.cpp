@@ -195,6 +195,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
 
   using JobCallback = std::function<void()>;
   auto jobs = std::list<JobCallback>();
+  std::atomic<int> jobs_count = jobs.size();
 
   const Graph::Depth max_depth = params_.depth();
   const int new_vertices_count = params_.new_vertices_count();
@@ -204,11 +205,12 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
           generate_grey_branch(graph, max_depth, new_vertices_count, root_id,
                                graph_mutex, true);
         });
+    jobs_count++;
   }
 
   std::atomic<bool> should_terminate = false;
 
-  const auto worker = [&should_terminate, &jobs_mutex, &jobs]() {
+  const auto worker = [&should_terminate, &jobs_mutex, &jobs_count, &jobs]() {
     while (true) {
       if (should_terminate) {
         return;
@@ -216,10 +218,12 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
 
       std::lock_guard lock(jobs_mutex);
 
-      const auto job_optional = [&jobs]() -> std::optional<JobCallback> {
+      const auto job_optional = [&jobs,
+                                 &jobs_count]() -> std::optional<JobCallback> {
         if (!jobs.empty()) {
           auto job = jobs.back();
           jobs.pop_back();
+          jobs_count--;
           return job;
         }
         return std::nullopt;
@@ -240,7 +244,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
     threads.emplace_back(worker);
   }
 
-  while (!jobs.empty()) {
+  while (jobs_count > 0) {
   }
 
   should_terminate = true;
