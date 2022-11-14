@@ -113,10 +113,7 @@ std::string print_graph(const Graph& graph) {
   std::string result = "{\"vertices\":[";
   std::vector<std::string> vertex_strings;
   for (const auto& vertex : graph.get_vertices()) {
-    vertex_strings.push_back(print_vertex(vertex, graph));
-  }
-  for (auto& s : vertex_strings) {
-    result += s + ",";
+    result += print_vertex(vertex, graph) + ",";
   }
   if (vertex_strings.size())
     result.pop_back();
