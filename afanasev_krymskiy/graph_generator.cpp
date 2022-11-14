@@ -126,6 +126,8 @@ void GraphGenerator::generate_grey_branch(
     std::mutex& mutex_for_graph,
     Graph::VertexId parent_vertex_id,
     Graph::Depth parent_vertex_depth) const {
+  if (parent_vertex_depth >= params_.get_depth())
+    return;
   const float probability =
       (params_.get_depth() - parent_vertex_depth) / (params_.get_depth() - 1.f);
   for (int i = 0; i < params_.new_vertices_count(); ++i) {
