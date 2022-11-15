@@ -27,7 +27,7 @@ class Graph {
   };
 
   struct Edge {
-   enum class Color { Grey, Green, Yellow, Red };
+    enum class Color { Grey, Green, Yellow, Red };
 
    public:
     Edge(EdgeId id, VertexId from_vertex_id, VertexId to_vertex_id, Color color)
@@ -41,40 +41,59 @@ class Graph {
     Color color() const { return color_; }
 
    private:
-    EdgeId id_ = 0;
     Color color_ = Color::Grey;
+    EdgeId id_ = 0;
     VertexId from_vertex_id_ = 0;
     VertexId to_vertex_id_ = 0;
   };
 
-  const std::vector<Edge>& get_edges() const { return edges; }
+  const std::vector<Edge>& get_edges() const { return edges_; }
 
-  const std::vector<Vertex>& get_vertices() const { return vertices; }
+  const std::vector<Vertex>& get_vertices() const { return vertices_; }
 
   void add_vertex() {
-    vertices.push_back(Vertex(vertices.size()));
-    adjacency_ids_list.push_back({});
+    VertexId new_vertex_id = get_new_vertex_id_();
+    vertices_.emplace_back(new_vertex_id);
+    adjacency_list_[new_vertex_id] = {};
+    adjacency_list_of_edges_[new_vertex_id] = {};
   }
 
   void set_vertex_depth(VertexId vertex_id, Depth depth) {
-    vertices.at(vertex_id).set_depth(depth);
-    graph_depth = std::max(graph_depth, depth);
-    depth_to_vertices[depth].emplace_back(vertex_id);
+    vertices_.at(vertex_id).set_depth(depth);
+    graph_depth_ = std::max(graph_depth_, depth);
+    depth_to_vertices_[depth].emplace_back(vertex_id);
+  }
+
+  bool has_vertex(VertexId vertex_id) const {
+    return adjacency_list_.count(vertex_id);
   }
 
   bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
-    return std::count(adjacency_ids_list[from_vertex_id].begin(),
-                      adjacency_ids_list[from_vertex_id].end(), to_vertex_id);
+    return std::count(adjacency_list_.at(from_vertex_id).begin(),
+                      adjacency_list_.at(from_vertex_id).end(), to_vertex_id);
+  }
+
+  const std::vector<EdgeId>& connected_edges_ids(VertexId vertex_id) const {
+    if (adjacency_list_of_edges_.count(vertex_id) == 0) {
+      const std::vector<EdgeId> empty_edges_list;
+      return std::move(empty_edges_list);
+    }
+    return adjacency_list_of_edges_.at(vertex_id);
   }
 
   Edge::Color get_edge_color(VertexId from_vertex_id,
                              VertexId to_vertex_id) const {
-    const auto from_vertex_depth = vertices.at(from_vertex_id).depth();
-    const auto to_vertex_depth = vertices.at(to_vertex_id).depth();
+    const auto from_vertex_depth =
+        vertices_.at(from_vertex_id)
+            .depth();  // runtime error if edge not in graph
+    const auto to_vertex_depth =
+        vertices_.at(to_vertex_id)
+            .depth();  // runtime error if edge not in graph
+
     if (from_vertex_id == to_vertex_id) {
       return Edge::Color::Green;
     }
-    if (adjacency_ids_list[to_vertex_id].size() == 0) {
+    if (adjacency_list_.at(to_vertex_id).size() == 0) {
       return Edge::Color::Grey;
     }
     if (to_vertex_depth - from_vertex_depth == 1 &&
@@ -88,43 +107,42 @@ class Graph {
   }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    assert(count_vertices_ids_in_graph({from_vertex_id, to_vertex_id}) >= 2);
-    const auto color = get_edge_color(from_vertex_id, to_vertex_id);
+    const auto color = get_edge_color(
+        from_vertex_id, to_vertex_id);  // runtime error if edge not in graph
+
+    EdgeId new_id = get_new_edge_id_();
     if (color == Edge::Color::Grey) {
-      set_vertex_depth(to_vertex_id, vertices[from_vertex_id].depth() + 1);
-      adjacency_ids_list[from_vertex_id].emplace_back(to_vertex_id);
-      adjacency_ids_list[to_vertex_id].emplace_back(from_vertex_id);
+      set_vertex_depth(to_vertex_id, vertices_[from_vertex_id].depth() + 1);
+      adjacency_list_[from_vertex_id].emplace_back(to_vertex_id);
+      adjacency_list_[to_vertex_id].emplace_back(from_vertex_id);
     }
-    edges.push_back(Edge(edges.size(), from_vertex_id, to_vertex_id, color));
+    adjacency_list_of_edges_[from_vertex_id].emplace_back(new_id);
+    adjacency_list_of_edges_[to_vertex_id].emplace_back(new_id);
+    edges_.emplace_back(new_id, from_vertex_id, to_vertex_id, color);
   }
 
   std::vector<Vertex> get_vertices_with_depth(Depth depth) const {
-    if (depth_to_vertices.find(depth) != depth_to_vertices.end()) {
-      return depth_to_vertices.at(depth);
+    if (depth_to_vertices_.find(depth) != depth_to_vertices_.end()) {
+      return depth_to_vertices_.at(depth);
     } else {
       return {};
     }
   }
 
-  Depth depth() const { return graph_depth; }
+  Depth depth() const { return graph_depth_; }
 
  private:
-  int count_vertices_ids_in_graph(const std::vector<VertexId>& v_ids) {
-    int cnt = 0;
-    for (auto& v_id : v_ids) {
-      for (auto& u : vertices) {
-        if (u.id() == v_id)
-          cnt++;
-      }
-    }
-    return cnt;
-  }
+  VertexId get_new_vertex_id_() { return vertex_id_counter_++; }
+  EdgeId get_new_edge_id_() { return edge_id_counter_++; }
 
-  Depth graph_depth = -1;
-  std::unordered_map<Depth, std::vector<Vertex> > depth_to_vertices;
-  std::vector<std::vector<VertexId> > adjacency_ids_list;
-  std::vector<Vertex> vertices;
-  std::vector<Edge> edges;
+  Depth graph_depth_ = 0;
+  VertexId vertex_id_counter_ = 0;
+  EdgeId edge_id_counter_ = 0;
+  std::unordered_map<Depth, std::vector<Vertex> > depth_to_vertices_;
+  std::unordered_map<VertexId, std::vector<EdgeId> > adjacency_list_of_edges_;
+  std::unordered_map<VertexId, std::vector<VertexId> > adjacency_list_;
+  std::vector<Vertex> vertices_;
+  std::vector<Edge> edges_;
 };
 
 // graph generator
@@ -150,11 +168,13 @@ class GraphGenerator {
     if (params_.depth() < 0) {
       throw std::runtime_error("Graph depth < 0");
     }
-    graph.add_vertex();
-    generate_grey_edges(graph);
-    generate_green_edges(graph);
-    generate_yellow_edges(graph);
-    generate_red_edges(graph);
+    if (params_.depth() > 0) {
+      graph.add_vertex();
+      generate_grey_edges(graph);
+      generate_green_edges(graph);
+      generate_yellow_edges(graph);
+      generate_red_edges(graph);
+    }
     return graph;
   }
 
@@ -173,7 +193,7 @@ class GraphGenerator {
     if (graph_depth == 0) {
       return 0;
     } else {
-      return 1.0 - double((current_depth - 1)) / (graph_depth - 1);
+      return 1.0 - static_cast<double>((current_depth - 1)) / (graph_depth - 1);
     }
   }
 
@@ -276,25 +296,17 @@ class GraphGenerator {
 namespace printing {
 namespace json {
 
-std::string print_graph(const Graph& graph);
-std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph);
-std::string print_edge(const Graph::Edge& edge);
-
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string result_json_vertex = "{\"id\":";
   result_json_vertex += std::to_string(vertex.id()) + ",";
-  std::vector<Graph::EdgeId> edge_ids;
-  for (const auto& edge : graph.get_edges()) {
-    if (edge.to_vertex_id() == vertex.id() ||
-        edge.from_vertex_id() == vertex.id()) {
-      edge_ids.push_back(edge.id());
-    }
-  }
+  const std::vector<Graph::EdgeId>& edge_ids =
+      graph.connected_edges_ids(vertex.id());
 
   result_json_vertex += "\"edge_ids\":[";
   for (const auto& id : edge_ids) {
     result_json_vertex += std::to_string(id) + ",";
   }
+
   if (edge_ids.size())
     result_json_vertex.pop_back();
   result_json_vertex += "],";
@@ -327,31 +339,24 @@ std::string print_edge(const Graph::Edge& edge) {
 }
 
 std::string print_graph(const Graph& graph) {
-  std::string res = "";
-  res += "{\"depth\":" + std::to_string(graph.depth()) + ",";
-  res += "\"vertices\":[";
-  std::vector<std::string> vertex_strings;
-  for (const auto& vertex : graph.get_vertices()) {
-    vertex_strings.push_back(print_vertex(vertex, graph));
-  }
-  for (auto& s : vertex_strings) {
-    res += s + ",";
-  }
-  if (vertex_strings.size())
-    res.pop_back();
-  res += "],\"edges\":[";
+  std::string result = "";
+  result += "{\"depth\":" + std::to_string(graph.depth()) + ",";
+  result += "\"vertices\":[";
 
-  std::vector<std::string> edge_strings;
+  for (const auto& vertex : graph.get_vertices()) {
+    result += print_vertex(vertex, graph) + ",";
+  }
+  if (result.back() == ',')
+    result.pop_back();
+  result += "],\"edges\":[";
+
   for (const auto& edge : graph.get_edges()) {
-    edge_strings.push_back(print_edge(edge));
+    result += print_edge(edge) + ",";
   }
-  for (auto& s : edge_strings) {
-    res += s + ",";
-  }
-  if (edge_strings.size())
-    res.pop_back();
-  res += "]}";
-  return res;
+  if (result.back() == ',')
+    result.pop_back();
+  result += "]}\n";
+  return result;
 }
 }  // namespace json
 }  // namespace printing
