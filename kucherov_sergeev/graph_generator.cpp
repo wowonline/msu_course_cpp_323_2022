@@ -85,15 +85,13 @@ void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) {
           [&graph, &graph_mutex,
            new_edge_probability](Graph::VertexId vertex_id) {
             if (get_random_bool(new_edge_probability)) {
-              graph_mutex.lock();
+              const std::lock_guard lock(graph_mutex);
               const auto& to_vertex_ids =
                   get_unconnected_vertex_ids(graph, vertex_id);
-              graph_mutex.unlock();
 
               if (to_vertex_ids.empty() == false) {
                 const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
 
-                const std::lock_guard lock(graph_mutex);
                 graph.add_edge(vertex_id, to_vertex_id);
               }
             }
@@ -135,9 +133,7 @@ void generate_grey_branch(Graph& graph,
                           Graph::VertexId root_vertex_id,
                           std::mutex& graph_mutex,
                           bool one_vertex_start = false) {
-  graph_mutex.lock();
   const Graph::Depth current_depth = graph.get_vertex_depth(root_vertex_id);
-  graph_mutex.unlock();
 
   float new_vertex_probability =
       1.f - (current_depth - 1.f) / (max_depth - 1.f);
@@ -146,12 +142,12 @@ void generate_grey_branch(Graph& graph,
 
   for (int attempt = 0; attempt < attempts_number; attempt++) {
     if (get_random_bool(new_vertex_probability)) {
-      graph_mutex.lock();
-
-      const auto new_vertex_id = graph.add_vertex();
-      graph.add_edge(root_vertex_id, new_vertex_id);
-
-      graph_mutex.unlock();
+      const auto new_vertex_id = [&graph_mutex, &graph, root_vertex_id]() {
+        const std::lock_guard lock(graph_mutex);
+        const auto new_vertex_id = graph.add_vertex();
+        graph.add_edge(root_vertex_id, new_vertex_id);
+        return new_vertex_id;
+      }();
 
       if (current_depth < max_depth) {
         generate_grey_branch(graph, max_depth, new_vertices_count,
@@ -208,17 +204,17 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
 
   std::atomic<bool> should_terminate = false;
   std::atomic<int> jobs_count = jobs.size();
-  
+
   const auto worker = [&should_terminate, &jobs_mutex, &jobs_count, &jobs]() {
     while (true) {
       if (should_terminate) {
         return;
       }
 
-      std::lock_guard lock(jobs_mutex);
+      const auto job_optional = [&jobs, &jobs_count,
+                                 &jobs_mutex]() -> std::optional<JobCallback> {
+        const std::lock_guard lock(jobs_mutex);
 
-      const auto job_optional = [&jobs,
-                                 &jobs_count]() -> std::optional<JobCallback> {
         if (!jobs.empty()) {
           auto job = jobs.back();
           jobs.pop_back();
@@ -228,6 +224,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
         return std::nullopt;
       }();
 
+      const std::lock_guard lock(jobs_mutex);
       if (job_optional.has_value()) {
         const auto& job = job_optional.value();
         job();
