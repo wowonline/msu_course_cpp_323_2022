@@ -2,18 +2,39 @@
 #include <iostream>
 #include <random>
 
-namespace uni_course_cpp {
-
 namespace {
+static constexpr double kGreenEdgesProbability = 0.1;
+static constexpr double kRedEdgesProbability = 0.33;
+static constexpr uni_course_cpp::Graph::Depth kGraphBaseDepth = 1;
+static constexpr uni_course_cpp::Graph::Depth kYellowEdgeDepth = 1;
+static constexpr uni_course_cpp::Graph::Depth kRedEdgeDepth = 2;
+static constexpr uni_course_cpp::Graph::Depth kYellowMaxEdgeDepth = 2;
+
 bool check_probability(const double probability) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::bernoulli_distribution d(probability);
   return d(gen);
 }
+
 };  // namespace
 
-Graph::VertexId get_random_vertex_id(std::size_t size) {
+namespace uni_course_cpp {
+
+Graph GraphGenerator::generate() const {
+  auto graph = Graph();
+  if (!params_.depth()) {
+    return graph;
+  }
+  graph.add_vertex();
+  generate_grey_edges(graph);
+  generate_green_edges(graph);
+  generate_yellow_edges(graph);
+  generate_red_edges(graph);
+  return graph;
+}
+
+Graph::VertexId get_random_vertex_id(int size) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> distrib(0, size);
@@ -31,36 +52,6 @@ std::vector<Graph::VertexId> get_unconnected_vertex_ids(
     }
   }
   return result;
-}
-
-Graph GraphGenerator::generate() const {
-  auto graph = Graph();
-  if (!params_.depth()) {
-    return graph;
-  }
-  graph.add_vertex();
-  generate_grey_edges(graph);
-  generate_green_edges(graph);
-  generate_yellow_edges(graph);
-  generate_red_edges(graph);
-  return graph;
-}
-
-void GraphGenerator::generate_grey_edges(Graph& graph) const {
-  const auto max_depth = params_.depth() - kGraphBaseDepth;
-  const auto new_vertices_count = params_.new_vertices_count();
-
-  for (Graph::Depth current_depth = 0;
-       current_depth < max_depth && current_depth < graph.depth();
-       ++current_depth) {
-    for (const auto vertex : graph.get_vertex_ids_at_depth(current_depth)) {
-      for (int i = 0; i < new_vertices_count; ++i) {
-        if (check_probability(1.0 - (1.0 / max_depth) * current_depth)) {
-          graph.add_edge(vertex, graph.add_vertex());
-        }
-      }
-    }
-  }
 }
 
 void GraphGenerator::generate_green_edges(Graph& graph) const {
@@ -108,4 +99,22 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
     }
   }
 }
+
+void GraphGenerator::generate_grey_edges(Graph& graph) const {
+  const auto max_depth = params_.depth() - kGraphBaseDepth;
+  const auto new_vertices_count = params_.new_vertices_count();
+
+  for (Graph::Depth current_depth = 0;
+       current_depth < max_depth && current_depth < graph.depth();
+       ++current_depth) {
+    for (const auto vertex : graph.get_vertex_ids_at_depth(current_depth)) {
+      for (int i = 0; i < new_vertices_count; ++i) {
+        if (check_probability(1.0 - (1.0 / max_depth) * current_depth)) {
+          graph.add_edge(vertex, graph.add_vertex());
+        }
+      }
+    }
+  }
+}
+
 }  // namespace uni_course_cpp

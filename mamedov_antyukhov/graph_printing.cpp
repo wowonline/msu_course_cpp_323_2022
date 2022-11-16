@@ -1,9 +1,19 @@
 #include "graph_printing.hpp"
+#include <array>
 #include <sstream>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include "graph.hpp"
+
+namespace {
+static constexpr int kColorsAmount = 4;
+constexpr std::array<uni_course_cpp::Graph::Edge::Color, kColorsAmount>
+    kColors = {uni_course_cpp::Graph::Edge::Color::Grey,
+               uni_course_cpp::Graph::Edge::Color::Green,
+               uni_course_cpp::Graph::Edge::Color::Yellow,
+               uni_course_cpp::Graph::Edge::Color::Red};
+}  // namespace
 
 namespace uni_course_cpp {
 namespace printing {
@@ -17,9 +27,10 @@ std::string print_edge_color(Graph::Edge::Color color) {
       return "red";
     case Graph::Edge::Color::Yellow:
       return "yellow";
+    default:
+      throw std::runtime_error("Can't recognize edge color");
+      return "unknown color";
   }
-
-  return "";
 }
 
 std::string print_graph(const Graph& graph) {
@@ -35,16 +46,10 @@ std::string print_graph(const Graph& graph) {
   data_graph << vertices_depth[vertices_depth.size() - 1].size() << "]},\n";
   data_graph << "\tedges: {amount: " << edges.size() << ", distribution: {";
 
-  std::vector<std::pair<Graph::Edge::Color, std::string>> colors = {
-      {Graph::Edge::Color::Grey, "grey: "},
-      {Graph::Edge::Color::Green, "green: "},
-      {Graph::Edge::Color::Yellow, "yellow: "},
-      {Graph::Edge::Color::Red, "red: "}};
-
-  for (const auto& p : colors) {
-    data_graph << p.second << graph.get_colored_edge_ids(p.first).size();
-
-    if (p.first == Graph::Edge::Color::Red)
+  for (int i = 0; i < kColorsAmount; ++i) {
+    data_graph << print_edge_color(kColors[i])
+               << graph.get_colored_edge_ids(kColors[i]).size();
+    if (i == kColorsAmount - 1)
       data_graph << "}}\n}";
     else
       data_graph << ", ";

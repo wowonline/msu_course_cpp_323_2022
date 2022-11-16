@@ -116,7 +116,7 @@ bool Graph::has_edge(VertexId first_vertex_id,
 }
 
 const std::vector<Graph::EdgeId>& Graph::get_colored_edge_ids(
-    const Graph::Edge::Color color) const {
+    Graph::Edge::Color color) const {
   return colored_edge_ids_.at(color);
 }
 

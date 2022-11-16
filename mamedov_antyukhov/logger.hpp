@@ -15,9 +15,8 @@ class Logger {
   void operator=(Logger&& other) = delete;
 
  private:
-  ~Logger() { log_file_.close(); };
-  Logger() : log_file_(config::kLogFilename) {}
-
+  ~Logger() = default;
+  Logger();
   std::ofstream log_file_;
 };
 }  // namespace uni_course_cpp

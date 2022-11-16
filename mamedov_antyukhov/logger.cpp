@@ -7,7 +7,6 @@
 #include <sstream>
 #include <string>
 #include "config.hpp"
-#include "logger.hpp"
 namespace {
 std::string get_current_date_time() {
   const auto date_time = std::chrono::system_clock::now();
@@ -22,9 +21,11 @@ std::string get_current_date_time() {
 namespace uni_course_cpp {
 
 Logger& Logger::get_logger() {
-  Logger* instance = new Logger();
-  return *instance;
+  static Logger instance = Logger();
+  return instance;
 }
+
+Logger::Logger() : log_file_(config::kLogFilename) {}
 
 void Logger::log(const std::string& string) {
   const std::string current_date_time = get_current_date_time();

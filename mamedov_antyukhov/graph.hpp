@@ -70,8 +70,7 @@ class Graph {
 
   std::unordered_map<int, int> get_colors_amount() const;
 
-  const std::vector<EdgeId>& get_colored_edge_ids(
-      const Edge::Color color) const;
+  const std::vector<EdgeId>& get_colored_edge_ids(Edge::Color color) const;
 
  private:
   VertexId get_new_vertex_id() { return last_vertex_id_++; }
