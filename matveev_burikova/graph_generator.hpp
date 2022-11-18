@@ -2,6 +2,8 @@
 
 #include "graph.hpp"
 
+#include <mutex>
+
 namespace uni_course_cpp {
 class GraphGenerator {
  public:
@@ -22,8 +24,13 @@ class GraphGenerator {
   Graph generate() const;
 
  private:
-  void generate_grey_edges(Graph& graph) const;
-
   Params params_ = Params(0, 0);
+
+  void generate_grey_edges(Graph& graph, Graph::VertexId base_vertex_id) const;
+
+  void generate_grey_branch(Graph& graph,
+                            std::mutex& graph_mutex,
+                            Graph::VertexId from_vertex_id,
+                            Graph::Depth current_depth) const;
 };
 }  // namespace uni_course_cpp
