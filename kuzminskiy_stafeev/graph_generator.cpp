@@ -235,10 +235,8 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
 }
 
 void GraphGenerationController::Worker::start() {
-  // Проверить что `Worker` ещё не был запущен
   assert(state_ == State::Idle);
-  // Создаем поток с бесконечным циклом
-  // Ждем появления работы
+
   thread_ = std::thread([this]() {
     while (true) {
       if (state_ == State::ShouldTerminate) {
