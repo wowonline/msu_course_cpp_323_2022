@@ -131,8 +131,7 @@ void generate_grey_branch(Graph& graph,
                           Graph::Depth max_depth,
                           int new_vertices_count,
                           Graph::VertexId root_vertex_id,
-                          std::mutex& graph_mutex,
-                          bool one_vertex_start = false) {
+                          std::mutex& graph_mutex) {
   const auto current_depth = [&graph_mutex, &graph, root_vertex_id] {
     const std::lock_guard lock(graph_mutex);
     const Graph::Depth current_depth = graph.get_vertex_depth(root_vertex_id);
@@ -142,17 +141,15 @@ void generate_grey_branch(Graph& graph,
   float new_vertex_probability =
       1.f - (current_depth - 1.f) / (max_depth - 1.f);
 
-  int attempts_number = (one_vertex_start) ? (1) : (new_vertices_count);
+  if (get_random_bool(new_vertex_probability)) {
+    const auto new_vertex_id = [&graph_mutex, &graph, root_vertex_id]() {
+      const std::lock_guard lock(graph_mutex);
+      const auto new_vertex_id = graph.add_vertex();
+      graph.add_edge(root_vertex_id, new_vertex_id);
+      return new_vertex_id;
+    }();
 
-  for (int attempt = 0; attempt < attempts_number; attempt++) {
-    if (get_random_bool(new_vertex_probability)) {
-      const auto new_vertex_id = [&graph_mutex, &graph, root_vertex_id]() {
-        const std::lock_guard lock(graph_mutex);
-        const auto new_vertex_id = graph.add_vertex();
-        graph.add_edge(root_vertex_id, new_vertex_id);
-        return new_vertex_id;
-      }();
-
+    for (int attempt = 0; attempt < new_vertices_count; attempt++) {
       if (current_depth < max_depth) {
         generate_grey_branch(graph, max_depth, new_vertices_count,
                              new_vertex_id, graph_mutex);
@@ -202,7 +199,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
     jobs.push_back(
         [&graph, root_id, max_depth, new_vertices_count, &graph_mutex]() {
           generate_grey_branch(graph, max_depth, new_vertices_count, root_id,
-                               graph_mutex, true);
+                               graph_mutex);
         });
   }
 
