@@ -20,20 +20,10 @@ class GraphGenerator {
   explicit GraphGenerator(Params&& params) : params_(std::move(params)){};
 
   void generate_grey_edges(Graph& graph) const;
-  void generate_green_edges(Graph& graph) const;
-  void generate_yellow_edges(Graph& graph) const;
-  void generate_red_edges(Graph& graph) const;
   Graph generate() const;
 
  private:
   Params params_ = Params(0, 0);
 };
-
-Graph::VertexId get_random_vertex_id(int size);
-
-std::vector<Graph::VertexId> get_unconnected_vertex_ids(
-    const std::vector<Graph::VertexId>& vertices,
-    const Graph& graph,
-    const Graph::VertexId vertex);
 
 };  // namespace uni_course_cpp

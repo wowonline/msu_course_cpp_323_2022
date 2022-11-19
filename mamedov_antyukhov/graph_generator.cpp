@@ -2,36 +2,21 @@
 #include <iostream>
 #include <random>
 
+namespace uni_course_cpp {
+
 namespace {
 static constexpr double kGreenEdgesProbability = 0.1;
 static constexpr double kRedEdgesProbability = 0.33;
-static constexpr uni_course_cpp::Graph::Depth kGraphBaseDepth = 1;
-static constexpr uni_course_cpp::Graph::Depth kYellowEdgeDepth = 1;
-static constexpr uni_course_cpp::Graph::Depth kRedEdgeDepth = 2;
-static constexpr uni_course_cpp::Graph::Depth kYellowMaxEdgeDepth = 2;
+static constexpr Graph::Depth kGraphBaseDepth = 1;
+static constexpr Graph::Depth kYellowEdgeDepth = 1;
+static constexpr Graph::Depth kRedEdgeDepth = 2;
+static constexpr Graph::Depth kYellowMaxEdgeDepth = 2;
 
-bool check_probability(const double probability) {
+bool check_probability(double probability) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::bernoulli_distribution d(probability);
   return d(gen);
-}
-
-};  // namespace
-
-namespace uni_course_cpp {
-
-Graph GraphGenerator::generate() const {
-  auto graph = Graph();
-  if (!params_.depth()) {
-    return graph;
-  }
-  graph.add_vertex();
-  generate_grey_edges(graph);
-  generate_green_edges(graph);
-  generate_yellow_edges(graph);
-  generate_red_edges(graph);
-  return graph;
 }
 
 Graph::VertexId get_random_vertex_id(int size) {
@@ -44,7 +29,7 @@ Graph::VertexId get_random_vertex_id(int size) {
 std::vector<Graph::VertexId> get_unconnected_vertex_ids(
     const std::vector<Graph::VertexId>& vertices,
     const Graph& graph,
-    const Graph::VertexId vertex) {
+    Graph::VertexId vertex) {
   std::vector<Graph::VertexId> result;
   for (const auto cur_vertex : vertices) {
     if (!graph.has_edge(vertex, cur_vertex)) {
@@ -54,7 +39,7 @@ std::vector<Graph::VertexId> get_unconnected_vertex_ids(
   return result;
 }
 
-void GraphGenerator::generate_green_edges(Graph& graph) const {
+void generate_green_edges(Graph& graph) {
   const auto& vertices = graph.get_vertices();
   for (auto vertex : vertices) {
     if (check_probability(kGreenEdgesProbability)) {
@@ -63,7 +48,7 @@ void GraphGenerator::generate_green_edges(Graph& graph) const {
   }
 }
 
-void GraphGenerator::generate_yellow_edges(Graph& graph) const {
+void generate_yellow_edges(Graph& graph) {
   const auto max_depth = graph.depth() - kYellowMaxEdgeDepth;
 
   for (Graph::Depth current_depth = kGraphBaseDepth; current_depth <= max_depth;
@@ -83,7 +68,7 @@ void GraphGenerator::generate_yellow_edges(Graph& graph) const {
   }
 }
 
-void GraphGenerator::generate_red_edges(Graph& graph) const {
+void generate_red_edges(Graph& graph) {
   const auto max_depth = graph.depth() - kRedEdgeDepth;
 
   for (Graph::Depth current_depth = 0; current_depth < max_depth;
@@ -98,6 +83,21 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
       }
     }
   }
+}
+
+};  // namespace
+
+Graph GraphGenerator::generate() const {
+  auto graph = Graph();
+  if (!params_.depth()) {
+    return graph;
+  }
+  graph.add_vertex();
+  generate_grey_edges(graph);
+  generate_green_edges(graph);
+  generate_yellow_edges(graph);
+  generate_red_edges(graph);
+  return graph;
 }
 
 void GraphGenerator::generate_grey_edges(Graph& graph) const {
