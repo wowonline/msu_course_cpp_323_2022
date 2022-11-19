@@ -1,12 +1,18 @@
-2022.11.20 01:36:28 Graph 0, Generation Started
-2022.11.20 01:36:28 Graph 0, Generation Finished {
+2022.11.20 01:38:49 Graph 0, Generation Started
+2022.11.20 01:38:49 Graph 0, Generation Finished {
 	depth:5,
-	vertices: { amount: 5, distribution: [1, 2, 3, 2, 2]},
-	edges: {amount: 20, distribution: {grey : 9, green : 3, yellow : 4, red : 4}}
+	vertices: { amount: 5, distribution: [1, 2, 4, 3, 1]},
+	edges: {amount: 19, distribution: {grey : 10, green : 1, yellow : 5, red : 3}}
 }
-2022.11.20 01:36:28 Graph 1, Generation Started
-2022.11.20 01:36:28 Graph 1, Generation Finished {
-	depth:4,
-	vertices: { amount: 4, distribution: [1, 2, 3, 2]},
-	edges: {amount: 13, distribution: {grey : 7, green : 2, yellow : 3, red : 1}}
+2022.11.20 01:38:49 Graph 1, Generation Started
+2022.11.20 01:38:49 Graph 1, Generation Finished {
+	depth:5,
+	vertices: { amount: 5, distribution: [1, 2, 2, 3, 2]},
+	edges: {amount: 16, distribution: {grey : 9, green : 1, yellow : 5, red : 1}}
+}
+2022.11.20 01:38:49 Graph 2, Generation Started
+2022.11.20 01:38:49 Graph 2, Generation Finished {
+	depth:5,
+	vertices: { amount: 5, distribution: [1, 2, 4, 3, 3]},
+	edges: {amount: 25, distribution: {grey : 12, green : 4, yellow : 5, red : 4}}
 }
