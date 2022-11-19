@@ -5,6 +5,7 @@
 #include <ctime>
 #include <iomanip>
 #include <iostream>
+#include <mutex>
 #include <sstream>
 
 namespace {
@@ -27,6 +28,7 @@ Logger& Logger::get_logger() {
 Logger::Logger() : log_file_(config::kLogFilePath) {}
 
 void Logger::log(const std::string& string) {
+  const std::lock_guard<std::mutex> guard(log_mutex);
   const auto string_with_date_time = get_current_date_time() + " " + string;
   std::cout << string_with_date_time << std::endl;
   log_file_ << string_with_date_time << std::endl;
