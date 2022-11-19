@@ -1,0 +1,12 @@
+2022.11.20 01:24:49 Graph 0, Generation Started
+2022.11.20 01:24:49 Graph 0, Generation Finished {
+	depth:5,
+	vertices: { amount: 5, distribution: [1, 2, 3, 4, 2]},
+	edges: {amount: 20, distribution: {grey11, green1, yellow6, red2}}
+}
+2022.11.20 01:24:49 Graph 1, Generation Started
+2022.11.20 01:24:49 Graph 1, Generation Finished {
+	depth:5,
+	vertices: { amount: 5, distribution: [1, 2, 3, 3, 1]},
+	edges: {amount: 18, distribution: {grey9, green2, yellow5, red2}}
+}
