@@ -186,7 +186,7 @@ Graph GraphGenerator::generate() const {
 }
 
 void GraphGenerator::generate_grey_edges(Graph& graph,
-                                         const Graph::VertexId root_id) const {
+                                         Graph::VertexId root_id) const {
   std::mutex jobs_mutex, graph_mutex;
 
   using JobCallback = std::function<void()>;
