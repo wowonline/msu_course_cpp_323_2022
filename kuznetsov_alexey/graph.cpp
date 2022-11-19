@@ -149,6 +149,7 @@ class Graph {
 
 class GraphGenerator {
  public:
+ static constexpr double kProbability = 0.33;
   struct Params {
    public:
     Params(Graph::Depth depth, int new_vertices_count)
@@ -262,7 +263,7 @@ class GraphGenerator {
                              const Graph::Vertex& vertex_from,
                              Graph::Vertex& vertex_to) const {
     Graph::Depth vertex_from_depth = vertex_from.depth();
-    if (generate_random(0, 1) < 0.33) {
+    if (generate_random(0, 1) < kProbability) {
       graph.add_edge(vertex_from.id(), vertex_to.id());
     }
   }
@@ -370,12 +371,20 @@ void write_to_file(const std::string& graph_json,
 Graph::Depth handle_depth_input() {
   Graph::Depth depth;
   std::cin >> depth;
+  if (depth < 0) {
+    throw std::runtime_error("Error: Input must be > 0!");
+  }
+
   return depth;
 }
 
 int handle_new_vertices_count_input() {
   int count_vertices;
   std::cin >> count_vertices;
+  if (count_vertices < 0) {
+    throw std::runtime_error("Error: Input must be > 0!");
+  }
+
   return count_vertices;
 }
 
