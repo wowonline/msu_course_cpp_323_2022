@@ -149,7 +149,7 @@ class Graph {
 
 class GraphGenerator {
  public:
- static constexpr double kProbability = 0.33;
+  static constexpr double kProbability = 0.33;
   struct Params {
    public:
     Params(Graph::Depth depth, int new_vertices_count)
