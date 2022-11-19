@@ -118,8 +118,8 @@ void generate_red_edges(Graph& graph, std::mutex& graph_mutex) {
           current_depth_vertex_ids.begin(), current_depth_vertex_ids.end(),
           [&graph, &graph_mutex, &to_vertex_ids](Graph::VertexId vertex_id) {
             if (get_random_bool(kEdgeRedProbability)) {
-              const std::lock_guard lock(graph_mutex);
               const auto to_vertex_id = get_random_vertex_id(to_vertex_ids);
+              const std::lock_guard lock(graph_mutex);
               graph.add_edge(vertex_id, to_vertex_id);
             }
           });
