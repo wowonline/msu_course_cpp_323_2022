@@ -26,7 +26,7 @@ Logger& Logger::get_logger() {
   return instance;
 }
 
-Logger::Logger() : log_file_(config::kLogFilename) {}
+Logger::Logger() : log_file_(config::kLogFilePath) {}
 
 void Logger::log(const std::string& string) {
   const std::string current_date_time = get_current_date_time();
