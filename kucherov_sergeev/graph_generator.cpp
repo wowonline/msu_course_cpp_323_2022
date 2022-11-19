@@ -133,7 +133,11 @@ void generate_grey_branch(Graph& graph,
                           Graph::VertexId root_vertex_id,
                           std::mutex& graph_mutex,
                           bool one_vertex_start = false) {
-  const Graph::Depth current_depth = graph.get_vertex_depth(root_vertex_id);
+  const auto current_depth = [&graph_mutex, &graph, root_vertex_id] {
+    const std::lock_guard lock(graph_mutex);
+    const Graph::Depth current_depth = graph.get_vertex_depth(root_vertex_id);
+    return current_depth;
+  }();
 
   float new_vertex_probability =
       1.f - (current_depth - 1.f) / (max_depth - 1.f);
