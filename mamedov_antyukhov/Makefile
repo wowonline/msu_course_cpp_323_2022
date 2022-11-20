@@ -1,5 +1,5 @@
 CC = clang++
-FLAGS = -std=c++17 -Werror 
+FLAGS = -std=c++17 -Werror -pthread
 
 PROGS.O = graph.o logger.o graph_printing.o graph_generator.o graph_json_printing.o main.o
 PROGS.CPP = graph.cpp logger.cpp graph_printing.cpp graph_generator.cpp graph_json_printing.cpp main.cpp
@@ -9,7 +9,7 @@ GRAPH = graph.json
 TEMP = ./temp
 
 all: $(PROGS.O)
-	$(CC) $(PROGS.O) -o $(RES) $(FLAGS) -std=c++17
+	$(CC) $(PROGS.O) -o $(RES) $(FLAGS)
 
 %.o : %.cpp
 	$(CC) -c $< $(FLAGS)

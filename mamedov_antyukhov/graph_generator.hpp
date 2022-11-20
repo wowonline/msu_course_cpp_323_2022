@@ -22,8 +22,7 @@ class GraphGenerator {
 
   explicit GraphGenerator(Params&& params) : params_(std::move(params)){};
 
-  void generate_grey_edges(Graph& graph,
-                           std::mutex& graph_mutex) const;
+  void generate_grey_edges(Graph& graph, std::mutex& graph_mutex) const;
 
   void generate_grey_branch(Graph& graph,
                             std::mutex& graph_mutex,

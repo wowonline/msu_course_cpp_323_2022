@@ -57,23 +57,28 @@ void generate_green_edges(Graph& graph, std::mutex& graph_mutex) {
                 });
 }
 
-void generate_yellow_edges(Graph& graph) {
+void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) {
   const auto max_depth = graph.depth() - kYellowMaxEdgeDepth;
-
   for (Graph::Depth current_depth = kGraphBaseDepth; current_depth <= max_depth;
        ++current_depth) {
-    for (const auto vertex : graph.get_vertex_ids_at_depth(current_depth)) {
-      if (check_probability((1.0 / max_depth) * current_depth)) {
-        const auto next_level_vertices = get_unconnected_vertex_ids(
-            graph.get_vertex_ids_at_depth(current_depth + kYellowEdgeDepth),
-            graph, vertex);
-        if (!next_level_vertices.empty()) {
-          graph.add_edge(vertex,
-                         next_level_vertices[get_random_vertex_id(
-                             next_level_vertices.size() - kYellowEdgeDepth)]);
-        }
-      }
-    }
+    const auto& currrent_level_vertex_ids =
+        graph.get_vertex_ids_at_depth(current_depth);
+    std::for_each(
+        currrent_level_vertex_ids.begin(), currrent_level_vertex_ids.end(),
+        [&graph, &graph_mutex, max_depth,
+         current_depth](Graph::VertexId vertex_id) {
+          if (check_probability((1.0 / max_depth) * current_depth)) {
+            const auto next_level_vertex_ids = get_unconnected_vertex_ids(
+                graph.get_vertex_ids_at_depth(current_depth + kYellowEdgeDepth),
+                graph, vertex_id);
+            if (!next_level_vertex_ids.empty()) {
+              graph.add_edge(
+                  vertex_id,
+                  next_level_vertex_ids[get_random_vertex_id(
+                      next_level_vertex_ids.size() - kYellowEdgeDepth)]);
+            }
+          }
+        });
   }
 }
 
@@ -105,7 +110,7 @@ Graph GraphGenerator::generate() const {
   graph.add_vertex();
   generate_grey_edges(graph, graph_mutex);
   generate_green_edges(graph, graph_mutex);
-  generate_yellow_edges(graph);
+  generate_yellow_edges(graph, graph_mutex);
   generate_red_edges(graph);
   return graph;
 }
@@ -147,7 +152,8 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
   std::atomic<int> jobs_number(new_vertices_count);
   std::atomic<bool> should_terminate = false;
   std::mutex jobs_mutex;
-  const auto root_vertex_id = graph.get_vertex_ids_at_depth(kGraphBaseDepth - 1)[0];
+  const auto root_vertex_id =
+      graph.get_vertex_ids_at_depth(kGraphBaseDepth - 1)[0];
 
   for (int i = 0; i < new_vertices_count; ++i) {
     jobs.push([&graph, &graph_mutex, root_vertex_id, this]() {
@@ -188,7 +194,8 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
     threads.emplace_back(worker);
   }
 
-  while (jobs_number);
+  while (jobs_number)
+    ;
   should_terminate = true;
 
   for (auto& thread : threads) {
