@@ -6,8 +6,6 @@
 #include <utility>
 #include "graph.hpp"
 
-#include <iostream>
-
 namespace {
 static constexpr int kColorsAmount = 4;
 constexpr std::array<uni_course_cpp::Graph::Edge::Color, kColorsAmount>
@@ -43,8 +41,6 @@ std::string print_graph(const Graph& graph) {
   data_graph << "\tvertices: { amount: " << vertices_depth.size()
              << ", distribution: [";
 
-  std::cout << "GG_1\n";
-
   bool is_first_iteration = true;
   for (int i = 0; i < vertices_depth.size(); ++i) {
     if (!is_first_iteration)
@@ -53,8 +49,6 @@ std::string print_graph(const Graph& graph) {
     is_first_iteration = false;
   }
   data_graph << "]},\n";
-
-  std::cout << "GG_2\n";
 
   data_graph << "\tedges: {amount: " << edges.size() << ", distribution: {";
 
@@ -67,8 +61,6 @@ std::string print_graph(const Graph& graph) {
     is_first_iteration = false;
   }
   data_graph << "}}\n}";
-
-  std::cout << "GG_3\n";
 
   return data_graph.str();
 }

@@ -64,7 +64,7 @@ int handle_graphs_count_input() {
   std::string input;
   int output, tries = 0;
   constexpr int max_tries_num = 15;
-  std::cout << "\n Enter \"graphs_count\" variable (graphs_count is a "
+  std::cout << "\nEnter \"graphs_count\" variable (graphs_count is a "
                "non-negative integer):"
             << std::endl;
   while (tries < max_tries_num && std::cin >> input) {
@@ -132,12 +132,8 @@ int main() {
     logger.log(uni_course_cpp::generation_started_string(i));
     const auto graph = generator.generate();
 
-    std::cout << "Graph has been created!\n";
-
     const auto& graph_description =
         uni_course_cpp::printing::print_graph(graph);
-
-    std::cout << "Graph has been printed!\n";
 
     logger.log(
         uni_course_cpp::generation_finished_string(i, graph_description));
