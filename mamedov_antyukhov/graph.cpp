@@ -38,7 +38,7 @@ Graph::EdgeId Graph::add_edge(VertexId first_vertex_id,
   }
   connections_[first_vertex_id].emplace_back(new_edge_id);
 
-  colored_edge_ids_[color].push_back(new_edge_id);
+  colored_edge_ids_[color].emplace_back(new_edge_id);
 
   edges_.insert({new_edge_id,
                  Edge(new_edge_id, first_vertex_id, second_vertex_id, color)});

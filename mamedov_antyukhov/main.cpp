@@ -64,7 +64,7 @@ int handle_graphs_count_input() {
   std::string input;
   int output, tries = 0;
   constexpr int max_tries_num = 15;
-  std::cout << "\n Enter \"graphs_count\" variable (graphs_count is a "
+  std::cout << "\nEnter \"graphs_count\" variable (graphs_count is a "
                "non-negative integer):"
             << std::endl;
   while (tries < max_tries_num && std::cin >> input) {
@@ -91,8 +91,10 @@ void write_to_file(const std::string& graph_str, const std::string& file_name) {
 }
 
 void prepare_temp_directory() {
-  if (std::filesystem::exists(uni_course_cpp::config::kTempDirectoryPath)) return;
-  if (!std::filesystem::create_directory(uni_course_cpp::config::kTempDirectoryPath))
+  if (std::filesystem::exists(uni_course_cpp::config::kTempDirectoryPath))
+    return;
+  if (!std::filesystem::create_directory(
+          uni_course_cpp::config::kTempDirectoryPath))
     throw std::runtime_error("Can not create temp directory");
   return;
 }
@@ -132,6 +134,7 @@ int main() {
 
     const auto& graph_description =
         uni_course_cpp::printing::print_graph(graph);
+
     logger.log(
         uni_course_cpp::generation_finished_string(i, graph_description));
 

@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <string>
-#include "config.hpp"
 
 namespace uni_course_cpp {
 class Logger {
@@ -19,6 +18,7 @@ class Logger {
  private:
   ~Logger() = default;
   Logger();
+
   std::ofstream log_file_;
 };
 }  // namespace uni_course_cpp

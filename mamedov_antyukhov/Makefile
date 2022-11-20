@@ -6,6 +6,7 @@ PROGS.CPP = graph.cpp logger.cpp graph_printing.cpp graph_generator.cpp graph_js
 PROGS.HPP = graph.hpp logger.hpp graph_printing.hpp graph_generator.hpp graph_json_printing.hpp config.hpp
 RES = main
 GRAPH = graph.json
+TEMP = ./temp
 
 all: $(PROGS.O)
 	$(CC) $(PROGS.O) -o $(RES) $(FLAGS) -std=c++17
@@ -20,13 +21,10 @@ clean:
 	rm -f $(PROGS.O)
 
 delete: clean
-	rm -f $(RES)
+	rm -rf $(TEMP)
 
 erase: delete
-	rm -f $(GRAPH)
-
-ready:
-	rm -rf $(PROGS.O) $(RES)
+	rm -f $(RES)
 
 clang-format:
 	clang-format -i -style=Chromium $(PROGS.HPP) $(PROGS.CPP)
