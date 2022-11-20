@@ -9,7 +9,7 @@ GRAPH = graph.json
 TEMP = ./temp
 
 all: $(PROGS.O)
-	$(CC) $(PROGS.O) -o $(RES) $(FLAGS)
+	$(CC) $(PROGS.O) -o $(RES) $(FLAGS) -std=c++17
 
 %.o : %.cpp
 	$(CC) -c $< $(FLAGS)
