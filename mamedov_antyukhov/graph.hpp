@@ -68,8 +68,6 @@ class Graph {
 
   const std::vector<VertexId>& get_vertex_ids_at_depth(Depth depth) const;
 
-  std::unordered_map<int, int> get_colors_amount() const;
-
   const std::vector<EdgeId>& get_colored_edge_ids(Edge::Color color) const;
 
  private:
@@ -97,7 +95,11 @@ class Graph {
 
   std::unordered_map<VertexId, Depth> vertices_depth_ = {};
 
-  std::unordered_map<Edge::Color, std::vector<EdgeId>> colored_edge_ids_;
+  std::unordered_map<Edge::Color, std::vector<EdgeId>> colored_edge_ids_ = {
+      {Edge::Color::Grey, {}},
+      {Edge::Color::Yellow, {}},
+      {Edge::Color::Green, {}},
+      {Edge::Color::Red, {}}};
 
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;

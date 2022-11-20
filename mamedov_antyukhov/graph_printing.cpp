@@ -6,6 +6,8 @@
 #include <utility>
 #include "graph.hpp"
 
+#include <iostream>
+
 namespace {
 static constexpr int kColorsAmount = 4;
 constexpr std::array<uni_course_cpp::Graph::Edge::Color, kColorsAmount>
@@ -40,20 +42,33 @@ std::string print_graph(const Graph& graph) {
   data_graph << "{\n\tdepth:" << graph.depth() << ",\n";
   data_graph << "\tvertices: { amount: " << vertices_depth.size()
              << ", distribution: [";
-  for (int i = 0; i < vertices_depth.size() - 1; ++i) {
-    data_graph << vertices_depth[i].size() << ", ";
+
+  std::cout << "GG_1\n";
+
+  bool is_first_iteration = true;
+  for (int i = 0; i < vertices_depth.size(); ++i) {
+    if (!is_first_iteration)
+      data_graph << ", ";
+    data_graph << vertices_depth[i].size();
+    is_first_iteration = false;
   }
-  data_graph << vertices_depth[vertices_depth.size() - 1].size() << "]},\n";
+  data_graph << "]},\n";
+
+  std::cout << "GG_2\n";
+
   data_graph << "\tedges: {amount: " << edges.size() << ", distribution: {";
 
+  is_first_iteration = true;
   for (int i = 0; i < kColorsAmount; ++i) {
+    if (!is_first_iteration)
+      data_graph << ", ";
     data_graph << print_edge_color(kColors[i]) << " : "
                << graph.get_colored_edge_ids(kColors[i]).size();
-    if (i == kColorsAmount - 1)
-      data_graph << "}}\n}";
-    else
-      data_graph << ", ";
+    is_first_iteration = false;
   }
+  data_graph << "}}\n}";
+
+  std::cout << "GG_3\n";
 
   return data_graph.str();
 }

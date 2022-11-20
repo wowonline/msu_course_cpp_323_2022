@@ -132,8 +132,13 @@ int main() {
     logger.log(uni_course_cpp::generation_started_string(i));
     const auto graph = generator.generate();
 
+    std::cout << "Graph has been created!\n";
+
     const auto& graph_description =
         uni_course_cpp::printing::print_graph(graph);
+
+    std::cout << "Graph has been printed!\n";
+
     logger.log(
         uni_course_cpp::generation_finished_string(i, graph_description));
 
