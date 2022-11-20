@@ -47,7 +47,7 @@ std::string print_graph(const Graph& graph) {
   data_graph << "\tedges: {amount: " << edges.size() << ", distribution: {";
 
   for (int i = 0; i < kColorsAmount; ++i) {
-    data_graph << print_edge_color(kColors[i])
+    data_graph << print_edge_color(kColors[i]) << " : "
                << graph.get_colored_edge_ids(kColors[i]).size();
     if (i == kColorsAmount - 1)
       data_graph << "}}\n}";

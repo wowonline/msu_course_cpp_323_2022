@@ -91,7 +91,10 @@ void write_to_file(const std::string& graph_str, const std::string& file_name) {
 }
 
 void prepare_temp_directory() {
-  if (!std::filesystem::create_directory("temp"))
+  if (std::filesystem::exists(uni_course_cpp::config::kTempDirectoryPath))
+    return;
+  if (!std::filesystem::create_directory(
+          uni_course_cpp::config::kTempDirectoryPath))
     throw std::runtime_error("Can not create temp directory");
   return;
 }
