@@ -60,7 +60,7 @@ class GraphGenerationController {
     explicit Worker(const GetJobCallback& get_job_callback)
         : thread_(), get_job_callback_(get_job_callback) {}
 
-    ~Worker(void);
+    ~Worker();
     void start();
     void stop();
 
@@ -72,7 +72,7 @@ class GraphGenerationController {
     State state_ = State::Idle;
   };
 
-  std::list<Worker*> workers_;
+  std::list<Worker> workers_;
   std::list<JobCallback> jobs_;
 
   int threads_count_;

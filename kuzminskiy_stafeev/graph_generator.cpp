@@ -268,7 +268,10 @@ void GraphGenerationController::Worker::stop() {
   thread_.join();
 }
 
-GraphGenerationController::Worker::~Worker(void) {}
+GraphGenerationController::Worker::~Worker() {
+  if (thread_.joinable())
+    stop();
+}
 
 void GraphGenerationController::generate(
     const GenStartedCallback& gen_started_callback,
@@ -299,20 +302,18 @@ void GraphGenerationController::generate(
   };
 
   for (int i = 0; i < threads_count_; i++) {
-    const auto tmp = new Worker(get_job_callback);
-    workers_.emplace_back(tmp);
+    workers_.emplace_back(get_job_callback);
   }
 
   for (auto& worker : workers_) {
-    worker->start();
+    worker.start();
   }
 
   while (graphs_ready_count != 0) {
   }
 
   for (auto& worker : workers_) {
-    worker->stop();
-    delete worker;
+    worker.stop();
   }
 }
 
