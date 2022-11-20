@@ -1,6 +1,11 @@
 #include "graph_generator.hpp"
+#include <atomic>
+#include <functional>
 #include <iostream>
+#include <optional>
+#include <queue>
 #include <random>
+#include <thread>
 
 namespace uni_course_cpp {
 
@@ -11,6 +16,7 @@ static constexpr Graph::Depth kGraphBaseDepth = 1;
 static constexpr Graph::Depth kYellowEdgeDepth = 1;
 static constexpr Graph::Depth kRedEdgeDepth = 2;
 static constexpr Graph::Depth kYellowMaxEdgeDepth = 2;
+const int kMaxThreadsCount = std::thread::hardware_concurrency();
 
 bool check_probability(double probability) {
   std::random_device rd;
@@ -88,32 +94,104 @@ void generate_red_edges(Graph& graph) {
 };  // namespace
 
 Graph GraphGenerator::generate() const {
+  std::mutex graph_mutex;
   auto graph = Graph();
   if (!params_.depth()) {
     return graph;
   }
-  graph.add_vertex();
-  generate_grey_edges(graph);
+  generate_grey_edges(graph, graph_mutex, graph.add_vertex());
   generate_green_edges(graph);
   generate_yellow_edges(graph);
   generate_red_edges(graph);
   return graph;
 }
 
-void GraphGenerator::generate_grey_edges(Graph& graph) const {
-  const auto max_depth = params_.depth() - kGraphBaseDepth;
-  const auto new_vertices_count = params_.new_vertices_count();
+void GraphGenerator::generate_grey_branch(Graph& graph,
+                                          std::mutex& graph_mutex,
+                                          Graph::VertexId root_vertex_id,
+                                          Graph::Depth current_depth) const {
+  const double probability =
+      1.0 - (1.0 / (params_.depth() - kGraphBaseDepth)) * current_depth;
 
-  for (Graph::Depth current_depth = 0;
-       current_depth < max_depth && current_depth < graph.depth();
-       ++current_depth) {
-    for (const auto vertex : graph.get_vertex_ids_at_depth(current_depth)) {
-      for (int i = 0; i < new_vertices_count; ++i) {
-        if (check_probability(1.0 - (1.0 / max_depth) * current_depth)) {
-          graph.add_edge(vertex, graph.add_vertex());
+  if (current_depth == params_.depth())
+    return;
+
+  const Graph::VertexId new_vertex_id = [&graph, &graph_mutex,
+                                         &root_vertex_id]() {
+    const std::lock_guard graph_lock(graph_mutex);
+    auto new_vertex_id = graph.add_vertex();
+    graph.add_edge(root_vertex_id, new_vertex_id);
+    return new_vertex_id;
+  }();
+
+  for (int i = 0; i < params_.new_vertices_count(); ++i) {
+    if (check_probability(probability)) {
+      generate_grey_branch(graph, graph_mutex, new_vertex_id,
+                           current_depth + 1);
+    }
+  }
+}
+
+void GraphGenerator::generate_grey_edges(Graph& graph,
+                                         std::mutex& graph_mutex,
+                                         Graph::VertexId root_vertex_id) const {
+  if (params_.depth() == kGraphBaseDepth)
+    return;
+
+  using JobCallback = std::function<void()>;
+  auto jobs = std::queue<JobCallback>();
+  const auto new_vertices_count = params_.new_vertices_count();
+  std::atomic<int> jobs_number(new_vertices_count);
+  std::atomic<bool> should_terminate = false;
+  std::mutex jobs_mutex;
+
+  for (int i = 0; i < new_vertices_count; ++i) {
+    jobs.push([&graph, &graph_mutex, &root_vertex_id, this]() {
+      generate_grey_branch(graph, graph_mutex, root_vertex_id, kGraphBaseDepth);
+    });
+  }
+
+  const auto worker = [&should_terminate, &jobs_number, &jobs_mutex, &jobs]() {
+    while (true) {
+      if (should_terminate) {
+        return;
+      }
+
+      const auto job_optional = [&jobs_mutex, &should_terminate,
+                                 &jobs]() -> std::optional<JobCallback> {
+        const std::lock_guard<std::mutex> job_lock(jobs_mutex);
+
+        if (!jobs.empty()) {
+          auto job = jobs.front();
+          jobs.pop();
+          return job;
         }
+
+        return std::nullopt;
+      }();
+
+      if (job_optional.has_value()) {
+        const auto& job = job_optional.value();
+        --jobs_number;
+        job();
       }
     }
+  };
+
+  const auto threads_count = std::min(kMaxThreadsCount, new_vertices_count);
+  std::vector<std::thread> threads;
+  threads.reserve(threads_count);
+
+  for (int i = 0; i < threads_count; i++) {
+    threads.emplace_back(worker);
+  }
+
+  while (jobs_number)
+    ;
+  should_terminate = true;
+
+  for (auto& thread : threads) {
+    thread.join();
   }
 }
 
