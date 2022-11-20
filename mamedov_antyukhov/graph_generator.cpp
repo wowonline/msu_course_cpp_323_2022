@@ -115,9 +115,15 @@ Graph GraphGenerator::generate() const {
   }
   graph.add_vertex();
   generate_grey_edges(graph, graph_mutex);
-  generate_green_edges(graph, graph_mutex);
-  generate_yellow_edges(graph, graph_mutex);
-  generate_red_edges(graph, graph_mutex);
+  std::thread generating_green_edges(
+      [&graph, &graph_mutex]() { generate_green_edges(graph, graph_mutex); });
+  std::thread generating_yellow_edges(
+      [&graph, &graph_mutex]() { generate_yellow_edges(graph, graph_mutex); });
+  std::thread generating_red_edges(
+      [&graph, &graph_mutex]() { generate_red_edges(graph, graph_mutex); });
+  generating_green_edges.join();
+  generating_yellow_edges.join();
+  generating_red_edges.join();
   return graph;
 }
 
@@ -149,8 +155,9 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
 
 void GraphGenerator::generate_grey_edges(Graph& graph,
                                          std::mutex& graph_mutex) const {
-  if (params_.depth() == kGraphBaseDepth)
+  if (params_.depth() == kGraphBaseDepth) {
     return;
+  }
 
   using JobCallback = std::function<void()>;
   auto jobs = std::queue<JobCallback>();
@@ -200,8 +207,8 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
     threads.emplace_back(worker);
   }
 
-  while (jobs_number)
-    ;
+  while (jobs_number) {
+  }
   should_terminate = true;
 
   for (auto& thread : threads) {
