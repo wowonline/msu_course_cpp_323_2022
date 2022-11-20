@@ -1,23 +1,11 @@
-#include "printing.hpp"
 #include <sstream>
 #include <string>
 #include <unordered_map>
 #include "graph.hpp"
+#include "graph_printing.hpp"
 
+namespace uni_course_cpp {
 namespace printing {
-std::string print_edge_color(Graph::Edge::Color color) {
-  switch (color) {
-    case Graph::Edge::Color::Grey:
-      return "grey";
-    case Graph::Edge::Color::Green:
-      return "green";
-    case Graph::Edge::Color::Red:
-      return "red";
-    case Graph::Edge::Color::Yellow:
-      return "yellow";
-  }
-}
-
 namespace json {
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::stringstream json_string;
@@ -80,3 +68,4 @@ std::string print_graph(const Graph& graph) {
 }
 }  // namespace json
 }  // namespace printing
+}  // namespace uni_course_cpp

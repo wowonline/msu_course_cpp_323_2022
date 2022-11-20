@@ -2,7 +2,9 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <unordered_map>
 
+namespace uni_course_cpp {
 Graph::VertexId Graph::add_vertex() {
   const VertexId new_vertex_id = get_new_vertex_id();
   vertices_.insert({new_vertex_id, Vertex(new_vertex_id)});
@@ -35,6 +37,8 @@ Graph::EdgeId Graph::add_edge(VertexId first_vertex_id,
     connections_[second_vertex_id].emplace_back(new_edge_id);
   }
   connections_[first_vertex_id].emplace_back(new_edge_id);
+
+  colored_edge_ids_[color].emplace_back(new_edge_id);
 
   edges_.insert({new_edge_id,
                  Edge(new_edge_id, first_vertex_id, second_vertex_id, color)});
@@ -75,7 +79,7 @@ const Graph::Edge::Color Graph::get_edge_color(
   if (first_vertex_id == second_vertex_id)
     return Graph::Edge::Color::Green;
   if ((second_vertex_depth - first_vertex_depth) == 1) {
-    if (connections_.find(second_vertex_id) != connections_.end())
+    if (!connections_.at(second_vertex_id).empty())
       return Graph::Edge::Color::Yellow;
     else
       return Graph::Edge::Color::Grey;
@@ -87,10 +91,9 @@ const Graph::Edge::Color Graph::get_edge_color(
 
 bool Graph::has_edge(VertexId first_vertex_id,
                      VertexId second_vertex_id) const {
-  if (connections_.find(first_vertex_id) == connections_.end())
-    return false;
-  if (connections_.find(second_vertex_id) == connections_.end())
-    return false;
+  assert(has_vertex_id(first_vertex_id));
+  assert(has_vertex_id(second_vertex_id));
+
   if (first_vertex_id != second_vertex_id) {
     const auto& first_vertex_edge_ids = get_connected_edge_ids(first_vertex_id);
     const auto& second_vertex_edge_ids =
@@ -110,3 +113,10 @@ bool Graph::has_edge(VertexId first_vertex_id,
     return false;
   }
 }
+
+const std::vector<Graph::EdgeId>& Graph::get_colored_edge_ids(
+    Graph::Edge::Color color) const {
+  return colored_edge_ids_.at(color);
+}
+
+}  // namespace uni_course_cpp
