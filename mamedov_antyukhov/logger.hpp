@@ -9,13 +9,15 @@ class Logger {
   static Logger& get_logger();
   void log(const std::string& string);
 
+  Logger(const Logger& other) = delete;
+  void operator=(const Logger& other) = delete;
+
+  Logger(Logger&& other) = delete;
+  void operator=(Logger&& other) = delete;
+
  private:
   ~Logger() = default;
   Logger();
-  Logger(const Logger& other) = delete;
-  void operator=(const Logger& other) = delete;
-  Logger(Logger&& other) = delete;
-  void operator=(Logger&& other) = delete;
 
   std::ofstream log_file_;
 };
