@@ -11,69 +11,8 @@ class Graph {
   void add_vertex();
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
-  void print_all_vertex() {
-    for (vertex_it = vertexes_.begin(); vertex_it < vertexes_.end();
-         ++vertex_it) {
-      std::cout << (*vertex_it).id() << std::endl;
-    }
-  }
-  void print_all_edge() {
-    for (edge_it = edges_.begin(); edge_it < edges_.end(); ++edge_it) {
-      std::cout << (*edge_it).id() << " " << (*edge_it).from_vertex_id() << " "
-                << (*edge_it).to_vertex_id() << std::endl;
-    }
-  }
-
-  std::string print_json() const {
-    std::vector<Vertex>::const_iterator con_vertex_it;
-    std::vector<Edge>::const_iterator con_edge_it;
-
-    std::string str_json = "{\n  \"vertices\":[\n   ";
-    bool is_first_1 = true;
-    for (con_vertex_it = vertexes_.begin(); con_vertex_it < vertexes_.end();
-         ++con_vertex_it) {
-      if (is_first_1) {
-        is_first_1 = false;
-      } else {
-        str_json += ",";
-      }
-      str_json += " {\n      \"id\":" + std::to_string((*con_vertex_it).id()) +
-                  ",\n      \"edge_ids\":[";
-      bool is_first_2 = true;
-      for (con_edge_it = edges_.begin(); con_edge_it < edges_.end();
-           ++con_edge_it) {
-        if ((*con_edge_it).to_vertex_id() == ((*con_vertex_it).id()) ||
-            (*con_edge_it).from_vertex_id() == ((*con_vertex_it).id())) {
-          if (is_first_2) {
-            is_first_2 = false;
-          } else {
-            str_json += ",";
-          }
-          str_json += std::to_string((*con_edge_it).id());
-        }
-      }
-
-      str_json += "]\n    }";
-    }
-
-    str_json += "\n  ],\n  \"edges\":[\n   ";
-    bool is_first_3 = true;
-
-    for (con_edge_it = edges_.begin(); con_edge_it < edges_.end();
-         ++con_edge_it) {
-      if (is_first_3) {
-        is_first_3 = false;
-      } else {
-        str_json += ",";
-      }
-      str_json += " {\n      \"id\":" + std::to_string((*con_edge_it).id()) +
-                  ",\n      \"vertex_ids\":[" +
-                  std::to_string((*con_edge_it).from_vertex_id()) + "," +
-                  std::to_string((*con_edge_it).to_vertex_id()) + "]\n    }";
-    }
-
-    return str_json += "\n  ]\n}";
-  }
+  auto get_vertexes_() const { return vertexes_; }
+  auto get_edges_() const { return edges_; }
 
  public:
   struct Vertex {
@@ -83,7 +22,6 @@ class Graph {
 
    private:
     VertexId id_ = 0;
-    size_t last_vertex_id_ = 0;
   };
 
   struct Edge {
@@ -103,33 +41,6 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  std::string print_vertex_json(const Graph::Vertex& vertex) const {
-    std::vector<Edge>::const_iterator con_edge_it;
-    std::string str_json = "{\"id\":";
-    str_json += std::to_string(vertex.id()) + ",\"edge_ids\":[";
-    bool is_first = true;
-    for (con_edge_it = edges_.begin(); con_edge_it < edges_.end();
-         ++con_edge_it) {
-      if ((*con_edge_it).to_vertex_id() == vertex.id() ||
-          (*con_edge_it).from_vertex_id() == vertex.id()) {
-        if (is_first) {
-          is_first = false;
-        } else {
-          str_json += ",";
-        }
-        str_json += std::to_string((*con_edge_it).id());
-      }
-    }
-    return str_json + "]}";
-  }
-  std::string print_edge_json(const Graph::Edge& edge) const {
-    std::string str_json = "{\"id\":";
-    str_json += std::to_string(edge.id()) + ",\"vertex_ids\":[" +
-                std::to_string(edge.from_vertex_id()) + "," +
-                std::to_string(edge.to_vertex_id()) + "]}";
-    return str_json;
-  }
-
  private:
   std::vector<Vertex> vertexes_;
   std::vector<Edge> edges_;
@@ -146,14 +57,56 @@ class Graph {
 namespace printing {
 namespace json {
 
+std::string print_graph(const Graph&);
+std::string print_vertex(const Graph::Vertex&, const Graph&);
+std::string print_edge(const Graph::Edge&, const Graph&);
+
 std::string print_graph(const Graph& graph) {
-  return graph.print_json();
+  std::string str_json = "{\"vertices\":[";
+  bool is_first_1 = true;
+  for (auto& vertex : graph.get_vertexes_()) {
+    if (is_first_1) {
+      is_first_1 = false;
+    } else {
+      str_json += ",";
+    }
+    str_json += print_vertex(vertex, graph);
+  }
+  str_json += "],\"edges\":[";
+  bool is_first_2 = true;
+  for (auto& edge : graph.get_edges_()) {
+    if (is_first_2) {
+      is_first_2 = false;
+    } else {
+      str_json += ",";
+    }
+    str_json += print_edge(edge, graph);
+  }
+  return str_json += "]}\n";
 }
+
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
-  return graph.print_vertex_json(vertex);
+  std::string str_json = "{\"id\":";
+  str_json += std::to_string(vertex.id()) + ",\"edge_ids\":[";
+  bool is_first = true;
+  for (auto& edge : graph.get_edges_()) {
+    if (edge.to_vertex_id() == vertex.id() ||
+        edge.from_vertex_id() == vertex.id()) {
+      if (is_first) {
+        is_first = false;
+      } else {
+        str_json += ",";
+      }
+      str_json += std::to_string(edge.id());
+    }
+  }
+  return str_json + "]}";
 }
+
 std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
-  return graph.print_edge_json(edge);
+  return "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":[" +
+         std::to_string(edge.from_vertex_id()) + "," +
+         std::to_string(edge.to_vertex_id()) + "]}";
 }
 }  // namespace json
 }  // namespace printing
@@ -172,7 +125,7 @@ void write_to_file(const std::string& text, const std::string& filename) {
   fout.close();
 }
 
-Graph generate_graph(int kVerticesCount = 14) {
+Graph generate_graph(const int& kVerticesCount = 14) {
   auto graph = Graph();
 
   for (int i = 0; i < kVerticesCount; i++) {
