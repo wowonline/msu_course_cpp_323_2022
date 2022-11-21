@@ -49,10 +49,7 @@ class Graph {
     edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id);
     if (from_vertex_id != edge_id) {
       adjacency_list_[from_vertex_id].emplace_back(edge_id);
-      adjacency_list_[to_vertex_id].emplace_back(edge_id);
-    } else {
-      adjacency_list_[to_vertex_id].emplace_back(edge_id);
-    }
+    adjacency_list_[to_vertex_id].emplace_back(edge_id);
   }
 
   bool has_vertex(VertexId vertex_id) const {
@@ -64,7 +61,7 @@ class Graph {
   const std::vector<Edge>& get_edges() const { return edges_; }
 
   const std::vector<EdgeId>& connected_edges_ids(VertexId vertex_id) const {
-    if (has_vertex(vertex_id)) {
+    if (!has_vertex(vertex_id)) {
       static std::vector<EdgeId> empty_edges_list;
       return empty_edges_list;
     }
