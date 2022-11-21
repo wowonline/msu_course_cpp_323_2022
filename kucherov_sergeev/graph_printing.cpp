@@ -1,4 +1,5 @@
 #include "graph_printing.hpp"
+#include <array>
 #include <map>
 
 namespace uni_course_cpp {
