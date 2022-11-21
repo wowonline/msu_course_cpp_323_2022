@@ -71,7 +71,8 @@ int handle_graphs_count_input() {
     ++tries;
     if (sscanf(input.c_str(), "%d", &output)) {
       if (output >= 0)
-        return output;
+        std::cout << std::endl;
+      return output;
     }
     if (!(tries % 5))
       std::cout << "Read the description carefully!";
