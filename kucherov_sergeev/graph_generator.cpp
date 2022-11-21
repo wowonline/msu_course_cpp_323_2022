@@ -2,7 +2,6 @@
 #include <atomic>
 #include <cassert>
 #include <list>
-#include <mutex>
 #include <random>
 #include <thread>
 

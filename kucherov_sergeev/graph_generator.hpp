@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include "graph.hpp"
 
 namespace uni_course_cpp {
