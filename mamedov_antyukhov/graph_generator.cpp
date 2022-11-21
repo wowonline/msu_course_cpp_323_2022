@@ -118,6 +118,7 @@ Graph GraphGenerator::generate() const {
   if (params_.depth() == kGraphBaseDepth) {
     return graph;
   }
+
   generate_grey_edges(graph, graph_mutex, root_vertex_id);
   std::thread generating_green_edges(
       [&graph, &graph_mutex]() { generate_green_edges(graph, graph_mutex); });
@@ -161,8 +162,6 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
 void GraphGenerator::generate_grey_edges(Graph& graph,
                                          std::mutex& graph_mutex,
                                          Graph::VertexId root_vertex_id) const {
-  assert(params_.depth() != kGraphBaseDepth);
-
   using JobCallback = std::function<void()>;
   auto jobs = std::queue<JobCallback>();
   const auto new_vertices_count = params_.new_vertices_count();
