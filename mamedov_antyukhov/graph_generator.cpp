@@ -1,5 +1,6 @@
 #include "graph_generator.hpp"
 #include <atomic>
+#include <cassert>
 #include <functional>
 #include <iostream>
 #include <optional>
@@ -16,7 +17,7 @@ static constexpr Graph::Depth kGraphBaseDepth = 1;
 static constexpr Graph::Depth kYellowEdgeDepth = 1;
 static constexpr Graph::Depth kRedEdgeDepth = 2;
 static constexpr Graph::Depth kYellowMaxEdgeDepth = 2;
-const int kMaxThreadsCount = std::thread::hardware_concurrency();
+static const int kMaxThreadsCount = std::thread::hardware_concurrency();
 
 bool check_probability(double probability) {
   std::random_device rd;
@@ -113,8 +114,11 @@ Graph GraphGenerator::generate() const {
   if (!params_.depth()) {
     return graph;
   }
-  graph.add_vertex();
-  generate_grey_edges(graph, graph_mutex);
+  const auto root_vertex_id = graph.add_vertex();
+  if (params_.depth() == kGraphBaseDepth) {
+    return graph;
+  }
+  generate_grey_edges(graph, graph_mutex, root_vertex_id);
   std::thread generating_green_edges(
       [&graph, &graph_mutex]() { generate_green_edges(graph, graph_mutex); });
   std::thread generating_yellow_edges(
@@ -138,12 +142,13 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
     return;
   }
 
-  Graph::VertexId new_vertex_id;
-  {
+  const Graph::VertexId new_vertex_id = [&graph, &graph_mutex,
+                                         root_vertex_id]() {
     const std::lock_guard graph_lock(graph_mutex);
-    new_vertex_id = graph.add_vertex();
+    const auto new_vertex_id = graph.add_vertex();
     graph.add_edge(root_vertex_id, new_vertex_id);
-  }
+    return new_vertex_id;
+  }();
 
   for (int i = 0; i < params_.new_vertices_count(); ++i) {
     if (check_probability(probability)) {
@@ -154,19 +159,16 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
 }
 
 void GraphGenerator::generate_grey_edges(Graph& graph,
-                                         std::mutex& graph_mutex) const {
-  if (params_.depth() == kGraphBaseDepth) {
-    return;
-  }
+                                         std::mutex& graph_mutex,
+                                         Graph::VertexId root_vertex_id) const {
+  assert(params_.depth() != kGraphBaseDepth);
 
   using JobCallback = std::function<void()>;
   auto jobs = std::queue<JobCallback>();
   const auto new_vertices_count = params_.new_vertices_count();
-  std::atomic<int> jobs_number(new_vertices_count);
+  std::atomic<int> jobs_number = new_vertices_count;
   std::atomic<bool> should_terminate = false;
   std::mutex jobs_mutex;
-  const auto root_vertex_id =
-      graph.get_vertex_ids_at_depth(kGraphBaseDepth - 1)[0];
 
   for (int i = 0; i < new_vertices_count; ++i) {
     jobs.push([&graph, &graph_mutex, root_vertex_id, this]() {
@@ -175,11 +177,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
   }
 
   const auto worker = [&should_terminate, &jobs_number, &jobs_mutex, &jobs]() {
-    while (true) {
-      if (should_terminate) {
-        return;
-      }
-
+    while (!should_terminate) {
       const auto job_optional = [&jobs_mutex,
                                  &jobs]() -> std::optional<JobCallback> {
         const std::lock_guard<std::mutex> job_lock(jobs_mutex);
