@@ -131,7 +131,7 @@ void GraphGenerator::generate_grey_branch(Graph& graph,
                                           Graph::VertexId root_vertex_id,
                                           Graph::Depth current_depth,
                                           std::mutex& graph_mutex) const {
-  float new_vertex_probability =
+  const float new_vertex_probability =
       1.f - (current_depth - 1.f) / (params_.depth() - 1.f);
 
   if (!get_random_bool(new_vertex_probability)) {
