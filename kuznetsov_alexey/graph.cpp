@@ -39,7 +39,7 @@ class Graph {
   void add_vertex() {
     const VertexId new_vertex_id = get_new_vertex_id_();
     vertices_.emplace_back(new_vertex_id);
-    adjacency_list_edges_[new_vertex_id] = {};
+    adjacency_list_[new_vertex_id] = {};
   }
 
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
@@ -48,15 +48,15 @@ class Graph {
     const EdgeId edge_id = get_new_edge_id_();
     edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id);
     if (from_vertex_id != edge_id) {
-      adjacency_list_edges_[from_vertex_id].emplace_back(edge_id);
-      adjacency_list_edges_[to_vertex_id].emplace_back(edge_id);
+      adjacency_list_[from_vertex_id].emplace_back(edge_id);
+      adjacency_list_[to_vertex_id].emplace_back(edge_id);
     } else {
-      adjacency_list_edges_[to_vertex_id].emplace_back(edge_id);
+      adjacency_list_[to_vertex_id].emplace_back(edge_id);
     }
   }
 
   bool has_vertex(VertexId vertex_id) const {
-    return adjacency_list_edges_.find(vertex_id) != adjacency_list_edges_.end();
+    return adjacency_list_.find(vertex_id) != adjacency_list_.end();
   }
 
   const std::vector<Vertex>& get_vertices() const { return vertices_; }
@@ -68,7 +68,7 @@ class Graph {
       static std::vector<EdgeId> empty_edges_list;
       return empty_edges_list;
     }
-    return adjacency_list_edges_.at(vertex_id);
+    return adjacency_list_.at(vertex_id);
   }
 
  private:
@@ -80,7 +80,7 @@ class Graph {
   EdgeId edge_id_counter_ = 0;
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
-  std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_edges_;
+  std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
 };
 
 namespace printing {
