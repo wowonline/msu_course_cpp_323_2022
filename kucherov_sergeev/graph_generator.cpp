@@ -126,20 +126,14 @@ void generate_red_edges(Graph& graph, std::mutex& graph_mutex) {
     }
   }
 }
+}  // namespace
 
-void generate_grey_branch(Graph& graph,
-                          Graph::Depth max_depth,
-                          int new_vertices_count,
-                          Graph::VertexId root_vertex_id,
-                          std::mutex& graph_mutex) {
-  const auto current_depth = [&graph_mutex, &graph, root_vertex_id] {
-    const std::lock_guard lock(graph_mutex);
-    const Graph::Depth current_depth = graph.get_vertex_depth(root_vertex_id);
-    return current_depth;
-  }();
-
+void GraphGenerator::generate_grey_branch(Graph& graph,
+                                          Graph::VertexId root_vertex_id,
+                                          Graph::Depth current_depth,
+                                          std::mutex& graph_mutex) const {
   float new_vertex_probability =
-      1.f - (current_depth - 1.f) / (max_depth - 1.f);
+      1.f - (current_depth - 1.f) / (params_.depth() - 1.f);
 
   if (get_random_bool(new_vertex_probability)) {
     const auto new_vertex_id = [&graph_mutex, &graph, root_vertex_id]() {
@@ -149,15 +143,14 @@ void generate_grey_branch(Graph& graph,
       return new_vertex_id;
     }();
 
-    for (int attempt = 0; attempt < new_vertices_count; attempt++) {
-      if (current_depth < max_depth) {
-        generate_grey_branch(graph, max_depth, new_vertices_count,
-                             new_vertex_id, graph_mutex);
+    for (int attempt = 0; attempt < params_.new_vertices_count(); attempt++) {
+      if (current_depth < params_.depth()) {
+        generate_grey_branch(graph, new_vertex_id, current_depth + 1,
+                             graph_mutex);
       }
     }
   }
 }
-}  // namespace
 
 Graph GraphGenerator::generate() const {
   auto graph = Graph();
@@ -193,14 +186,11 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
   using JobCallback = std::function<void()>;
   auto jobs = std::list<JobCallback>();
 
-  const Graph::Depth max_depth = params_.depth();
-  const int new_vertices_count = params_.new_vertices_count();
-  for (int i = 0; i < new_vertices_count; i++) {
-    jobs.push_back(
-        [&graph, root_id, max_depth, new_vertices_count, &graph_mutex]() {
-          generate_grey_branch(graph, max_depth, new_vertices_count, root_id,
-                               graph_mutex);
-        });
+  for (int i = 0; i < params_.new_vertices_count(); i++) {
+    jobs.push_back([&graph, root_id, &graph_mutex, this]() {
+      generate_grey_branch(graph, root_id, graph.get_vertex_depth(root_id),
+                           graph_mutex);
+    });
   }
 
   std::atomic<bool> should_terminate = false;
@@ -233,7 +223,8 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
     }
   };
 
-  const auto threads_count = std::min(kMaxThreadsCount, new_vertices_count);
+  const auto threads_count =
+      std::min(kMaxThreadsCount, params_.new_vertices_count());
   auto threads = std::vector<std::thread>();
   threads.reserve(threads_count);
 
