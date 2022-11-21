@@ -49,6 +49,7 @@ class Graph {
     edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id);
     if (from_vertex_id != edge_id) {
       adjacency_list_[from_vertex_id].emplace_back(edge_id);
+    }
     adjacency_list_[to_vertex_id].emplace_back(edge_id);
   }
 
