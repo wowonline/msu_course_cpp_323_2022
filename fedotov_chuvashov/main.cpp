@@ -71,8 +71,7 @@ int handle_threads_count_input() {
   return thread_count;
 }
 
-std::string generation_started_string(int num_of_graph,
-                                      Logger& logger) {
+std::string generation_started_string(int num_of_graph, Logger& logger) {
   std::stringstream start_string;
   start_string << logger.get_current_date_time() << " Graph " << num_of_graph
                << ", Generation Started\n";
@@ -92,10 +91,9 @@ void prepare_temp_directory() {
   std::filesystem::create_directory(config::kTempDirectoryPath);
 }
 
-std::vector<Graph> generate_graphs(
-    GraphGenerator::Params&& params,
-    int graphs_count,
-    int threads_count) {
+std::vector<Graph> generate_graphs(GraphGenerator::Params&& params,
+                                   int graphs_count,
+                                   int threads_count) {
   auto generation_controller =
       GraphGenerationController(threads_count, graphs_count, std::move(params));
 
@@ -114,9 +112,9 @@ std::vector<Graph> generate_graphs(
         logger.log(
             generation_finished_string(index, graph_description, logger));
         const auto graph_json = json::print_graph(graph);
-        write_to_file(graph_json,
-              std::string{config::kTempDirectoryPath} +
-                  "graph_" + std::to_string(index) + ".json");
+        write_to_file(graph_json, std::string{config::kTempDirectoryPath} +
+                                      "graph_" + std::to_string(index) +
+                                      ".json");
       });
 
   return graphs;
@@ -129,8 +127,7 @@ int main() {
   const int threads_count = handle_threads_count_input();
   prepare_temp_directory();
 
-  auto params =
-      GraphGenerator::Params(depth, new_vertices_count);
+  auto params = GraphGenerator::Params(depth, new_vertices_count);
   const auto graphs =
       generate_graphs(std::move(params), graphs_count, threads_count);
 

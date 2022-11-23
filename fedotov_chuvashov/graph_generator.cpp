@@ -261,7 +261,6 @@ void GraphGenerationController::generate(
   };
 
   for (int i = 0; i < threads_count_; i++) {
-
     workers_.emplace_back(worker_callback);
   }
 

@@ -59,7 +59,10 @@ class GraphGenerationController {
     void start();
     void stop();
 
-    ~Worker() { if (thread_.joinable()) stop(); }
+    ~Worker() {
+      if (thread_.joinable())
+        stop();
+    }
 
    private:
     enum class State { Idle, Working, ShouldTerminate };
