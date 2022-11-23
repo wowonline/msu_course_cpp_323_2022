@@ -9,6 +9,8 @@
 #include "printing.hpp"
 #include "printing_json.hpp"
 
+using namespace uni_course_cpp;
+
 void write_to_file(const std::string& output_string,
                    const std::string& file_name) {
   std::ofstream output(file_name);
@@ -70,7 +72,7 @@ int handle_threads_count_input() {
 }
 
 std::string generation_started_string(int num_of_graph,
-                                      uni_course_cpp::Logger& logger) {
+                                      Logger& logger) {
   std::stringstream start_string;
   start_string << logger.get_current_date_time() << " Graph " << num_of_graph
                << ", Generation Started\n";
@@ -79,7 +81,7 @@ std::string generation_started_string(int num_of_graph,
 
 std::string generation_finished_string(int num_of_graph,
                                        std::string content,
-                                       uni_course_cpp::Logger& logger) {
+                                       Logger& logger) {
   std::stringstream finish_string;
   finish_string << logger.get_current_date_time() << " Graph " << num_of_graph
                 << ", Generation Finished " << content << "\n";
@@ -87,14 +89,13 @@ std::string generation_finished_string(int num_of_graph,
 }
 
 void prepare_temp_directory() {
-  std::filesystem::create_directory(uni_course_cpp::config::kTempDirectoryPath);
+  std::filesystem::create_directory(config::kTempDirectoryPath);
 }
 
-std::vector<uni_course_cpp::Graph> generate_graphs(
-    uni_course_cpp::GraphGenerator::Params&& params,
+std::vector<Graph> generate_graphs(
+    GraphGenerator::Params&& params,
     int graphs_count,
     int threads_count) {
-  using namespace uni_course_cpp;
   auto generation_controller =
       GraphGenerationController(threads_count, graphs_count, std::move(params));
 
@@ -112,8 +113,10 @@ std::vector<uni_course_cpp::Graph> generate_graphs(
         const auto graph_description = printing::print_graph(graph);
         logger.log(
             generation_finished_string(index, graph_description, logger));
-        const auto graph_json = printing::print_graph(graph);
-        write_to_file(graph_json, "graph_" + std::to_string(index) + ".json");
+        const auto graph_json = json::print_graph(graph);
+        write_to_file(graph_json,
+              std::string{config::kTempDirectoryPath} +
+                  "graph_" + std::to_string(index) + ".json");
       });
 
   return graphs;
@@ -123,13 +126,13 @@ int main() {
   const int depth = handle_depth_input();
   const int new_vertices_count = handle_new_vertices_count_input();
   const int graphs_count = handle_graphs_count_input();
-  const int thread_count = handle_threads_count_input();
+  const int threads_count = handle_threads_count_input();
   prepare_temp_directory();
 
   auto params =
-      uni_course_cpp::GraphGenerator::Params(depth, new_vertices_count);
+      GraphGenerator::Params(depth, new_vertices_count);
   const auto graphs =
-      generate_graphs(std::move(params), graphs_count, thread_count);
+      generate_graphs(std::move(params), graphs_count, threads_count);
 
   return 0;
 }

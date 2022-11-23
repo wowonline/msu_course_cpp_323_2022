@@ -59,7 +59,7 @@ class GraphGenerationController {
     void start();
     void stop();
 
-    ~Worker() { stop(); }
+    ~Worker() { if (thread_.joinable()) stop(); }
 
    private:
     enum class State { Idle, Working, ShouldTerminate };
@@ -69,7 +69,7 @@ class GraphGenerationController {
     State state_ = State::Idle;
   };
 
-  std::list<Worker*> workers_;
+  std::list<Worker> workers_;
   std::list<JobCallback> jobs_;
   int threads_count_;
   int graphs_count_;
