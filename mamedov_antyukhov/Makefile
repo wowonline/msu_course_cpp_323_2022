@@ -1,11 +1,12 @@
 CC = clang++
-FLAGS = -std=c++17 -Werror 
+FLAGS = -std=c++17 -Werror -pthread
 
-PROGS.O = graph.o logger.o graph_printing.o graph_generator.o graph_json_printing.o main.o
-PROGS.CPP = graph.cpp logger.cpp graph_printing.cpp graph_generator.cpp graph_json_printing.cpp main.cpp
-PROGS.HPP = graph.hpp logger.hpp graph_printing.hpp graph_generator.hpp graph_json_printing.hpp config.hpp
+PROGS.O = graph.o logger.o graph_printing.o graph_generator.o graph_json_printing.o graph_generator_controller.o main.o
+PROGS.CPP = graph.cpp logger.cpp graph_printing.cpp graph_generator.cpp graph_json_printing.cpp graph_generator_controller.cpp main.cpp
+PROGS.HPP = graph.hpp logger.hpp graph_printing.hpp graph_generator.hpp graph_json_printing.hpp config.hpp graph_generator_controller.hpp
 RES = main
 GRAPH = graph.json
+TEMP = ./temp
 
 all: $(PROGS.O)
 	$(CC) $(PROGS.O) -o $(RES) $(FLAGS) -std=c++17
@@ -20,14 +21,10 @@ clean:
 	rm -f $(PROGS.O)
 
 delete: clean
-	rm -f $(RES)
+	rm -rf $(TEMP)
 
 erase: delete
-	rm -f $(GRAPH)
-
-ready:
-	rm -rf $(PROGS.O) $(RES)
+	rm -f $(RES)
 
 clang-format:
 	clang-format -i -style=Chromium $(PROGS.HPP) $(PROGS.CPP)
-
