@@ -1,6 +1,6 @@
 #pragma once
+#include <deque>
 #include <functional>
-#include <list>
 #include <mutex>
 #include <thread>
 #include "graph.hpp"
@@ -59,10 +59,7 @@ class GraphGenerationController {
     void start();
     void stop();
 
-    ~Worker() {
-      if (thread_.joinable())
-        stop();
-    }
+    ~Worker();
 
    private:
     enum class State { Idle, Working, ShouldTerminate };
@@ -72,8 +69,8 @@ class GraphGenerationController {
     State state_ = State::Idle;
   };
 
-  std::list<Worker> workers_;
-  std::list<JobCallback> jobs_;
+  std::deque<Worker> workers_;
+  std::deque<JobCallback> jobs_;
   int threads_count_;
   int graphs_count_;
   GraphGenerator graph_generator_;

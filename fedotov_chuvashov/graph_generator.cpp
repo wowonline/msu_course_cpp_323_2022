@@ -3,7 +3,6 @@
 #include <atomic>
 #include <cassert>
 #include <deque>
-#include <iostream>
 #include <optional>
 #include <random>
 
@@ -225,6 +224,11 @@ void GraphGenerationController::Worker::stop() {
 GraphGenerationController::Worker::Worker(
     const GetJobCallback& get_job_callback)
     : thread_(), get_job_callback_(get_job_callback) {}
+
+GraphGenerationController::Worker::~Worker() {
+  if (thread_.joinable())
+    stop();
+}
 
 GraphGenerationController::GraphGenerationController(
     int threads_count,
