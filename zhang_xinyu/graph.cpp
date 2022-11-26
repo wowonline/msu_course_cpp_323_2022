@@ -9,7 +9,11 @@ class Graph {
   using VertexId = int;
   using EdgeId = int;
   void add_vertex();
-  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
+  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
+    edges_.emplace_back(get_new_vertex_id(), from_vertex_id, to_vertex_id);
+  }
 
   auto get_vertexes_() const { return vertexes_; }
   auto get_edges_() const { return edges_; }
@@ -42,6 +46,11 @@ class Graph {
   };
 
  private:
+  bool has_vertex(VertexId id) const {
+    return std::any_of(
+        vertexes_.begin(), vertexes_.end(),
+        [id](const Vertex& vertex) { return vertex.id() == id; });
+  }
   std::vector<Vertex> vertexes_;
   std::vector<Edge> edges_;
 
@@ -113,10 +122,6 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
 
 void Graph::add_vertex() {
   vertexes_.emplace_back(get_new_vertex_id());
-}
-
-void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-  edges_.emplace_back(get_new_edge_id(), from_vertex_id, to_vertex_id);
 }
 
 void write_to_file(const std::string& text, const std::string& filename) {
