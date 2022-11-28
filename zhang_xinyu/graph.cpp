@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 class Graph {
@@ -10,16 +11,14 @@ class Graph {
   using VertexId = int;
   using EdgeId = int;
   void add_vertex();
-  void add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    assert(has_vertex(from_vertex_id));
-    assert(has_vertex(to_vertex_id));
-    edges_.emplace_back(get_new_vertex_id(), from_vertex_id, to_vertex_id);
+  void add_edge(VertexId, VertexId);
+  const std::vector<EdgeId>& get_adjacency_list_(VertexId vertexId) const {
+    return adjacency_list_.at(vertexId);
   }
 
-  auto get_vertexes_() const { return vertexes_; }
-  auto get_edges_() const { return edges_; }
+  const auto& get_vertexes() const { return vertexes_; }
+  const auto& get_edges() const { return edges_; }
 
- public:
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -47,21 +46,14 @@ class Graph {
   };
 
  private:
-  bool has_vertex(VertexId id) const {
-    return std::any_of(
-        vertexes_.begin(), vertexes_.end(),
-        [id](const Vertex& vertex) { return vertex.id() == id; });
-  }
+  bool has_vertex(VertexId) const;
   std::vector<Vertex> vertexes_;
   std::vector<Edge> edges_;
-
-  std::vector<Vertex>::iterator vertex_it;
-  std::vector<Edge>::iterator edge_it;
-
   VertexId last_vertex_id_ = 0;
   EdgeId last_edge_id_ = 0;
   VertexId get_new_vertex_id() { return last_vertex_id_++; }
   EdgeId get_new_edge_id() { return last_edge_id_++; }
+  std::unordered_map<VertexId, std::vector<EdgeId>> adjacency_list_;
 };
 
 namespace printing {
@@ -69,12 +61,12 @@ namespace json {
 
 std::string print_graph(const Graph&);
 std::string print_vertex(const Graph::Vertex&, const Graph&);
-std::string print_edge(const Graph::Edge&, const Graph&);
+std::string print_edge(const Graph::Edge&);
 
 std::string print_graph(const Graph& graph) {
   std::string str_json = "{\"vertices\":[";
   bool is_first_1 = true;
-  for (auto& vertex : graph.get_vertexes_()) {
+  for (const auto& vertex : graph.get_vertexes()) {
     if (is_first_1) {
       is_first_1 = false;
     } else {
@@ -84,36 +76,37 @@ std::string print_graph(const Graph& graph) {
   }
   str_json += "],\"edges\":[";
   bool is_first_2 = true;
-  for (auto& edge : graph.get_edges_()) {
+  for (const auto& edge : graph.get_edges()) {
     if (is_first_2) {
       is_first_2 = false;
     } else {
       str_json += ",";
     }
-    str_json += print_edge(edge, graph);
+    str_json += print_edge(edge);
   }
   return str_json += "]}\n";
 }
 
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
+  Graph::VertexId vertexId = vertex.id();
   std::string str_json = "{\"id\":";
-  str_json += std::to_string(vertex.id()) + ",\"edge_ids\":[";
+  str_json += std::to_string(vertexId) + ",\"edge_ids\":[";
   bool is_first = true;
-  for (auto& edge : graph.get_edges_()) {
-    if (edge.to_vertex_id() == vertex.id() ||
-        edge.from_vertex_id() == vertex.id()) {
-      if (is_first) {
-        is_first = false;
-      } else {
-        str_json += ",";
-      }
-      str_json += std::to_string(edge.id());
+  const std::vector<Graph::EdgeId>& edge_to_this_vertex =
+      graph.get_adjacency_list_(vertexId);
+  for (const auto& edgeId : edge_to_this_vertex) {
+    if (is_first) {
+      is_first = false;
+    } else {
+      str_json += ",";
     }
+    str_json += std::to_string(edgeId);
   }
+
   return str_json + "]}";
 }
 
-std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
+std::string print_edge(const Graph::Edge& edge) {
   return "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":[" +
          std::to_string(edge.from_vertex_id()) + "," +
          std::to_string(edge.to_vertex_id()) + "]}";
@@ -121,8 +114,26 @@ std::string print_edge(const Graph::Edge& edge, const Graph& graph) {
 }  // namespace json
 }  // namespace printing
 
+bool Graph::has_vertex(VertexId id) const {
+  return std::any_of(vertexes_.begin(), vertexes_.end(),
+                     [id](const Vertex& vertex) { return vertex.id() == id; });
+}
+
 void Graph::add_vertex() {
-  vertexes_.emplace_back(get_new_vertex_id());
+  VertexId new_vertex_id = get_new_vertex_id();
+  vertexes_.emplace_back(new_vertex_id);
+}
+
+void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+  assert(has_vertex(from_vertex_id));
+  assert(has_vertex(to_vertex_id));
+  EdgeId new_edge_id = get_new_edge_id();
+  edges_.emplace_back(new_edge_id, from_vertex_id, to_vertex_id);
+
+  if (from_vertex_id != to_vertex_id) {
+    adjacency_list_[from_vertex_id].emplace_back(new_edge_id);
+  }
+  adjacency_list_[to_vertex_id].emplace_back(new_edge_id);
 }
 
 void write_to_file(const std::string& text, const std::string& filename) {
@@ -131,7 +142,9 @@ void write_to_file(const std::string& text, const std::string& filename) {
   fout.close();
 }
 
-Graph generate_graph(const int& kVerticesCount = 14) {
+constexpr int kVerticesCount = 14;
+
+Graph generate_graph() {
   auto graph = Graph();
 
   for (int i = 0; i < kVerticesCount; i++) {
