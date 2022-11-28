@@ -12,7 +12,7 @@ class Graph {
   using EdgeId = int;
   void add_vertex();
   void add_edge(VertexId, VertexId);
-  const std::vector<EdgeId>& get_adjacency_list_(VertexId vertexId) const {
+  const std::vector<EdgeId>& connected_edge_ids(VertexId vertexId) const {
     return adjacency_list_.at(vertexId);
   }
 
@@ -93,7 +93,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   str_json += std::to_string(vertexId) + ",\"edge_ids\":[";
   bool is_first = true;
   const std::vector<Graph::EdgeId>& edge_to_this_vertex =
-      graph.get_adjacency_list_(vertexId);
+      graph.connected_edge_ids(vertexId);
   for (const auto& edgeId : edge_to_this_vertex) {
     if (is_first) {
       is_first = false;
@@ -127,7 +127,7 @@ void Graph::add_vertex() {
 void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   assert(has_vertex(from_vertex_id));
   assert(has_vertex(to_vertex_id));
-  EdgeId new_edge_id = get_new_edge_id();
+  const EdgeId new_edge_id = get_new_edge_id();
   edges_.emplace_back(new_edge_id, from_vertex_id, to_vertex_id);
 
   if (from_vertex_id != to_vertex_id) {
