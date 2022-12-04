@@ -3,6 +3,7 @@
 #include <ctime>
 #include <iomanip>
 #include <iostream>
+#include <mutex>
 #include <sstream>
 #include <string>
 #include "config.hpp"
@@ -20,6 +21,7 @@ std::string get_current_date_time() {
 
 namespace uni_course_cpp {
 void Logger::log(const std::string& string) {
+  const std::lock_guard lock(logger_mutex);
   const auto result = get_current_date_time() + string;
   std::cout << result << std::endl;
   log_ << result << std::endl;

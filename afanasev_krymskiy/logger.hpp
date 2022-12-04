@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <mutex>
 #include <string>
 
 namespace uni_course_cpp {
@@ -17,5 +18,6 @@ class Logger {
   ~Logger() = default;
 
   std::ofstream log_;
+  std::mutex logger_mutex;
 };
 }  // namespace uni_course_cpp
