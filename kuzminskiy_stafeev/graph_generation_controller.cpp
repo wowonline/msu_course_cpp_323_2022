@@ -84,25 +84,6 @@ void GraphGenerationController::generate(
     });
   }
 
-  /*
-  std::mutex jobs_mutex;
-  const auto get_job_callback = [&jobs_mutex,
-                                 this]() -> std::optional<JobCallBack> {
-    const std::lock_guard<std::mutex> guard(jobs_mutex);
-    if (!jobs_.empty()) {
-      auto job = jobs_.front();
-      jobs_.pop_front();
-      return job;
-    }
-
-    return std::nullopt;
-  };
-
-  for (int i = 0; i < threads_count_; i++) {
-    workers_.emplace_back(get_job_callback);
-  }
-  */
-
   for (auto& worker : workers_) {
     worker.start();
   }
