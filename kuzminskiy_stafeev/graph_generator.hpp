@@ -1,9 +1,5 @@
 #pragma once
-#include <functional>
-#include <list>
 #include <mutex>
-#include <optional>
-#include <thread>
 #include "graph.hpp"
 
 namespace uni_course_cpp {

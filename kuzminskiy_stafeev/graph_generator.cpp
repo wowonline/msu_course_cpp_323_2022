@@ -1,6 +1,5 @@
 #include "graph_generator.hpp"
 #include <atomic>
-#include <cassert>
 #include <functional>
 #include <list>
 #include <mutex>
