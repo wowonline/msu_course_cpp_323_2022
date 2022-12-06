@@ -2,6 +2,7 @@
 #include <functional>
 #include <list>
 #include <optional>
+#include <thread>
 #include "graph.hpp"
 #include "graph_generator.hpp"
 
