@@ -6,8 +6,8 @@
 #include <string>
 #include "config.hpp"
 #include "graph.hpp"
+#include "graph_generation_controller.hpp"
 #include "graph_generator.hpp"
-#include "graph_generator_controller.hpp"
 #include "graph_json_printing.hpp"
 #include "graph_printing.hpp"
 #include "logger.hpp"

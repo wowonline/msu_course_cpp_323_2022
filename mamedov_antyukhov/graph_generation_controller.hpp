@@ -15,10 +15,7 @@ class GraphGenerationController {
 
   GraphGenerationController(int threads_count,
                             int graphs_count,
-                            GraphGenerator::Params&& graph_generator_params)
-      : threads_count_(threads_count),
-        graphs_count_(graphs_count),
-        graph_generator_(GraphGenerator(std::move(graph_generator_params))) {}
+                            GraphGenerator::Params&& graph_generator_params);
 
   void generate(const GenStartedCallback& gen_started_callback,
                 const GenFinishedCallback& gen_finished_callback);
@@ -49,5 +46,6 @@ class GraphGenerationController {
   int threads_count_;
   int graphs_count_;
   GraphGenerator graph_generator_;
+  std::mutex jobs_mutex_;
 };
 }  // namespace uni_course_cpp
