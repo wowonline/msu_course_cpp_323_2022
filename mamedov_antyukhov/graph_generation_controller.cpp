@@ -1,4 +1,4 @@
-#include "graph_generator_controller.hpp"
+#include "graph_generation_controller.hpp"
 #include <atomic>
 
 namespace uni_course_cpp {
