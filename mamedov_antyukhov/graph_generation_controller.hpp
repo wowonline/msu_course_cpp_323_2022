@@ -33,6 +33,8 @@ class GraphGenerationController {
     void start();
     void stop();
 
+    ~Worker();
+
    private:
     enum class State { Idle, Working, ShouldTerminate };
 

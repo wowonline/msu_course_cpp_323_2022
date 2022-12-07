@@ -1,9 +1,11 @@
 #include "graph_generation_controller.hpp"
 #include <atomic>
+#include <cassert>
 
 namespace uni_course_cpp {
 
 void GraphGenerationController::Worker::start() {
+  assert(state_ == State::Idle);
   state_ = State::Working;
   thread_ = std::thread([this]() {
     while (state_ != State::ShouldTerminate) {
@@ -17,8 +19,15 @@ void GraphGenerationController::Worker::start() {
 }
 
 void GraphGenerationController::Worker::stop() {
+  assert(state_ == State::Working);
   state_ = State::ShouldTerminate;
   thread_.join();
+}
+
+GraphGenerationController::Worker::~Worker() {
+  if (state_ == State::Working) {
+    stop();
+  }
 }
 
 GraphGenerationController::GraphGenerationController(
@@ -65,7 +74,7 @@ void GraphGenerationController::generate(
 
   while (graphs_created_num) {
   }
-
+  
   for (auto& worker : workers_) {
     worker.stop();
   }
