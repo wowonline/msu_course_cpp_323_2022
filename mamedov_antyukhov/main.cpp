@@ -99,8 +99,7 @@ int handle_graphs_count_input() {
     ++tries;
     if (sscanf(input.c_str(), "%d", &output)) {
       if (output >= 0)
-        std::cout << std::endl;
-      return output;
+        return output;
     }
     if (!(tries % 5))
       std::cout << "Read the description carefully!";

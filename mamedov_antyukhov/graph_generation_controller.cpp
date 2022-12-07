@@ -22,6 +22,7 @@ void GraphGenerationController::Worker::stop() {
   assert(state_ == State::Working);
   state_ = State::ShouldTerminate;
   thread_.join();
+  state_ = State::Idle;
 }
 
 GraphGenerationController::Worker::~Worker() {
