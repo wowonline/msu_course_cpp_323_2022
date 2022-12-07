@@ -132,11 +132,10 @@ std::string generation_started_string(int graph_num) {
   std::stringstream started_string;
   started_string << "Graph " << graph_num << ", Generation Started\n";
   return started_string.str();
-  ;
 }
 
 std::string generation_finished_string(int graph_num,
-                                       std::string graph_description) {
+                                       const std::string& graph_description) {
   std::stringstream finished_string;
   finished_string << "Graph " << graph_num << ", Generation Finished "
                   << graph_description << std::endl;
