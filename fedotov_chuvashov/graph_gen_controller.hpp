@@ -1,6 +1,7 @@
 #pragma once
 #include <deque>
 #include <functional>
+#include <optional>
 #include <thread>
 #include "graph.hpp"
 #include "graph_generator.hpp"
