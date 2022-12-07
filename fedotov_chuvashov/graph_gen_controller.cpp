@@ -1,5 +1,6 @@
 #include "graph_gen_controller.hpp"
 #include <mutex>
+#include <optional>
 
 namespace uni_course_cpp {
 void GraphGenerationController::Worker::start() {
