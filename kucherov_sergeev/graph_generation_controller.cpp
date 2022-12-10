@@ -37,7 +37,7 @@ void GraphGenerationController::Worker::stop() {
 }
 
 GraphGenerationController::Worker::~Worker() {
-  if (thread_.joinable()) {
+  if (state_ == State::ShouldTerminate) {
     stop();
   }
 }
