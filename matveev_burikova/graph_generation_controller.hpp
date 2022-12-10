@@ -34,7 +34,7 @@ class GraphGenerationController {
 
     ~Worker();
 
-    void start(std::atomic<int>& waiting_jobs_count);
+    void start();
     void stop();
 
    private:
@@ -47,6 +47,7 @@ class GraphGenerationController {
 
   JobCallback get_job();
 
+  std::atomic<int> waiting_jobs_count_;
   std::list<Worker> workers_;
   std::list<JobCallback> jobs_;
   int threads_count_;

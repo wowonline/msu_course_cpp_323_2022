@@ -17,7 +17,7 @@ using GraphGenerator = uni_course_cpp::GraphGenerator;
 using Logger = uni_course_cpp::Logger;
 using GraphGenerationController = uni_course_cpp::GraphGenerationController;
 
-const Graph::Depth handle_depth_input() {
+Graph::Depth handle_depth_input() {
   std::string input_string;
   Graph::Depth depth_tmp;
   bool is_alpha_flag = false;
@@ -42,7 +42,7 @@ const Graph::Depth handle_depth_input() {
   return depth_tmp;
 }
 
-const int handle_new_vertices_count_input() {
+int handle_new_vertices_count_input() {
   std::string input_string;
   int new_vertices_count_tmp;
   bool is_alpha_flag = false;
@@ -68,7 +68,7 @@ const int handle_new_vertices_count_input() {
   return new_vertices_count_tmp;
 }
 
-const Graph::Depth handle_graphs_count_input() {
+Graph::Depth handle_graphs_count_input() {
   std::string input_string;
   Graph::Depth graphs_count_tmp;
   bool is_alpha_flag = false;
@@ -94,7 +94,7 @@ const Graph::Depth handle_graphs_count_input() {
   return graphs_count_tmp;
 }
 
-const int handle_threads_count_input() {
+int handle_threads_count_input() {
   std::string input_string;
   int threads_count_tmp;
   bool is_alpha_flag = false;
