@@ -30,14 +30,15 @@ void GraphGenerationController::Worker::start() {
 }
 
 void GraphGenerationController::Worker::stop() {
-  if (state_ == State::Working) {
-    state_ = State::ShouldTerminate;
-    thread_.join();
-  }
+  assert(state_ == State::Working);
+
+  state_ = State::ShouldTerminate;
+  thread_.join();
+  state_ = State::Idle;
 }
 
 GraphGenerationController::Worker::~Worker() {
-  if (state_ == State::ShouldTerminate) {
+  if (state_ == State::Working) {
     stop();
   }
 }
