@@ -1,4 +1,5 @@
 #include <atomic>
+#include <cassert>
 #include <functional>
 #include <mutex>
 #include <optional>
@@ -8,9 +9,7 @@
 
 namespace uni_course_cpp {
 void GraphGenerationController::Worker::start() {
-  if (state_ != State::Idle) {
-    return;
-  }
+  assert(state_ == State::Idle);
 
   state_ = State::Working;
 
