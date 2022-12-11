@@ -1,7 +1,5 @@
 #pragma once
-#include <deque>
 #include <mutex>
-#include <optional>
 #include "graph.hpp"
 
 namespace uni_course_cpp {

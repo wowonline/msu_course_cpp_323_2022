@@ -4,7 +4,7 @@
 #include <vector>
 #include "config.hpp"
 #include "graph.hpp"
-#include "graph_gen_controller.hpp"
+#include "graph_generation_controller.hpp"
 #include "graph_generator.hpp"
 #include "logger.hpp"
 #include "printing.hpp"
@@ -70,11 +70,9 @@ int handle_threads_count_input() {
   return thread_count;
 }
 
-std::string generation_started_string(int num_of_graph,
-                                      uni_course_cpp::Logger& logger) {
+std::string generation_started_string(int num_of_graph) {
   std::stringstream start_string;
-  start_string << logger.get_current_date_time() << " Graph " << num_of_graph
-               << ", Generation Started\n";
+  start_string << " Graph " << num_of_graph << ", Generation Started\n";
   return start_string.str();
 }
 
@@ -82,8 +80,8 @@ std::string generation_finished_string(int num_of_graph,
                                        const std::string& content,
                                        uni_course_cpp::Logger& logger) {
   std::stringstream finish_string;
-  finish_string << logger.get_current_date_time() << " Graph " << num_of_graph
-                << ", Generation Finished " << content << "\n";
+  finish_string << " Graph " << num_of_graph << ", Generation Finished "
+                << content << "\n";
   return finish_string.str();
 }
 
@@ -104,9 +102,7 @@ std::vector<uni_course_cpp::Graph> generate_graphs(
   graphs.reserve(graphs_count);
 
   generation_controller.generate(
-      [&logger](int index) {
-        logger.log(generation_started_string(index, logger));
-      },
+      [&logger](int index) { logger.log(generation_started_string(index)); },
       [&logger, &graphs](int index, uni_course_cpp::Graph&& graph) {
         graphs.push_back(graph);
         const auto graph_description =
