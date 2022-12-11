@@ -6,12 +6,42 @@
 namespace uni_course_cpp {
 
 Graph::VertexId Graph::add_vertex() {
-  const VertexId new_vertex_id = get_new_vertex_id();
+    const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(new_vertex_id);
+    adjacency_list_[new_vertex_id] = {};
+
     vertex_depths_[new_vertex_id] = kBaseDepth;
-    adjacency_list_of_edges_[new_vertex_id] = {};
     depth_to_vertices_[kBaseDepth].emplace_back(new_vertex_id);
     return new_vertex_id;
+}
+
+Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
+
+    const auto color = get_edge_color(from_vertex_id, to_vertex_id);
+    if (color == Edge::Color::Grey) {
+      set_vertex_depth(to_vertex_id, vertex_depth(from_vertex_id) + 1);
+    }
+
+    const EdgeId edge_id = get_new_edge_id();
+    color_to_edges_[color].emplace_back(edge_id);
+    edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, color);
+    if (from_vertex_id != edge_id) {
+      adjacency_list_[from_vertex_id].emplace_back(edge_id);
+    }
+    adjacency_list_[to_vertex_id].emplace_back(edge_id);
+
+    return edge_id;
+}
+
+const std::vector<Graph::EdgeId>& Graph::connected_edges_ids(
+    Graph::VertexId vertex_id) const {
+  if (!has_vertex(vertex_id)) {
+      static std::vector<EdgeId> empty_edges_list;
+      return empty_edges_list;
+    }
+    return adjacency_list_.at(vertex_id);
 }
 
 void Graph::set_vertex_depth(Graph::VertexId vertex_id, Depth depth) {
@@ -27,7 +57,7 @@ void Graph::set_vertex_depth(Graph::VertexId vertex_id, Depth depth) {
 bool Graph::is_connected(Graph::VertexId from_vertex_id,
                          Graph::VertexId to_vertex_id) const {
   std::vector<EdgeId> edges_vector =
-        adjacency_list_of_edges_.at(from_vertex_id);
+        adjacency_list_.at(from_vertex_id);
     for (size_t i = 0; i < edges_vector.size(); i++) {
       if (edges_[edges_vector[i]].from_vertex_id() == to_vertex_id ||
           edges_[edges_vector[i]].to_vertex_id() == to_vertex_id) {
@@ -38,15 +68,6 @@ bool Graph::is_connected(Graph::VertexId from_vertex_id,
     return 0;
 }
 
-const std::vector<Graph::EdgeId>& Graph::connected_edges_ids(
-    Graph::VertexId vertex_id) const {
-  if (!has_vertex(vertex_id)) {
-      static std::vector<EdgeId> empty_edges_list;
-      return empty_edges_list;
-    }
-    return adjacency_list_of_edges_.at(vertex_id);
-}
-
 Graph::Edge::Color Graph::get_edge_color(Graph::VertexId from_vertex_id,
                                          Graph::VertexId to_vertex_id) const {
   const auto from_vertex_depth = vertex_depths_.at(from_vertex_id);
@@ -55,7 +76,7 @@ Graph::Edge::Color Graph::get_edge_color(Graph::VertexId from_vertex_id,
     if (from_vertex_id == to_vertex_id) {
       return Edge::Color::Green;
     }
-    if (adjacency_list_of_edges_.at(to_vertex_id).size() == 0) {
+    if (adjacency_list_.at(to_vertex_id).size() == 0) {
       return Edge::Color::Grey;
     }
     if (to_vertex_depth - from_vertex_depth == 1 &&
@@ -68,35 +89,21 @@ Graph::Edge::Color Graph::get_edge_color(Graph::VertexId from_vertex_id,
     throw std::runtime_error("Failed to determine color");
 }
 
-Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-  const auto color = get_edge_color(from_vertex_id, to_vertex_id);
-
-    EdgeId new_id = get_new_edge_id();
-    if (color == Edge::Color::Grey) {
-      set_vertex_depth(to_vertex_id, vertex_depth(from_vertex_id) + 1);
-    }
-    color_to_edges_[color].emplace_back(new_id);
-    adjacency_list_of_edges_[from_vertex_id].emplace_back(new_id);
-    adjacency_list_of_edges_[to_vertex_id].emplace_back(new_id);
-    edges_.emplace_back(new_id, from_vertex_id, to_vertex_id, color);
-
-    return new_id;
-}
-
 const std::vector<Graph::VertexId>& Graph::get_vertices_with_depth(Depth depth) const {
   if (depth_to_vertices_.find(depth) != depth_to_vertices_.end()) {
       return depth_to_vertices_.at(depth);
     } else {
-      std::vector<VertexId> tmp;
-      return std::move(tmp);
+      static std::vector<VertexId> tmp;
+      return tmp;
     }
 }
 
-std::vector<Graph::EdgeId> Graph::get_edges_with_color(Edge::Color color) const { // ???? 
+const std::vector<Graph::EdgeId>& Graph::get_edges_with_color(Edge::Color color) const { // ???? 
   if (color_to_edges_.find(color) != color_to_edges_.end()) {
     return color_to_edges_.at(color);
   } else {
-    return {};
+    static std::vector<VertexId> tmp;
+    return tmp;
   }
 }
 

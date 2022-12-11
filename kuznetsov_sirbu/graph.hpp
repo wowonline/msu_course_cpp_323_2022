@@ -49,24 +49,24 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  const std::vector<Edge>& get_edges() const { return edges_; }
+  VertexId add_vertex() ;
+
+  EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
+
+  bool has_vertex(VertexId vertex_id) const {
+    return adjacency_list_.find(vertex_id) !=
+           adjacency_list_.end();
+  }
 
   const std::vector<Vertex>& get_vertices() const { return vertices_; }
 
-  VertexId add_vertex() ;
-
-  void set_vertex_depth(VertexId vertex_id, Depth depth);
-
-  bool has_vertex(VertexId vertex_id) const {
-    return adjacency_list_of_edges_.find(vertex_id) !=
-           adjacency_list_of_edges_.end();
-  }
-
-  bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const;
+  const std::vector<Edge>& get_edges() const { return edges_; }
 
   const std::vector<EdgeId>& connected_edges_ids(VertexId vertex_id) const;
 
- std::vector<Graph::EdgeId> get_edges_with_color(Edge::Color color) const;
+  void set_vertex_depth(VertexId vertex_id, Depth depth);
+
+  bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const;
 
   Edge::Color get_edge_color(VertexId from_vertex_id,
                              VertexId to_vertex_id) const;
@@ -74,10 +74,10 @@ class Graph {
   Depth vertex_depth(VertexId vertex_id) const { return vertex_depths_.at(vertex_id); }
   
   const Vertex& get_vertex_with_id(VertexId vertex_id) const { return vertices_.at(vertex_id);}
-  
-  EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
   const std::vector<VertexId>& get_vertices_with_depth(Depth depth) const;
+
+  const std::vector<Graph::EdgeId>& get_edges_with_color(Edge::Color color) const;
 
  Depth depth() const { return depth_to_vertices_.size(); }
 
@@ -87,12 +87,12 @@ class Graph {
 
   VertexId vertex_id_counter_ = 0;
   EdgeId edge_id_counter_ = 0;
+  std::vector<Vertex> vertices_;
+  std::vector<Edge> edges_;
+  std::unordered_map<VertexId, std::vector<EdgeId> > adjacency_list_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
   std::unordered_map<Depth, std::vector<VertexId> > depth_to_vertices_;
   std::unordered_map<Edge::Color, std::vector<EdgeId> > color_to_edges_;
-  std::unordered_map<VertexId, std::vector<EdgeId> > adjacency_list_of_edges_;
-  std::vector<Vertex> vertices_;
-  std::vector<Edge> edges_;
 };
 
 }  // namespace uni_course_cpp
