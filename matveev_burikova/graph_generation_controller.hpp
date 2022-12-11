@@ -10,6 +10,7 @@
 #include <thread>
 
 namespace uni_course_cpp {
+using JobCallback = std::function<void()>;
 class GraphGenerationController {
  public:
   using GenStartedCallback = std::function<void(int index)>;
@@ -23,8 +24,6 @@ class GraphGenerationController {
                 const GenFinishedCallback& gen_finished_callback);
 
  private:
-  using JobCallback = std::function<void()>;
-
   class Worker {
    public:
     using GetJobCallback = std::function<std::optional<JobCallback>()>;

@@ -23,7 +23,6 @@ GraphGenerationController::GraphGenerationController(
       [this, &jobs_mutex]() -> std::optional<JobCallback> {
     const std::lock_guard<std::mutex> guard(jobs_mutex);
     if (!jobs_.empty()) {
-      --waiting_jobs_count_;
       return get_job();
     }
     return std::nullopt;
@@ -32,7 +31,6 @@ GraphGenerationController::GraphGenerationController(
     workers_.emplace_back(get_job_callback);
 }
 
-using JobCallback = std::function<void()>;
 JobCallback GraphGenerationController::get_job() {
   assert(!jobs_.empty());
   const auto job = jobs_.front();
@@ -42,20 +40,24 @@ JobCallback GraphGenerationController::get_job() {
 void GraphGenerationController::generate(
     const GenStartedCallback& gen_started_callback,
     const GenFinishedCallback& gen_finished_callback) {
-  std::mutex callback_mutex;
+  std::mutex gen_callback_mutex;
 
   for (int index = 0; index < graphs_count_; ++index) {
-    jobs_.emplace_back([this, &gen_started_callback, &gen_finished_callback,
-                        index, &callback_mutex]() {
-      callback_mutex.lock();
+    jobs_.emplace_back([&graph_generator = graph_generator_,
+                        &waiting_jobs_count = waiting_jobs_count_,
+                        &gen_started_callback, &gen_finished_callback, index,
+                        &gen_callback_mutex]() {
+      std::lock_guard<std::mutex> callback_start_lock(gen_callback_mutex);
       gen_started_callback(index);
-      callback_mutex.unlock();
+      callback_start_lock.~lock_guard();
 
-      auto graph = graph_generator_.generate();
+      auto graph = graph_generator.generate();
 
-      callback_mutex.lock();
+      std::lock_guard<std::mutex> callback_finish_lock(gen_callback_mutex);
       gen_finished_callback(index, std::move(graph));
-      callback_mutex.unlock();
+      callback_finish_lock.~lock_guard();
+
+      waiting_jobs_count = waiting_jobs_count - 1;
     });
   }
 
@@ -73,27 +75,26 @@ void GraphGenerationController::Worker::start() {
 
   thread_ = std::thread([this]() {
     while (true) {
-      if (state_ == State::ShouldTerminate) {
+      if (state_ == State::ShouldTerminate)
         return;
-      }
       const auto job_optional = get_job_callback_();
       if (job_optional.has_value()) {
         const auto& job = job_optional.value();
         job();
-      }
+      } else if (state_ == State::Working)
+        state_ = State::Idle;
     }
   });
 }
 
 void GraphGenerationController::Worker::stop() {
-  assert(state_ == State::Working);
+  assert(state_ != State::ShouldTerminate);
   state_ = State::ShouldTerminate;
   thread_.join();
 }
 
 GraphGenerationController::Worker::~Worker() {
-  assert(state_ != State::Idle);
-  if (state_ == State::Working)
+  if (state_ != State::ShouldTerminate)
     stop();
 }
 }  // namespace uni_course_cpp
