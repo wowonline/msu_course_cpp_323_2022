@@ -4,7 +4,6 @@
 #include <cassert>
 #include <deque>
 #include <functional>
-#include <optional>
 #include <random>
 #include <thread>
 
