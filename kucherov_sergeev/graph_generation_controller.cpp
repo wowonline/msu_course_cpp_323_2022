@@ -72,17 +72,24 @@ GraphGenerationController::GraphGenerationController(
 void GraphGenerationController::generate(
     const GenStartedCallback& gen_started_callback,
     const GenFinishedCallback& gen_finished_callback) {
-  std::mutex jobs_mutex;
+  std::mutex callback_mutex;
 
   std::atomic<int> current_jobs_count = graphs_count_;
   for (int i = 0; i < graphs_count_; i++) {
     jobs_.emplace_back([i, &gen_started_callback, &gen_finished_callback,
-                        &current_jobs_count, &jobs_mutex,
+                        &current_jobs_count, &callback_mutex,
                         &graph_generator = graph_generator_]() {
-      const std::lock_guard lock(jobs_mutex);
-      gen_started_callback(i);
+      {
+        const std::lock_guard lock(callback_mutex);
+        gen_started_callback(i);
+      }
+
       auto graph = graph_generator.generate();
-      gen_finished_callback(i, std::move(graph));
+
+      {
+        const std::lock_guard lock(callback_mutex);
+        gen_finished_callback(i, std::move(graph));
+      }
 
       current_jobs_count--;
     });
