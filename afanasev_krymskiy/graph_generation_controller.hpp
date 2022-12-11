@@ -1,11 +1,12 @@
 #pragma once
+
 #include <atomic>
 #include <cassert>
 #include <functional>
 #include <list>
-#include <mutex>
 #include <optional>
 #include <thread>
+
 #include "graph.hpp"
 #include "graph_generator.hpp"
 
@@ -17,10 +18,7 @@ class GraphGenerationController {
 
   GraphGenerationController(int threads_count,
                             int graphs_count,
-                            GraphGenerator::Params&& params)
-      : threads_count_(threads_count),
-        graphs_count_(graphs_count),
-        graph_generator_(std::move(params)) {}
+                            GraphGenerator::Params&& params);
 
   void generate(const GenStartedCallback& gen_started_callback,
                 const GenFinishedCallback& gen_finished_callback);
@@ -52,6 +50,7 @@ class GraphGenerationController {
   std::list<JobCallback> jobs_;
   int threads_count_;
   int graphs_count_;
+  std::mutex mutex_for_jobs_;
   GraphGenerator graph_generator_;
 };
 }  // namespace uni_course_cpp

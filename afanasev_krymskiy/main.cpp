@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+
 #include "config.hpp"
 #include "graph_generation_controller.hpp"
 #include "graph_generator.hpp"
