@@ -6,7 +6,6 @@
 namespace uni_course_cpp {
 void GraphGenerationController::Worker::start() {
   assert(state_ == State::Idle);
-  
   state_ = State::Working;
   thread_ =
       std::thread([&state = state_, &get_job_callback = get_job_callback_]() {
