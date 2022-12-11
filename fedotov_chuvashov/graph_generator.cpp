@@ -3,7 +3,8 @@
 #include <atomic>
 #include <cassert>
 #include <deque>
-#include <optional>
+#include <functional>
+
 #include <random>
 #include <thread>
 
