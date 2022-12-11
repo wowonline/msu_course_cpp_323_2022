@@ -44,17 +44,49 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  const std::vector<Edge>& get_edges() const { return edges_; }
-
-  const std::vector<Vertex>& get_vertices() const { return vertices_; }
-
   VertexId add_vertex() {
     const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(new_vertex_id);
+    adjacency_list_[new_vertex_id] = {};
+
     vertex_depths_[new_vertex_id] = kBaseDepth;
-    adjacency_list_of_edges_[new_vertex_id] = {};
     depth_to_vertices_[kBaseDepth].emplace_back(new_vertex_id);
     return new_vertex_id;
+  }
+
+  EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
+    assert(has_vertex(from_vertex_id));
+    assert(has_vertex(to_vertex_id));
+
+    const auto color = get_edge_color(from_vertex_id, to_vertex_id);
+    if (color == Edge::Color::Grey) {
+      set_vertex_depth(to_vertex_id, vertex_depth(from_vertex_id) + 1);
+    }
+
+    const EdgeId edge_id = get_new_edge_id();
+    edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, color);
+    if (from_vertex_id != edge_id) {
+      adjacency_list_[from_vertex_id].emplace_back(edge_id);
+    }
+    adjacency_list_[to_vertex_id].emplace_back(edge_id);
+
+    return edge_id;
+  }
+
+  bool has_vertex(VertexId vertex_id) const {
+    return adjacency_list_.find(vertex_id) != adjacency_list_.end();
+  }
+
+  const std::vector<Vertex>& get_vertices() const { return vertices_; }
+
+  const std::vector<Edge>& get_edges() const { return edges_; }
+
+  const std::vector<EdgeId>& connected_edges_ids(VertexId vertex_id) const {
+    if (!has_vertex(vertex_id)) {
+      static std::vector<EdgeId> empty_edges_list;
+      return empty_edges_list;
+    }
+    return adjacency_list_.at(vertex_id);
   }
 
   void set_vertex_depth(VertexId vertex_id, Depth depth) {
@@ -67,14 +99,8 @@ class Graph {
     vertex_depths_[vertex_id] = depth;
   }
 
-  bool has_vertex(VertexId vertex_id) const {
-    return adjacency_list_of_edges_.find(vertex_id) !=
-           adjacency_list_of_edges_.end();
-  }
-
   bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
-    std::vector<EdgeId> edges_vector =
-        adjacency_list_of_edges_.at(from_vertex_id);
+    std::vector<EdgeId> edges_vector = adjacency_list_.at(from_vertex_id);
     for (size_t i = 0; i < edges_vector.size(); i++) {
       if (edges_[edges_vector[i]].from_vertex_id() == to_vertex_id ||
           edges_[edges_vector[i]].to_vertex_id() == to_vertex_id) {
@@ -85,14 +111,6 @@ class Graph {
     return 0;
   }
 
-  const std::vector<EdgeId>& connected_edges_ids(VertexId vertex_id) const {
-    if (!has_vertex(vertex_id)) {
-      static std::vector<EdgeId> empty_edges_list;
-      return empty_edges_list;
-    }
-    return adjacency_list_of_edges_.at(vertex_id);
-  }
-
   Edge::Color get_edge_color(VertexId from_vertex_id,
                              VertexId to_vertex_id) const {
     const auto from_vertex_depth = vertex_depths_.at(from_vertex_id);
@@ -101,7 +119,7 @@ class Graph {
     if (from_vertex_id == to_vertex_id) {
       return Edge::Color::Green;
     }
-    if (adjacency_list_of_edges_.at(to_vertex_id).size() == 0) {
+    if (adjacency_list_.at(to_vertex_id).size() == 0) {
       return Edge::Color::Grey;
     }
     if (to_vertex_depth - from_vertex_depth == 1 &&
@@ -122,26 +140,12 @@ class Graph {
     return vertices_.at(vertex_id);
   }
 
-  EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    const auto color = get_edge_color(from_vertex_id, to_vertex_id);
-
-    EdgeId new_id = get_new_edge_id();
-    if (color == Edge::Color::Grey) {
-      set_vertex_depth(to_vertex_id, vertex_depth(from_vertex_id) + 1);
-    }
-    adjacency_list_of_edges_[from_vertex_id].emplace_back(new_id);
-    adjacency_list_of_edges_[to_vertex_id].emplace_back(new_id);
-    edges_.emplace_back(new_id, from_vertex_id, to_vertex_id, color);
-
-    return new_id;
-  }
-
   const std::vector<VertexId>& get_vertices_with_depth(Depth depth) const {
     if (depth_to_vertices_.find(depth) != depth_to_vertices_.end()) {
       return depth_to_vertices_.at(depth);
     } else {
-      std::vector<VertexId> tmp;
-      return std::move(tmp);
+      static std::vector<VertexId> tmp;
+      return tmp;
     }
   }
 
@@ -153,11 +157,11 @@ class Graph {
 
   VertexId vertex_id_counter_ = 0;
   EdgeId edge_id_counter_ = 0;
-  std::unordered_map<VertexId, Depth> vertex_depths_;
-  std::unordered_map<Depth, std::vector<VertexId> > depth_to_vertices_;
-  std::unordered_map<VertexId, std::vector<EdgeId> > adjacency_list_of_edges_;
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
+  std::unordered_map<VertexId, std::vector<EdgeId> > adjacency_list_;
+  std::unordered_map<VertexId, Depth> vertex_depths_;
+  std::unordered_map<Depth, std::vector<VertexId> > depth_to_vertices_;
 };
 
 // graph generator
@@ -348,7 +352,6 @@ std::string print_edge_color(const Graph::Edge& edge) {
       edge_color = "green";
       break;
   }
-  // edge_color += "\"" + edge_color + "\"" + "}";
   return edge_color;
 }
 
