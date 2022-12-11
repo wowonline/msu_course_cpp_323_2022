@@ -13,19 +13,20 @@ void GraphGenerationController::Worker::start() {
 
   state_ = State::Working;
 
-  thread_ = std::thread([this]() {
-    while (true) {
-      if (state_ == State::ShouldTerminate) {
-        return;
-      }
+  thread_ =
+      std::thread([&state = state_, &get_job_callback = get_job_callback_]() {
+        while (true) {
+          if (state == State::ShouldTerminate) {
+            return;
+          }
 
-      const auto job_optional = get_job_callback_();
-      if (job_optional.has_value()) {
-        const auto& job = job_optional.value();
-        job();
-      }
-    }
-  });
+          const auto job_optional = get_job_callback();
+          if (job_optional.has_value()) {
+            const auto& job = job_optional.value();
+            job();
+          }
+        }
+      });
 }
 
 void GraphGenerationController::Worker::stop() {
@@ -48,12 +49,14 @@ GraphGenerationController::GraphGenerationController(
     : threads_count_(threads_count),
       graphs_count_(graphs_count),
       graph_generator_(std::move(graph_generator_params)) {
-  const auto job_optional = [this]() -> std::optional<JobCallback> {
-    const std::lock_guard lock(jobs_mutex_);
+  const auto job_optional = [&jobs = jobs_,
+                             &jobs_mutex =
+                                 jobs_mutex_]() -> std::optional<JobCallback> {
+    const std::lock_guard lock(jobs_mutex);
 
-    if (!jobs_.empty()) {
-      auto job = jobs_.back();
-      jobs_.pop_back();
+    if (!jobs.empty()) {
+      auto job = jobs.back();
+      jobs.pop_back();
 
       return job;
     }
@@ -73,10 +76,11 @@ void GraphGenerationController::generate(
   std::atomic<int> current_jobs_count = graphs_count_;
   for (int i = 0; i < graphs_count_; i++) {
     jobs_.emplace_back([i, &gen_started_callback, &gen_finished_callback,
-                        &current_jobs_count, &jobs_mutex, this]() {
+                        &current_jobs_count, &jobs_mutex,
+                        &graph_generator = graph_generator_]() {
       const std::lock_guard lock(jobs_mutex);
       gen_started_callback(i);
-      auto graph = graph_generator_.generate();
+      auto graph = graph_generator.generate();
       gen_finished_callback(i, std::move(graph));
 
       current_jobs_count--;
