@@ -13,7 +13,7 @@ class Graph {
   using VertexId = int;
   using EdgeId = int;
   using Depth = int;
-  static constexpr Depth kDepth = 1;
+  static constexpr Depth kBaseDepth = 1;
   struct Vertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
@@ -49,51 +49,59 @@ class Graph {
   const std::vector<Vertex>& get_vertices() const { return vertices_; }
 
   VertexId add_vertex() {
-    VertexId new_vertex_id = get_new_vertex_id_();
+    const VertexId new_vertex_id = get_new_vertex_id();
     vertices_.emplace_back(new_vertex_id);
-    vertex_depth_[new_vertex_id] = kDepth;
-    adjacency_list_[new_vertex_id] = {};
+    vertex_depths_[new_vertex_id] = kBaseDepth;
     adjacency_list_of_edges_[new_vertex_id] = {};
-    depth_to_vertices_[kDepth].emplace_back(new_vertex_id);
+    depth_to_vertices_[kBaseDepth].emplace_back(new_vertex_id);
     return new_vertex_id;
   }
 
   void set_vertex_depth(VertexId vertex_id, Depth depth) {
     depth_to_vertices_[depth].emplace_back(vertex_id);
-    auto pos = std::find(depth_to_vertices_[kDepth].begin(),
-                         depth_to_vertices_[kDepth].end(), vertex_id);
-    if (pos != depth_to_vertices_[kDepth].end()) {
-      depth_to_vertices_[kDepth].erase(pos);
+    const auto pos = std::find(depth_to_vertices_[kBaseDepth].begin(),
+                               depth_to_vertices_[kBaseDepth].end(), vertex_id);
+    if (pos != depth_to_vertices_[kBaseDepth].end()) {
+      depth_to_vertices_[kBaseDepth].erase(pos);
     }
-    vertex_depth_[vertex_id] = depth;
+    vertex_depths_[vertex_id] = depth;
   }
 
   bool has_vertex(VertexId vertex_id) const {
-    return adjacency_list_.find(vertex_id) != adjacency_list_.end();
+    return adjacency_list_of_edges_.find(vertex_id) !=
+           adjacency_list_of_edges_.end();
   }
 
   bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
-    return std::count(adjacency_list_.at(from_vertex_id).begin(),
-                      adjacency_list_.at(from_vertex_id).end(), to_vertex_id);
+    std::vector<EdgeId> edges_vector =
+        adjacency_list_of_edges_.at(from_vertex_id);
+    for (size_t i = 0; i < edges_vector.size(); i++) {
+      if (edges_[edges_vector[i]].from_vertex_id() == to_vertex_id ||
+          edges_[edges_vector[i]].to_vertex_id() == to_vertex_id) {
+        return 1;
+      }
+    }
+
+    return 0;
   }
 
   const std::vector<EdgeId>& connected_edges_ids(VertexId vertex_id) const {
-    if (adjacency_list_of_edges_.count(vertex_id) == 0) {
-      const std::vector<EdgeId> empty_edges_list;
-      return std::move(empty_edges_list);
+    if (!has_vertex(vertex_id)) {
+      static std::vector<EdgeId> empty_edges_list;
+      return empty_edges_list;
     }
     return adjacency_list_of_edges_.at(vertex_id);
   }
 
   Edge::Color get_edge_color(VertexId from_vertex_id,
                              VertexId to_vertex_id) const {
-    const auto from_vertex_depth = vertex_depth_.at(from_vertex_id);
-    const auto to_vertex_depth = vertex_depth_.at(to_vertex_id);
+    const auto from_vertex_depth = vertex_depths_.at(from_vertex_id);
+    const auto to_vertex_depth = vertex_depths_.at(to_vertex_id);
 
     if (from_vertex_id == to_vertex_id) {
       return Edge::Color::Green;
     }
-    if (adjacency_list_.at(to_vertex_id).size() == 0) {
+    if (adjacency_list_of_edges_.at(to_vertex_id).size() == 0) {
       return Edge::Color::Grey;
     }
     if (to_vertex_depth - from_vertex_depth == 1 &&
@@ -107,7 +115,7 @@ class Graph {
   }
 
   Depth vertex_depth(VertexId vertex_id) const {
-    return vertex_depth_.at(vertex_id);
+    return vertex_depths_.at(vertex_id);
   }
 
   const Vertex& get_vertex_with_id(VertexId vertex_id) const {
@@ -115,14 +123,11 @@ class Graph {
   }
 
   EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
-    const auto color = get_edge_color(
-        from_vertex_id, to_vertex_id);  // runtime error if edge not in graph
+    const auto color = get_edge_color(from_vertex_id, to_vertex_id);
 
-    EdgeId new_id = get_new_edge_id_();
+    EdgeId new_id = get_new_edge_id();
     if (color == Edge::Color::Grey) {
       set_vertex_depth(to_vertex_id, vertex_depth(from_vertex_id) + 1);
-      adjacency_list_[from_vertex_id].emplace_back(to_vertex_id);
-      adjacency_list_[to_vertex_id].emplace_back(from_vertex_id);
     }
     adjacency_list_of_edges_[from_vertex_id].emplace_back(new_id);
     adjacency_list_of_edges_[to_vertex_id].emplace_back(new_id);
@@ -143,15 +148,14 @@ class Graph {
   Depth depth() const { return depth_to_vertices_.size(); }
 
  private:
-  VertexId get_new_vertex_id_() { return vertex_id_counter_++; }
-  EdgeId get_new_edge_id_() { return edge_id_counter_++; }
+  VertexId get_new_vertex_id() { return vertex_id_counter_++; }
+  EdgeId get_new_edge_id() { return edge_id_counter_++; }
 
   VertexId vertex_id_counter_ = 0;
   EdgeId edge_id_counter_ = 0;
-  std::unordered_map<VertexId, Depth> vertex_depth_;
+  std::unordered_map<VertexId, Depth> vertex_depths_;
   std::unordered_map<Depth, std::vector<VertexId> > depth_to_vertices_;
   std::unordered_map<VertexId, std::vector<EdgeId> > adjacency_list_of_edges_;
-  std::unordered_map<VertexId, std::vector<VertexId> > adjacency_list_;
   std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
 };
