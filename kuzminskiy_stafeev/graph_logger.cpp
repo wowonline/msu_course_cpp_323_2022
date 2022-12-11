@@ -27,6 +27,7 @@ Logger& Logger::get_logger() {
 }
 
 void Logger::log(const std::string& str) {
+  const std::lock_guard<std::mutex> guard(log_mutex_);
   const auto& current_date_time = get_current_date_time();
   std::cout << current_date_time + str << std::endl;
   output_fstream_ << current_date_time + str << std::endl;
