@@ -323,10 +323,7 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
 }
 
 namespace printing {
-std::string print_edge_color(const Graph::Edge::Color& color);
-}
-
-std::string printing::print_edge_color(const Graph::Edge::Color& color) {
+std::string print_edge_color(const Graph::Edge::Color& color) {
   switch (color) {
     case Graph::Edge::Color::Grey:
       return "grey";
@@ -340,10 +337,7 @@ std::string printing::print_edge_color(const Graph::Edge::Color& color) {
       return "No color";
   }
 }
-
-namespace printing {
 namespace json {
-
 std::string print_graph(const Graph& graph);
 std::string print_vertex(const Graph::Vertex&, const Graph& graph);
 std::string print_edge(const Graph::Edge& edge);
