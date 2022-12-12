@@ -27,7 +27,7 @@ void Logger::log(const std::string& string) {
   const std::lock_guard lock(logger_mutex_);
 
   std::cout << log_string << std::endl;
-  log_file_ << string << std::endl;
+  log_file_ << log_string << std::endl;
 }
 
 Logger& Logger::get_logger() {
