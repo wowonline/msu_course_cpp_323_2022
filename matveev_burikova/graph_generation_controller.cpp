@@ -31,7 +31,7 @@ GraphGenerationController::GraphGenerationController(
     workers_.emplace_back(get_job_callback);
 }
 
-JobCallback GraphGenerationController::get_job() {
+GraphGenerationController::JobCallback GraphGenerationController::get_job() {
   assert(!jobs_.empty());
   const auto job = jobs_.front();
   jobs_.pop_front();
@@ -93,13 +93,13 @@ void GraphGenerationController::Worker::start() {
 }
 
 void GraphGenerationController::Worker::stop() {
-  assert(state_ == State::Working);
+  assert(state_ != State::ShouldTerminate);
   state_ = State::ShouldTerminate;
   thread_.join();
 }
 
 GraphGenerationController::Worker::~Worker() {
-  if (state_ == State::Working)
+  if (state_ != State::ShouldTerminate)
     stop();
 }
 }  // namespace uni_course_cpp
