@@ -77,8 +77,7 @@ std::string generation_started_string(int num_of_graph) {
 }
 
 std::string generation_finished_string(int num_of_graph,
-                                       const std::string& content,
-                                       uni_course_cpp::Logger& logger) {
+                                       const std::string& content) {
   std::stringstream finish_string;
   finish_string << " Graph " << num_of_graph << ", Generation Finished "
                 << content << "\n";
@@ -108,7 +107,7 @@ std::vector<uni_course_cpp::Graph> generate_graphs(
         const auto graph_description =
             uni_course_cpp::printing::print_graph(graph);
         logger.log(
-            generation_finished_string(index, graph_description, logger));
+            generation_finished_string(index, graph_description));
         const auto graph_json = uni_course_cpp::json::print_graph(graph);
         write_to_file(graph_json,
                       std::string{uni_course_cpp::config::kTempDirectoryPath} +
