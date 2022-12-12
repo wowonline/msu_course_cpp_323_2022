@@ -76,8 +76,8 @@ void GraphGenerationController::generate(
       {
         const std::lock_guard<std::mutex> lock_callback(controller_mutex);
         gen_finished_callback(i, std::move(graph));
-        ++graphs_generated;
       }
+      ++graphs_generated;
     });
   }
 
