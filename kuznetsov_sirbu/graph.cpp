@@ -102,7 +102,7 @@ class Graph {
   bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
     const auto& edges_vector = adjacency_list_.at(from_vertex_id);
     for (size_t i = 0; i < edges_vector.size(); i++) {
-      const auto & edge = edges_[edges_vector[i]];
+      const auto& edge = edges_[edges_vector[i]];
       if (edge.from_vertex_id() == to_vertex_id ||
           edge.to_vertex_id() == to_vertex_id) {
         return true;
@@ -195,7 +195,6 @@ class GraphGenerator {
   }
 
  private:
-
   bool check_probability(double chance) const {
     std::mt19937 generator{std::random_device()()};
     std::bernoulli_distribution distribution(chance);
@@ -213,12 +212,11 @@ class GraphGenerator {
 
   bool try_generate_grey_edge(Graph& graph,
                               Graph::Depth current_depth,
-                              Graph::VertexId vertex_id)
-      const {
-    auto probability = probaility_generate_grey_edge(current_depth, params_.depth());
+                              Graph::VertexId vertex_id) const {
+    auto probability =
+        probaility_generate_grey_edge(current_depth, params_.depth());
     if (check_probability(probability)) {
-      const Graph::VertexId next_vertex_id =
-          graph.add_vertex();
+      const Graph::VertexId next_vertex_id = graph.add_vertex();
       graph.add_edge(vertex_id, next_vertex_id);
       return true;
     } else {
@@ -229,12 +227,11 @@ class GraphGenerator {
   void generate_grey_edges(Graph& graph) const {
     for (Graph::Depth current_depth = 1; current_depth <= params_.depth();
          current_depth++) {
-      const auto &vertices_with_last_depth =
+      const auto& vertices_with_last_depth =
           graph.get_vertices_with_depth(graph.depth());
       for (const auto& vertex_id : vertices_with_last_depth) {
         for (int i = 0; i < params_.new_vertices_count(); ++i) {
-          try_generate_grey_edge(graph, current_depth,
-                                 vertex_id);
+          try_generate_grey_edge(graph, current_depth, vertex_id);
         }
       }
     }
@@ -245,7 +242,8 @@ class GraphGenerator {
                                 Graph::VertexId vertex_to_id) const {
     const Graph::Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
     const double probability_generate =
-        1 - static_cast<double>((vertex_from_depth - 1)) / (params_.depth() - 1);
+        1 -
+        static_cast<double>((vertex_from_depth - 1)) / (params_.depth() - 1);
     if (check_probability(probability_generate)) {
       if (graph.is_connected(vertex_from_id, vertex_to_id)) {
         return;
@@ -258,9 +256,9 @@ class GraphGenerator {
     for (auto& vertex_from : graph.get_vertices()) {
       const auto vertex_from_id = vertex_from.id();
       const Graph::Depth vertex_depth = graph.vertex_depth(vertex_from_id);
-      for (const auto& vertex_to_id : graph.get_vertices_with_depth(vertex_depth + 1)) {
-        try_generate_yellow_edge(graph, vertex_from_id,
-                                 vertex_to_id);
+      for (const auto& vertex_to_id :
+           graph.get_vertices_with_depth(vertex_depth + 1)) {
+        try_generate_yellow_edge(graph, vertex_from_id, vertex_to_id);
       }
     }
   }
