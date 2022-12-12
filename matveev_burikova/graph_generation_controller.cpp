@@ -48,14 +48,14 @@ void GraphGenerationController::generate(
                         &gen_started_callback, &gen_finished_callback, index,
                         &gen_callback_mutex]() {
       {
-        std::lock_guard<std::mutex> callback_start_lock(gen_callback_mutex);
+        const std::lock_guard<std::mutex> callback_start_lock(gen_callback_mutex);
         gen_started_callback(index);
       }
 
       auto graph = graph_generator.generate();
 
       {
-        std::lock_guard<std::mutex> callback_finish_lock(gen_callback_mutex);
+        const std::lock_guard<std::mutex> callback_finish_lock(gen_callback_mutex);
         gen_finished_callback(index, std::move(graph));
       }
 
