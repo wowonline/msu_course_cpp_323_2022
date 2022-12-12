@@ -93,13 +93,13 @@ void GraphGenerationController::Worker::start() {
 }
 
 void GraphGenerationController::Worker::stop() {
-  assert(state_ != State::ShouldTerminate);
+  assert(state_ == State::Working);
   state_ = State::ShouldTerminate;
   thread_.join();
 }
 
 GraphGenerationController::Worker::~Worker() {
-  if (state_ != State::ShouldTerminate)
+  if (state_ == State::Working)
     stop();
 }
 }  // namespace uni_course_cpp
