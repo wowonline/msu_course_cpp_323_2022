@@ -106,8 +106,7 @@ std::vector<uni_course_cpp::Graph> generate_graphs(
         graphs.push_back(graph);
         const auto graph_description =
             uni_course_cpp::printing::print_graph(graph);
-        logger.log(
-            generation_finished_string(index, graph_description));
+        logger.log(generation_finished_string(index, graph_description));
         const auto graph_json = uni_course_cpp::json::print_graph(graph);
         write_to_file(graph_json,
                       std::string{uni_course_cpp::config::kTempDirectoryPath} +
