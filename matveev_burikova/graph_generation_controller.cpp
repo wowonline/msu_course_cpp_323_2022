@@ -75,14 +75,15 @@ void GraphGenerationController::Worker::start() {
 
   thread_ = std::thread([this]() {
     while (true) {
-      if (state_ == State::ShouldTerminate)
+      if (state_ == State::ShouldTerminate) {
+        state_ = State::Idle;
         return;
+      }
       const auto job_optional = get_job_callback_();
       if (job_optional.has_value()) {
         const auto& job = job_optional.value();
         job();
-      } else if (state_ == State::Working)
-        state_ = State::Idle;
+      }
     }
   });
 }
