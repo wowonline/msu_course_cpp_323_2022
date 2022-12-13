@@ -116,12 +116,12 @@ Graph::Edge::Color Graph::define_color(Graph::VertexId from_vertex_id,
 
 Graph::VertexId Graph::add_vertex() {
   const auto vertex_id = gen_new_vertex_id();
-    vertexes_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
+  vertexes_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
 
   if (vertexes_of_depth_.empty()) {
     std::vector<VertexId> EmptyVertex_ = {};
-      vertexes_of_depth_.emplace_back(EmptyVertex_);
-      vertexes_of_depth_.emplace_back(EmptyVertex_);
+    vertexes_of_depth_.emplace_back(EmptyVertex_);
+    vertexes_of_depth_.emplace_back(EmptyVertex_);
   }
 
   vertexes_of_depth_[kBaseDepth].emplace_back(vertex_id);
@@ -180,9 +180,9 @@ void Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   edges_.insert(std::make_pair(
       edge_id, Edge(edge_id, from_vertex_id, to_vertex_id, edge_color)));
   if (from_vertex_id != to_vertex_id) {
-      adjacency_list_[from_vertex_id].insert(edge_id);
+    adjacency_list_[from_vertex_id].insert(edge_id);
   }
-    adjacency_list_[to_vertex_id].insert(edge_id);
+  adjacency_list_[to_vertex_id].insert(edge_id);
 }
 
 class GraphGenerator {
