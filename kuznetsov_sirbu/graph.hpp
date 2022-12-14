@@ -18,6 +18,8 @@ class Graph {
   using EdgeId = int;
   using Depth = int;
   static constexpr Depth kBaseDepth = 1;
+  static constexpr Depth kDifferenceRedEdge = 2;
+  static constexpr Depth kDifferenceYellowEdge = 1;
 
   struct Vertex {
    public:
@@ -49,13 +51,12 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  VertexId add_vertex() ;
+  VertexId add_vertex();
 
   EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
   bool has_vertex(VertexId vertex_id) const {
-    return adjacency_list_.find(vertex_id) !=
-           adjacency_list_.end();
+    return adjacency_list_.find(vertex_id) != adjacency_list_.end();
   }
 
   const std::vector<Vertex>& get_vertices() const { return vertices_; }
@@ -70,16 +71,20 @@ class Graph {
 
   Edge::Color get_edge_color(VertexId from_vertex_id,
                              VertexId to_vertex_id) const;
-  
-  Depth vertex_depth(VertexId vertex_id) const { return vertex_depths_.at(vertex_id); }
-  
-  const Vertex& get_vertex_with_id(VertexId vertex_id) const { return vertices_.at(vertex_id);}
+
+  Depth vertex_depth(VertexId vertex_id) const {
+    return vertex_depths_.at(vertex_id);
+  }
+
+  // const Vertex& get_vertex_with_id(VertexId vertex_id) const { return
+  // vertices_.at(vertex_id);}
 
   const std::vector<VertexId>& get_vertices_with_depth(Depth depth) const;
 
-  const std::vector<Graph::EdgeId>& get_edges_with_color(Edge::Color color) const;
+  const std::vector<Graph::EdgeId>& get_edges_with_color(
+      Edge::Color color) const;
 
- Depth depth() const { return depth_to_vertices_.size(); }
+  Depth depth() const { return depth_to_vertices_.size(); }
 
  private:
   VertexId get_new_vertex_id() { return vertex_id_counter_++; }

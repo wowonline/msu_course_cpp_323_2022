@@ -24,38 +24,41 @@ class GraphGenerator {
   Graph generate() const;
 
  private:
-  double generate_random(double left_border, double right_border) const;
+  bool check_probability(double chance) const;
 
   double probaility_generate_grey_edge(Graph::Depth current_depth,
                                        Graph::Depth graph_depth) const;
 
-  bool check_probability(double probability) const { return generate_random(0, 1) < probability; }
+  Graph::VertexId get_random_vertex_id(int size) const;
 
-  bool try_generate_grey_edge(Graph& graph,
-                              Graph::Depth graph_depth,
+  std::vector<Graph::VertexId> get_unconnected_vertex_ids(
+      const Graph& graph,
+      Graph::VertexId vertex_from_id,
+      const std::vector<Graph::VertexId>& vertex_ids) const;
+
+  void try_generate_grey_edge(Graph& graph,
                               Graph::Depth current_depth,
                               Graph::VertexId vertex_id) const;
 
   void generate_grey_edges(Graph& graph) const;
 
   void try_generate_yellow_edge(Graph& graph,
-                                Graph::Depth graph_depth,
                                 Graph::VertexId vertex_from_id,
                                 Graph::VertexId vertex_to_id) const;
 
   void generate_yellow_edges(Graph& graph) const;
 
   void try_generate_red_edge(Graph& graph,
-                             const Graph::Vertex& vertex_from,
+                             Graph::VertexId vertex_from_id,
                              Graph::VertexId vertex_to_id) const;
 
   void generate_red_edges(Graph& graph) const;
 
-  void try_generate_green_edge(Graph& graph, const Graph::Vertex& vertex) const;
+  void try_generate_green_edge(Graph& graph, Graph::VertexId vertex_id) const;
 
   void generate_green_edges(Graph& graph) const;
 
   Params params_ = Params(0, 0);
 };
 
-}
+}  // namespace uni_course_cpp

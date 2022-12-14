@@ -23,22 +23,17 @@ std::string printing::json::print_vertex(const Graph::Vertex& vertex,
 }
 
 std::string printing::json::print_edge_color(const Graph::Edge& edge) {
-  std::string edge_color;
   switch (edge.color()) {
     case Graph::Edge::Color::Grey:
-      edge_color = "grey";
-      break;
+      return "grey";
     case Graph::Edge::Color::Red:
-      edge_color = "red";
-      break;
+      return "red";
     case Graph::Edge::Color::Yellow:
-      edge_color = "yellow";
-      break;
+      return "yellow";
     case Graph::Edge::Color::Green:
-      edge_color = "green";
-      break;
+      return "green";
   }
-  return edge_color;
+  throw std::runtime_error("Failed to determine color");
 }
 
 std::string printing::json::print_edge(const Graph::Edge& edge) {

@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include "graph.hpp"
 
 namespace uni_course_cpp {
