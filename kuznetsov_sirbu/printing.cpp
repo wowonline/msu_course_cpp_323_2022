@@ -30,5 +30,5 @@ std::string print_graph(const Graph& graph) {
   return result.str();
 }
 
-}
-}
+}  // namespace printing
+}  // namespace uni_course_cpp

@@ -19,20 +19,18 @@ class GraphGenerator {
   };
 
   explicit GraphGenerator(Params&& params) : params_(std::move(params)) {}
+
   Graph generate() const;
 
  private:
-
   void try_generate_grey_edge(Graph& graph,
                               Graph::Depth current_depth,
                               Graph::VertexId vertex_id) const;
-
   void generate_grey_edges(Graph& graph) const;
-
+  void generate_yellow_edges(Graph& graph) const;
   void try_generate_yellow_edge(Graph& graph,
                                 Graph::VertexId vertex_from_id,
                                 Graph::VertexId vertex_to_id) const;
-
   Params params_ = Params(0, 0);
 };
 

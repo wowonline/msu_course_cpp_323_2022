@@ -1,3 +1,10 @@
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+
 #include "config.hpp"
 #include "graph.hpp"
 #include "graph_generator.hpp"
@@ -38,23 +45,30 @@ int handle_new_vertices_count_input() {
 }
 
 int handle_graphs_count_input() {
+  std::cout << "Graphs count: ";
   int graph_count = 0;
   while (!(std::cin >> graph_count) || graph_count < 0) {
     std::cout << "Invalid value. Please, try again." << std::endl
               << "Enter graph count: ";
+    std::cin.clear();
+    std::cin.ignore(kInputSize, '\n');
   }
   return graph_count;
 }
 
 void prepare_temp_directory() {
-  std::filesystem::create_directory(uni_course_cpp::config::kTempDirectoryPath);
+  if (std::filesystem::exists(uni_course_cpp::config::kTempDirectoryPath))
+    return;
+  if (!std::filesystem::create_directory(
+          uni_course_cpp::config::kTempDirectoryPath)) {
+    throw std::runtime_error("Can not create temp directory");
+  }
 }
 
 std::string generation_started_string(int number_of_graph,
                                       uni_course_cpp::Logger& logger) {
   std::stringstream result;
-  result << logger.get_current_date_time() << " Graph " << number_of_graph
-         << ", Generation Started\n";
+  result << " Graph " << number_of_graph << ", Generation Started\n";
   return result.str();
 }
 
@@ -62,8 +76,8 @@ std::string generation_finished_string(int number_of_graph,
                                        std::string content,
                                        uni_course_cpp::Logger& logger) {
   std::stringstream result;
-  result << logger.get_current_date_time() << " Graph " << number_of_graph
-         << ", Generation Finished " << content << "\n";
+  result << " Graph " << number_of_graph << ", Generation Finished " << content
+         << "\n";
   return result.str();
 }
 }  // namespace

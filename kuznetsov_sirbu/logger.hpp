@@ -1,13 +1,13 @@
 #pragma once
 #include <fstream>
 #include <string>
+#include "config.hpp"
 
 namespace uni_course_cpp {
 class Logger {
  public:
   static Logger& get_instance();
   void log(const std::string& string);
-  std::string get_current_date_time();
 
   Logger(const Logger&) = delete;
   void operator=(const Logger&) = delete;
@@ -15,8 +15,9 @@ class Logger {
   void operator=(Logger&& other) = delete;
 
  private:
-  std::ofstream log_stream_;
-  Logger();
+  Logger() : log_stream_(config::kLogFilePath, std::ofstream::app) {}
   ~Logger() { log_stream_.close(); };
+
+  std::ofstream log_stream_;
 };
 }  // namespace uni_course_cpp

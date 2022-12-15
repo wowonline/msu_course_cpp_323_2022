@@ -4,8 +4,7 @@ namespace uni_course_cpp {
 namespace printing {
 namespace json {
 
-std::string print_vertex(const Graph::Vertex& vertex,
-                                         const Graph& graph) {
+std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string result_json_vertex = "{\"id\":";
   result_json_vertex += std::to_string(vertex.id()) + ",";
   const std::vector<Graph::EdgeId>& edge_ids =
@@ -68,6 +67,6 @@ std::string print_graph(const Graph& graph) {
   result += "]}\n";
   return result;
 }
-}
-}
-}
+}  // namespace json
+}  // namespace printing
+}  // namespace uni_course_cpp

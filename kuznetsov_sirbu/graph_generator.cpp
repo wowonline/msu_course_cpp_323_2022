@@ -7,15 +7,14 @@ namespace {
 static constexpr double kProbabilityRed = 0.33;
 static constexpr double kProbabilityGreen = 0.1;
 
-  bool check_probability(double chance) { //
+bool check_probability(double chance) {
   std::mt19937 generator{std::random_device()()};
   std::bernoulli_distribution distribution(chance);
   return distribution(generator);
 }
 
-  double probaility_generate_grey_edge( //
-    Graph::Depth current_depth,
-    Graph::Depth graph_depth) {
+double probaility_generate_grey_edge(Graph::Depth current_depth,
+                                     Graph::Depth graph_depth) {
   if (graph_depth == 0) {
     return 1.0;
   } else {
@@ -24,14 +23,14 @@ static constexpr double kProbabilityGreen = 0.1;
   }
 }
 
-  Graph::VertexId GraphGenerator::get_random_vertex_id(int size) { //
+Graph::VertexId get_random_vertex_id(int size) {
   std::random_device rand_device;
   std::mt19937 gen(rand_device());
   std::uniform_int_distribution<> distrib(0, size - 1);
   return distrib(gen);
 }
 
-  std::vector<Graph::VertexId> GraphGenerator::get_unconnected_vertex_ids( //
+std::vector<Graph::VertexId> get_unconnected_vertex_ids(
     const Graph& graph,
     Graph::VertexId vertex_from_id,
     const std::vector<Graph::VertexId>& vertex_ids) {
@@ -44,32 +43,16 @@ static constexpr double kProbabilityGreen = 0.1;
   return not_connected_vertex_ids;
 }
 
-void generate_yellow_edges(Graph& graph) { //
-  for (const auto& vertex_from : graph.get_vertices()) {
-    const auto vertex_from_id = vertex_from.id();
-    const Graph::Depth vertex_depth = graph.vertex_depth(vertex_from_id);
-    const auto& vertex_ids = graph.get_vertices_with_depth(
-        vertex_depth + Graph::kDifferenceYellowEdge);
-    const auto not_connected_vertex_ids =
-        get_unconnected_vertex_ids(graph, vertex_from_id, vertex_ids);
-    if (!not_connected_vertex_ids.empty()) {
-      const Graph::VertexId vertex_to_id = not_connected_vertex_ids.at(
-          get_random_vertex_id(not_connected_vertex_ids.size()));
-      try_generate_yellow_edge(graph, vertex_from_id, vertex_to_id);
-    }
-  }
-}
-
 void try_generate_red_edge(Graph& graph,
-                                           Graph::VertexId vertex_from_id,
-                                           Graph::VertexId vertex_to_id) { //
+                           Graph::VertexId vertex_from_id,
+                           Graph::VertexId vertex_to_id) {
   const Graph::Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
   if (check_probability(kProbabilityRed)) {
     graph.add_edge(vertex_from_id, vertex_to_id);
   }
 }
 
-void generate_red_edges(Graph& graph) { //
+void generate_red_edges(Graph& graph) {
   for (const auto& vertex_from : graph.get_vertices()) {
     const auto vertex_from_id = vertex_from.id();
     const Graph::Depth vertex_depth = graph.vertex_depth(vertex_from_id);
@@ -78,25 +61,24 @@ void generate_red_edges(Graph& graph) { //
     if (!vertex_ids.empty()) {
       const Graph::VertexId vertex_to_id =
           vertex_ids.at(get_random_vertex_id(vertex_ids.size()));
-      try_generate_yellow_edge(graph, vertex_from_id, vertex_to_id);
+      try_generate_red_edge(graph, vertex_from_id, vertex_to_id);
     }
   }
 }
 
-void try_generate_green_edge(Graph& graph,
-                                             Graph::VertexId vertex_id) { //
+void try_generate_green_edge(Graph& graph, Graph::VertexId vertex_id) {
   if (check_probability(kProbabilityGreen)) {
     graph.add_edge(vertex_id, vertex_id);
   }
 }
 
-void generate_green_edges(Graph& graph) { //
+void generate_green_edges(Graph& graph) {
   for (const auto& vertex : graph.get_vertices()) {
     try_generate_green_edge(graph, vertex.id());
   }
 }
 
-} // namespace
+}  // namespace
 
 Graph GraphGenerator::generate() const {
   auto graph = Graph();
@@ -150,6 +132,22 @@ void GraphGenerator::try_generate_yellow_edge(
                 (params_.depth() - Graph::kBaseDepth);
   if (check_probability(probability_generate)) {
     graph.add_edge(vertex_from_id, vertex_to_id);
+  }
+}
+
+void GraphGenerator::generate_yellow_edges(Graph& graph) const {  //
+  for (const auto& vertex_from : graph.get_vertices()) {
+    const auto vertex_from_id = vertex_from.id();
+    const Graph::Depth vertex_depth = graph.vertex_depth(vertex_from_id);
+    const auto& vertex_ids = graph.get_vertices_with_depth(
+        vertex_depth + Graph::kDifferenceYellowEdge);
+    const auto not_connected_vertex_ids =
+        get_unconnected_vertex_ids(graph, vertex_from_id, vertex_ids);
+    if (!not_connected_vertex_ids.empty()) {
+      const Graph::VertexId vertex_to_id = not_connected_vertex_ids.at(
+          get_random_vertex_id(not_connected_vertex_ids.size()));
+      try_generate_yellow_edge(graph, vertex_from_id, vertex_to_id);
+    }
   }
 }
 
