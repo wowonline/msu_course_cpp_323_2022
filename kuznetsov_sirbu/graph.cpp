@@ -304,7 +304,7 @@ class GraphGenerator {
       if (!vertex_ids.empty()) {
         const Graph::VertexId vertex_to_id =
             vertex_ids.at(get_random_vertex_id(vertex_ids.size()));
-        try_generate_yellow_edge(graph, vertex_from_id, vertex_to_id);
+        try_generate_red_edge(graph, vertex_from_id, vertex_to_id);
       }
     }
   }
