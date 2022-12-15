@@ -1,8 +1,11 @@
 #include "printing.hpp"
 
-std::string uni_course_cpp::printing::print_graph(const Graph& graph) {
+namespace uni_course_cpp {
+namespace printing {
+
+std::string print_graph(const Graph& graph) {
   std::ostringstream result;
-  result << "\tdepth: " << graph.depth() << ",\n";
+  result << "{\n\tdepth: " << graph.depth() << ",\n";
   result << "\tvertices: "
          << "{amount: " << graph.get_vertices().size() << ", "
          << "distribution: [";
@@ -12,7 +15,6 @@ std::string uni_course_cpp::printing::print_graph(const Graph& graph) {
       result << ", ";
     }
   }
-  result << "]},\n";
 
   result << "]},\n\tedges: {amount: " << graph.get_edges().size();
   result << ", distribution: {grey: "
@@ -26,4 +28,7 @@ std::string uni_course_cpp::printing::print_graph(const Graph& graph) {
          << "}}\n}";
 
   return result.str();
+}
+
+}
 }

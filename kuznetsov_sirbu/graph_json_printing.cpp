@@ -1,8 +1,10 @@
 #include "graph_json_printing.hpp"
 
 namespace uni_course_cpp {
+namespace printing {
+namespace json {
 
-std::string printing::json::print_vertex(const Graph::Vertex& vertex,
+std::string print_vertex(const Graph::Vertex& vertex,
                                          const Graph& graph) {
   std::string result_json_vertex = "{\"id\":";
   result_json_vertex += std::to_string(vertex.id()) + ",";
@@ -22,7 +24,7 @@ std::string printing::json::print_vertex(const Graph::Vertex& vertex,
   return result_json_vertex;
 }
 
-std::string printing::json::print_edge_color(const Graph::Edge& edge) {
+std::string print_edge_color(const Graph::Edge& edge) {
   switch (edge.color()) {
     case Graph::Edge::Color::Grey:
       return "grey";
@@ -36,17 +38,17 @@ std::string printing::json::print_edge_color(const Graph::Edge& edge) {
   throw std::runtime_error("Failed to determine color");
 }
 
-std::string printing::json::print_edge(const Graph::Edge& edge) {
+std::string print_edge(const Graph::Edge& edge) {
   std::string result_json_edge =
       "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
       std::to_string(edge.from_vertex_id()) + "," +
       std::to_string(edge.to_vertex_id()) + "]," + "\"color\":";
-  std::string edge_color = print_edge_color(edge);
+  const std::string edge_color = print_edge_color(edge);
   result_json_edge += "\"" + edge_color + "\"" + "}";
   return result_json_edge;
 }
 
-std::string printing::json::print_graph(const Graph& graph) {
+std::string print_graph(const Graph& graph) {
   std::string result = "";
   result += "{\"depth\":" + std::to_string(graph.depth()) + ",";
   result += "\"vertices\":[";
@@ -66,5 +68,6 @@ std::string printing::json::print_graph(const Graph& graph) {
   result += "]}\n";
   return result;
 }
-
-}  // namespace uni_course_cpp
+}
+}
+}
