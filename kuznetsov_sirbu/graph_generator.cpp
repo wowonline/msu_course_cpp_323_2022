@@ -222,20 +222,6 @@ void GraphGenerator::generate_grey_edges(Graph& graph,
   for (auto& thread : threads) {
     thread.join();
   }
-
-  for (Graph::Depth current_depth = Graph::kBaseDepth;
-       current_depth <= params_.depth(); current_depth++) {
-    const auto vertices_with_last_depth =
-        graph.get_vertices_with_depth(current_depth);
-    if (graph.depth() != current_depth) {
-      break;
-    }
-    for (const auto& vertex_id : vertices_with_last_depth) {
-      for (int i = 0; i < params_.new_vertices_count(); ++i) {
-        try_generate_grey_edge(graph, current_depth, vertex_id);
-      }
-    }
-  }
 }
 
 void GraphGenerator::try_generate_yellow_edge(
