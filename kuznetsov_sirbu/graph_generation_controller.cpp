@@ -1,4 +1,11 @@
 #include "graph_generation_controller.hpp"
+#include <functional>
+#include <list>
+#include <optional>
+#include <queue>
+#include <thread>
+#include <atomic>
+#include <cassert>
 
 namespace uni_course_cpp {
 
