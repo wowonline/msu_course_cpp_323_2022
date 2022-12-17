@@ -1,8 +1,8 @@
 #pragma once
 #include <fstream>
+#include <mutex>
 #include <string>
 #include <thread>
-#include <mutex>
 #include "config.hpp"
 
 namespace uni_course_cpp {
