@@ -1,4 +1,5 @@
 #include "graph_json_printing.hpp"
+#include <stdexcept>
 
 namespace uni_course_cpp {
 namespace printing {
