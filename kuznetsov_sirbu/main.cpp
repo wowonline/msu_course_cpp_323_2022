@@ -10,6 +10,7 @@
 #include "graph_generation_controller.hpp"
 #include "graph_generator.hpp"
 #include "graph_json_printing.hpp"
+#include "interfaces/i_graph.hpp"
 #include "logger.hpp"
 #include "printing.hpp"
 
@@ -23,7 +24,7 @@ void write_to_file(const std::string& graph_json,
 
 constexpr int kInputSize = 256;
 
-uni_course_cpp::Graph::Depth handle_depth_input() {
+uni_course_cpp::Depth handle_depth_input() {
   std::cout << "Depth: ";
   int depth = 0;
   while (!(std::cin >> depth) || depth < 0) {
@@ -92,7 +93,7 @@ std::string generation_finished_string(int number_of_graph,
   return result.str();
 }
 
-std::vector<uni_course_cpp::Graph> generate_graphs(
+std::vector<std::unique_ptr<uni_course_cpp::IGraph>> generate_graphs(
     uni_course_cpp::GraphGenerator::Params&& params,
     int graphs_count,
     int threads_count) {
@@ -101,18 +102,18 @@ std::vector<uni_course_cpp::Graph> generate_graphs(
 
   auto& logger = uni_course_cpp::Logger::get_instance();
 
-  auto graphs = std::vector<uni_course_cpp::Graph>();
+  auto graphs = std::vector<std::unique_ptr<uni_course_cpp::IGraph>>();
   graphs.reserve(graphs_count);
-
   generation_controller.generate(
       [&logger](int index) { logger.log(generation_started_string(index)); },
-      [&logger, &graphs](int index, uni_course_cpp::Graph&& graph) {
-        graphs.push_back(graph);
+      [&logger, &graphs](int index,
+                         std::unique_ptr<uni_course_cpp::IGraph> graph) {
+        graphs.push_back(std::move(graph));
         const auto graph_description =
-            uni_course_cpp::printing::print_graph(graph);
+            uni_course_cpp::printing::print_graph(*graphs.back());
         logger.log(generation_finished_string(index, graph_description));
         const auto graph_json =
-            uni_course_cpp::printing::json::print_graph(graph);
+            uni_course_cpp::printing::json::print_graph(*graphs.back());
         write_to_file(graph_json, "graph_" + std::to_string(index) + ".json");
       });
 

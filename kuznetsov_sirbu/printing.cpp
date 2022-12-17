@@ -9,7 +9,7 @@ std::string print_graph(const IGraph& graph) {
   result << "\tvertices: "
          << "{amount: " << graph.get_vertices().size() << ", "
          << "distribution: [";
-  for (Graph::Depth depth = 1; depth <= graph.depth(); ++depth) {
+  for (Depth depth = 1; depth <= graph.depth(); ++depth) {
     result << graph.get_vertices_with_depth(depth).size();
     if (depth < graph.depth()) {
       result << ", ";
@@ -18,13 +18,10 @@ std::string print_graph(const IGraph& graph) {
 
   result << "]},\n\tedges: {amount: " << graph.get_edges().size();
   result << ", distribution: {grey: "
-         << graph.get_edges_with_color(Graph::Edge::Color::Grey).size();
-  result << ", green: "
-         << graph.get_edges_with_color(Graph::Edge::Color::Green).size();
-  result << ", yellow: "
-         << graph.get_edges_with_color(Graph::Edge::Color::Yellow).size();
-  result << ", red: "
-         << graph.get_edges_with_color(Graph::Edge::Color::Red).size()
+         << graph.get_edges_with_color(Color::Grey).size();
+  result << ", green: " << graph.get_edges_with_color(Color::Green).size();
+  result << ", yellow: " << graph.get_edges_with_color(Color::Yellow).size();
+  result << ", red: " << graph.get_edges_with_color(Color::Red).size()
          << "}}\n}";
 
   return result.str();

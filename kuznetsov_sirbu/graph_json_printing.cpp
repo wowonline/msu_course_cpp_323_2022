@@ -7,8 +7,7 @@ namespace json {
 std::string print_vertex(const IVertex& vertex, const IGraph& graph) {
   std::string result_json_vertex = "{\"id\":";
   result_json_vertex += std::to_string(vertex.id()) + ",";
-  const std::vector<Graph::EdgeId>& edge_ids =
-      graph.connected_edges_ids(vertex.id());
+  const std::vector<EdgeId>& edge_ids = graph.connected_edges_ids(vertex.id());
 
   result_json_vertex += "\"edge_ids\":[";
   for (const auto& id : edge_ids) {
@@ -25,13 +24,13 @@ std::string print_vertex(const IVertex& vertex, const IGraph& graph) {
 
 std::string print_edge_color(const IEdge& edge) {
   switch (edge.color()) {
-    case Graph::Edge::Color::Grey:
+    case Color::Grey:
       return "grey";
-    case Graph::Edge::Color::Red:
+    case Color::Red:
       return "red";
-    case Graph::Edge::Color::Yellow:
+    case Color::Yellow:
       return "yellow";
-    case Graph::Edge::Color::Green:
+    case Color::Green:
       return "green";
   }
   throw std::runtime_error("Failed to determine color");
@@ -53,14 +52,14 @@ std::string print_graph(const IGraph& graph) {
   result += "\"vertices\":[";
 
   for (const auto& vertex : graph.get_vertices()) {
-    result += print_vertex(vertex, graph) + ",";
+    result += print_vertex(*vertex, graph) + ",";
   }
   if (result.back() == ',')
     result.pop_back();
   result += "],\"edges\":[";
 
   for (const auto& edge : graph.get_edges()) {
-    result += print_edge(edge) + ",";
+    result += print_edge(*edge) + ",";
   }
   if (result.back() == ',')
     result.pop_back();
