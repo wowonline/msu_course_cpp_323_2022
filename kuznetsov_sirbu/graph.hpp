@@ -9,19 +9,17 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include "interfaces/i_graph.hpp"
 
 namespace uni_course_cpp {
 
-class Graph {
+class Graph : public IGraph {
  public:
-  using VertexId = int;
-  using EdgeId = int;
-  using Depth = int;
   static constexpr Depth kBaseDepth = 1;
   static constexpr Depth kDifferenceRedEdge = 2;
   static constexpr Depth kDifferenceYellowEdge = 1;
 
-  struct Vertex {
+  struct Vertex : public IVertex {
    public:
     explicit Vertex(VertexId id) : id_(id) {}
     VertexId id() const { return id_; }
@@ -30,7 +28,7 @@ class Graph {
     VertexId id_ = 0;
   };
 
-  struct Edge {
+  struct Edge : public IEdge {
     enum class Color { Grey, Green, Yellow, Red };
 
    public:
@@ -39,10 +37,10 @@ class Graph {
           from_vertex_id_(from_vertex_id),
           to_vertex_id_(to_vertex_id),
           color_(color) {}
-    EdgeId id() const { return id_; }
-    VertexId from_vertex_id() const { return from_vertex_id_; }
-    VertexId to_vertex_id() const { return to_vertex_id_; }
-    Color color() const { return color_; }
+    EdgeId id() const override { return id_; }
+    VertexId from_vertex_id() const override { return from_vertex_id_; }
+    VertexId to_vertex_id() const override { return to_vertex_id_; }
+    Color color() const override { return color_; }
 
    private:
     Color color_ = Color::Grey;
@@ -51,41 +49,41 @@ class Graph {
     VertexId to_vertex_id_ = 0;
   };
 
-  VertexId add_vertex();
+  VertexId add_vertex() override;
 
-  EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
+  EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id) override;
 
-  bool has_vertex(VertexId vertex_id) const {
+  bool has_vertex(VertexId vertex_id) const override {
     return adjacency_list_.find(vertex_id) != adjacency_list_.end();
   }
 
-  const std::vector<Vertex>& get_vertices() const { return vertices_; }
+  const std::vector<std::unique_ptr<IVertex>>& get_vertices() const override { return vertices_; }
 
-  const std::vector<Edge>& get_edges() const { return edges_; }
+  const std::vector<std::unique_ptr<IEdge>>& get_edges() const override { return edges_; }
 
-  const std::vector<EdgeId>& connected_edges_ids(VertexId vertex_id) const;
+  const std::vector<EdgeId>& connected_edges_ids(VertexId vertex_id) const override;
 
-  void set_vertex_depth(VertexId vertex_id, Depth depth);
+  void set_vertex_depth(VertexId vertex_id, Depth depth) override;
 
-  bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const;
+  bool is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const override;
 
   Edge::Color get_edge_color(VertexId from_vertex_id,
-                             VertexId to_vertex_id) const;
+                             VertexId to_vertex_id) const override;
 
-  Depth vertex_depth(VertexId vertex_id) const {
+  Depth vertex_depth(VertexId vertex_id) const override {
     return vertex_depths_.at(vertex_id);
   }
 
-  const Vertex& get_vertex_with_id(VertexId vertex_id) const {
+  const std::unique_ptr<IVertex> get_vertex_with_id(VertexId vertex_id) const override {
     return vertices_.at(vertex_id);
   }
 
-  const std::vector<VertexId>& get_vertices_with_depth(Depth depth) const;
+  const std::vector<VertexId>& get_vertices_with_depth(Depth depth) const override;
 
   const std::vector<Graph::EdgeId>& get_edges_with_color(
-      Edge::Color color) const;
+      Edge::Color color) const override;
 
-  Depth depth() const { return depth_to_vertices_.size(); }
+  Depth depth() const override { return depth_to_vertices_.size(); }
 
  private:
   VertexId get_new_vertex_id() { return vertex_id_counter_++; }
@@ -93,8 +91,8 @@ class Graph {
 
   VertexId vertex_id_counter_ = 0;
   EdgeId edge_id_counter_ = 0;
-  std::vector<Vertex> vertices_;
-  std::vector<Edge> edges_;
+  std::vector<std::unique_ptr<IVertex> > vertices_;
+  std::vector<std::unique_ptr<IEdge> > edges_;
   std::unordered_map<VertexId, std::vector<EdgeId> > adjacency_list_;
   std::unordered_map<VertexId, Depth> vertex_depths_;
   std::unordered_map<Depth, std::vector<VertexId> > depth_to_vertices_;

@@ -7,7 +7,7 @@ namespace uni_course_cpp {
 
 Graph::VertexId Graph::add_vertex() {
   const VertexId new_vertex_id = get_new_vertex_id();
-  vertices_.emplace_back(new_vertex_id);
+  vertices_.emplace_back(std::make_unique<IVertex>(Vertex(new_vertex_id)));
   adjacency_list_[new_vertex_id] = {};
 
   vertex_depths_[new_vertex_id] = kBaseDepth;
@@ -24,7 +24,7 @@ Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
     set_vertex_depth(to_vertex_id, vertex_depth(from_vertex_id) + 1);
   }
   const EdgeId edge_id = get_new_edge_id();
-  edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, color);
+  edges_.emplace_back(std::make_unique<IEdge>(Edge(edge_id, from_vertex_id, to_vertex_id, color)));
   if (from_vertex_id != edge_id) {
     adjacency_list_[from_vertex_id].emplace_back(edge_id);
   }
@@ -62,8 +62,6 @@ bool Graph::is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
     }
   }
   return false;
-
-  return 0;
 }
 
 Graph::Edge::Color Graph::get_edge_color(VertexId from_vertex_id,

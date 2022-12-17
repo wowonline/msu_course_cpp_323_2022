@@ -4,7 +4,7 @@ namespace uni_course_cpp {
 namespace printing {
 namespace json {
 
-std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
+std::string print_vertex(const IVertex& vertex, const IGraph& graph) {
   std::string result_json_vertex = "{\"id\":";
   result_json_vertex += std::to_string(vertex.id()) + ",";
   const std::vector<Graph::EdgeId>& edge_ids =
@@ -23,7 +23,7 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   return result_json_vertex;
 }
 
-std::string print_edge_color(const Graph::Edge& edge) {
+std::string print_edge_color(const IEdge& edge) {
   switch (edge.color()) {
     case Graph::Edge::Color::Grey:
       return "grey";
@@ -37,7 +37,7 @@ std::string print_edge_color(const Graph::Edge& edge) {
   throw std::runtime_error("Failed to determine color");
 }
 
-std::string print_edge(const Graph::Edge& edge) {
+std::string print_edge(const IEdge& edge) {
   std::string result_json_edge =
       "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
       std::to_string(edge.from_vertex_id()) + "," +
@@ -47,7 +47,7 @@ std::string print_edge(const Graph::Edge& edge) {
   return result_json_edge;
 }
 
-std::string print_graph(const Graph& graph) {
+std::string print_graph(const IGraph& graph) {
   std::string result = "";
   result += "{\"depth\":" + std::to_string(graph.depth()) + ",";
   result += "\"vertices\":[";
