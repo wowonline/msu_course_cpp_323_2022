@@ -11,6 +11,7 @@
 
 namespace uni_course_cpp {
 
+
 namespace {
 
 static constexpr double kProbabilityRed = 0.33;

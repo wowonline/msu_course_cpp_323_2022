@@ -105,3 +105,4 @@ const std::vector<Graph::EdgeId>& Graph::get_edge_ids_with_color(
 }
 
 }  // namespace uni_course_cpp
+
