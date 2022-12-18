@@ -119,8 +119,12 @@ Graph::VertexId Graph::add_vertex() {
   vertexes_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
 
   if (vertexes_of_depth_.empty()) {
-    std::vector<VertexId> empty_vertex_ = {};
-    vertexes_of_depth_.emplace_back(empty_vertex_);
+    std::vector<VertexId> empty_vertex = {};
+    vertexes_of_depth_.emplace_back(empty_vertex);
+    vertexes_of_depth_.emplace_back(
+        empty_vertex);  // Потому что согласно условию задачи: "что в граф
+                        // добавляется новая вершина и грань, соединяющая эти
+                        // две вершины."
   }
 
   vertexes_of_depth_[kBaseDepth].emplace_back(vertex_id);
@@ -156,8 +160,8 @@ void Graph::set_vertex_depth(VertexId id, Depth depth) {
   const auto graph_depth = get_graph_depth();
 
   if (depth > graph_depth) {
-    std::vector<VertexId> empty_vertex_ = {};
-    vertexes_of_depth_.emplace_back(empty_vertex_);
+    std::vector<VertexId> empty_vertex = {};
+    vertexes_of_depth_.emplace_back(empty_vertex);
   }
 
   depth_of_vertexes_[id] = depth;
