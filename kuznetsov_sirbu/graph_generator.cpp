@@ -93,6 +93,7 @@ Graph GraphGenerator::generate() const {
     generate_yellow_edges(graph);
     generate_red_edges(graph);
   }
+
   return graph;
 }
 
