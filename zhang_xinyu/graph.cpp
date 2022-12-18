@@ -118,12 +118,10 @@ Graph::VertexId Graph::add_vertex() {
   const auto vertex_id = gen_new_vertex_id();
   vertexes_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
 
-  // Если vertexes_of_depth_.empty() == true, то можно ничего не делать
-  //  if (vertexes_of_depth_.empty()) {
-  //    std::vector<VertexId> empty_vertex = {};
-  //    vertexes_of_depth_.emplace_back(empty_vertex);
-  //    vertexes_of_depth_.emplace_back(empty_vertex);
-  //  }
+  if (vertexes_of_depth_.empty()) {
+    std::vector<VertexId> empty_vertex = {};
+    vertexes_of_depth_.emplace_back(empty_vertex);
+  }
 
   vertexes_of_depth_[kBaseDepth].emplace_back(vertex_id);
   depth_of_vertexes_[vertex_id] = kBaseDepth;
