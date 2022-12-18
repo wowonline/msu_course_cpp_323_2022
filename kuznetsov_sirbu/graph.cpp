@@ -1,6 +1,7 @@
 #include "graph.hpp"
 #include "graph_json_printing.hpp"
 
+
 namespace uni_course_cpp {
 
 Graph::VertexId Graph::add_vertex() {
