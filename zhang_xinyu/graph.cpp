@@ -120,12 +120,12 @@ Graph::VertexId Graph::add_vertex() {
 
   if (vertexes_of_depth_.empty()) {
     std::vector<VertexId> empty_vertex = {};
-    vertexes_of_depth_.emplace_back(empty_vertex);
     // vertexes_of_depth_.emplace_back(EmptyVertex_);
     //[[depth_0]]
     vertexes_of_depth_.emplace_back(empty_vertex);
     // vertexes_of_depth_.emplace_back(EmptyVertex_);
     //[[depth_0] [depth_1]]
+    vertexes_of_depth_.emplace_back(empty_vertex);
   }
 
   vertexes_of_depth_[kBaseDepth].emplace_back(vertex_id);
