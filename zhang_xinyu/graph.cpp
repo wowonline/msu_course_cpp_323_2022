@@ -88,7 +88,7 @@ class Graph {
   std::unordered_map<VertexId, std::set<EdgeId>> adjacency_list_;
 };
 
-static constexpr Graph::Depth kBaseDepth = 1;
+static constexpr Graph::Depth kBaseDepth = 0;
 
 Graph::Depth Graph::get_vertex_depth(Graph::VertexId id) const {
   assert(has_vertex(id));
