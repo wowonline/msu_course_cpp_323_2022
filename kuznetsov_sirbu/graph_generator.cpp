@@ -79,6 +79,35 @@ void generate_green_edges(Graph& graph) {
   }
 }
 
+void add_yellow_edge(Graph& graph,
+                                     Graph::VertexId vertex_from_id,
+                                     Graph::VertexId vertex_to_id) {
+  const Graph::Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
+  graph.add_edge(vertex_from_id, vertex_to_id);
+}
+
+void generate_yellow_edges(Graph& graph) {  //
+  for (const auto& vertex_from : graph.get_vertices()) {
+    const auto vertex_from_id = vertex_from.id();
+    const Graph::Depth vertex_depth = graph.vertex_depth(vertex_from_id);
+    const double probability_generate =
+        static_cast<double>((vertex_depth - Graph::kBaseDepth)) /
+        (graph.depth() - Graph::kBaseDepth - Graph::kDifferenceYellowEdge);
+
+    if (check_probability(probability_generate)) {
+      const auto& vertex_ids = graph.get_vertices_with_depth(
+          vertex_depth + Graph::kDifferenceYellowEdge);
+      const auto not_connected_vertex_ids =
+          get_unconnected_vertex_ids(graph, vertex_from_id, vertex_ids);
+      if (!not_connected_vertex_ids.empty()) {
+        const Graph::VertexId vertex_to_id = not_connected_vertex_ids.at(
+            get_random_vertex_id(not_connected_vertex_ids.size()));
+        add_yellow_edge(graph, vertex_from_id, vertex_to_id);
+      }
+    }
+  }
+}
+
 }  // namespace
 
 Graph GraphGenerator::generate() const {
@@ -119,35 +148,6 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
     for (const auto& vertex_id : vertices_with_last_depth) {
       for (int i = 0; i < params_.new_vertices_count(); ++i) {
         try_generate_grey_edge(graph, current_depth, vertex_id);
-      }
-    }
-  }
-}
-
-void GraphGenerator::add_yellow_edge(Graph& graph,
-                                     Graph::VertexId vertex_from_id,
-                                     Graph::VertexId vertex_to_id) const {
-  const Graph::Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
-  graph.add_edge(vertex_from_id, vertex_to_id);
-}
-
-void GraphGenerator::generate_yellow_edges(Graph& graph) const {  //
-  for (const auto& vertex_from : graph.get_vertices()) {
-    const auto vertex_from_id = vertex_from.id();
-    const Graph::Depth vertex_depth = graph.vertex_depth(vertex_from_id);
-    const double probability_generate =
-        static_cast<double>((vertex_depth - Graph::kBaseDepth)) /
-        (graph.depth() - Graph::kBaseDepth - Graph::kDifferenceYellowEdge);
-
-    if (check_probability(probability_generate)) {
-      const auto& vertex_ids = graph.get_vertices_with_depth(
-          vertex_depth + Graph::kDifferenceYellowEdge);
-      const auto not_connected_vertex_ids =
-          get_unconnected_vertex_ids(graph, vertex_from_id, vertex_ids);
-      if (!not_connected_vertex_ids.empty()) {
-        const Graph::VertexId vertex_to_id = not_connected_vertex_ids.at(
-            get_random_vertex_id(not_connected_vertex_ids.size()));
-        add_yellow_edge(graph, vertex_from_id, vertex_to_id);
       }
     }
   }

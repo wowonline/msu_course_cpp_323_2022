@@ -1,6 +1,4 @@
 #include "graph.hpp"
-#include <algorithm>
-#include <vector>
 #include "graph_json_printing.hpp"
 
 namespace uni_course_cpp {
@@ -62,8 +60,6 @@ bool Graph::is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
     }
   }
   return false;
-
-  return 0;
 }
 
 Graph::Edge::Color Graph::get_edge_color(VertexId from_vertex_id,
