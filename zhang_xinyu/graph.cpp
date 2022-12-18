@@ -118,14 +118,12 @@ Graph::VertexId Graph::add_vertex() {
   const auto vertex_id = gen_new_vertex_id();
   vertexes_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
 
-  if (vertexes_of_depth_.empty()) {
-    std::vector<VertexId> empty_vertex = {};
-    vertexes_of_depth_.emplace_back(empty_vertex);
-    vertexes_of_depth_.emplace_back(
-        empty_vertex);  // Потому что согласно условию задачи: "что в граф
-                        // добавляется новая вершина и грань, соединяющая эти
-                        // две вершины."
-  }
+  // Если vertexes_of_depth_.empty() == true, то можно ничего не делать
+  //  if (vertexes_of_depth_.empty()) {
+  //    std::vector<VertexId> empty_vertex = {};
+  //    vertexes_of_depth_.emplace_back(empty_vertex);
+  //    vertexes_of_depth_.emplace_back(empty_vertex);
+  //  }
 
   vertexes_of_depth_[kBaseDepth].emplace_back(vertex_id);
   depth_of_vertexes_[vertex_id] = kBaseDepth;
