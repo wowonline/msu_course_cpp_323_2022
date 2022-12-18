@@ -28,9 +28,9 @@ class GraphGenerator {
                               Graph::VertexId vertex_id) const;
   void generate_grey_edges(Graph& graph) const;
   void generate_yellow_edges(Graph& graph) const;
-  void try_generate_yellow_edge(Graph& graph,
-                                Graph::VertexId vertex_from_id,
-                                Graph::VertexId vertex_to_id) const;
+  void add_yellow_edge(Graph& graph,
+                       Graph::VertexId vertex_from_id,
+                       Graph::VertexId vertex_to_id) const;
   Params params_ = Params(0, 0);
 };
 
