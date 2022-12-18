@@ -1,4 +1,5 @@
 #include "logger.hpp"
+#include "config.hpp"
 
 #include <chrono>
 #include <ctime>
@@ -18,6 +19,8 @@ std::string get_current_date_time() {
 }  // namespace
 
 namespace uni_course_cpp {
+
+Logger::Logger() : log_stream_(config::kLogFilePath, std::ofstream::app) {}
 
 Logger& Logger::get_instance() {
   static Logger logger;

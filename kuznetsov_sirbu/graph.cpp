@@ -93,7 +93,7 @@ const std::vector<Graph::VertexId>& Graph::get_vertices_with_depth(
   }
 }
 
-const std::vector<Graph::EdgeId>& Graph::get_edges_with_color(
+const std::vector<Graph::EdgeId>& Graph::get_edge_ids_with_color(
     Edge::Color color) const {  // ????
   if (color_to_edges_.find(color) != color_to_edges_.end()) {
     return color_to_edges_.at(color);
