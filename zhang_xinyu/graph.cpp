@@ -52,7 +52,7 @@ class Graph {
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
   Depth get_graph_depth() const {
-    return vertexes_of_depth_.size() ? vertexes_of_depth_.size() : 0;
+    return vertexes_of_depth_.size() ? vertexes_of_depth_.size() - 1 : 0;
   }
   Depth get_vertex_depth(VertexId id) const;
 
