@@ -67,7 +67,7 @@ class Graph {
 
     const EdgeId edge_id = get_new_edge_id();
     edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, color);
-    if (from_vertex_id != edge_id) {
+    if (from_vertex_id != to_vertex_id) {
       adjacency_list_[from_vertex_id].emplace_back(edge_id);
     }
     adjacency_list_[to_vertex_id].emplace_back(edge_id);
