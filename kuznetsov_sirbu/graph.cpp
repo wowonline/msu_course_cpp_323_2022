@@ -1,6 +1,4 @@
 #include "graph.hpp"
-#include <algorithm>
-#include <vector>
 #include "graph_json_printing.hpp"
 
 namespace uni_course_cpp {
@@ -25,7 +23,7 @@ Graph::EdgeId Graph::add_edge(VertexId from_vertex_id, VertexId to_vertex_id) {
   }
   const EdgeId edge_id = get_new_edge_id();
   edges_.emplace_back(edge_id, from_vertex_id, to_vertex_id, color);
-  if (from_vertex_id != edge_id) {
+  if (from_vertex_id != to_vertex_id) {
     adjacency_list_[from_vertex_id].emplace_back(edge_id);
   }
   adjacency_list_[to_vertex_id].emplace_back(edge_id);
@@ -62,8 +60,6 @@ bool Graph::is_connected(VertexId from_vertex_id, VertexId to_vertex_id) const {
     }
   }
   return false;
-
-  return 0;
 }
 
 Graph::Edge::Color Graph::get_edge_color(VertexId from_vertex_id,
@@ -97,7 +93,7 @@ const std::vector<Graph::VertexId>& Graph::get_vertices_with_depth(
   }
 }
 
-const std::vector<Graph::EdgeId>& Graph::get_edges_with_color(
+const std::vector<Graph::EdgeId>& Graph::get_edge_ids_with_color(
     Edge::Color color) const {  // ????
   if (color_to_edges_.find(color) != color_to_edges_.end()) {
     return color_to_edges_.at(color);
