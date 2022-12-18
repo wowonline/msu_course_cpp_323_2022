@@ -1,18 +1,16 @@
 #include "printing.hpp"
-#include "graph_json_printing.hpp"
-#include <vector>
-#include <string>
-#include <sstream>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
+#include "graph_json_printing.hpp"
 
 namespace uni_course_cpp {
 namespace printing {
 
-std::vector<Graph::Edge::Color> kColors = {Graph::Edge::Color::Grey,
-               Graph::Edge::Color::Green,
-               Graph::Edge::Color::Yellow,
-               Graph::Edge::Color::Red};
+std::vector<Graph::Edge::Color> kColors = {
+    Graph::Edge::Color::Grey, Graph::Edge::Color::Green,
+    Graph::Edge::Color::Yellow, Graph::Edge::Color::Red};
 
 std::string print_graph(const Graph& graph) {
   std::ostringstream result;
@@ -31,7 +29,9 @@ std::string print_graph(const Graph& graph) {
 
   result << ", distribution: {";
   for (const auto color : kColors) {
-       result << json::print_edge_color(color) << ": " << graph.get_edges_with_color(Graph::Edge::Color::Grey).size() << ", ";
+    result << json::print_edge_color(color) << ": "
+           << graph.get_edges_with_color(Graph::Edge::Color::Grey).size()
+           << ", ";
   }
   auto graph_string = result.str();
   graph_string.pop_back();
