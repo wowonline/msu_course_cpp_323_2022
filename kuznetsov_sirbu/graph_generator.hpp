@@ -8,7 +8,6 @@
 
 namespace uni_course_cpp {
 
-
 class GraphGenerator {
  public:
   struct Params {
@@ -35,16 +34,10 @@ class GraphGenerator {
   void generate_grey_edges(Graph& graph,
                            std::mutex& graph_mutex,
                            Graph::VertexId root_vertex_id) const;
-
-  void try_generate_yellow_edge(Graph& graph,
-                                Graph::VertexId vertex_from_id,
-                                Graph::VertexId vertex_to_id) const;
-  void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) const;
   void generate_grey_branch(Graph& graph,
                             std::mutex& graph_mutex,
                             Graph::VertexId root_vertex_id,
                             Graph::Depth current_depth) const;
-
   Params params_ = Params(0, 0);
 };
 

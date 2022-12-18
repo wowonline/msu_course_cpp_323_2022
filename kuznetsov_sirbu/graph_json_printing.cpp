@@ -4,7 +4,6 @@ namespace uni_course_cpp {
 namespace printing {
 namespace json {
 
-
 std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   std::string result_json_vertex = "{\"id\":";
   result_json_vertex += std::to_string(vertex.id()) + ",";
@@ -24,8 +23,8 @@ std::string print_vertex(const Graph::Vertex& vertex, const Graph& graph) {
   return result_json_vertex;
 }
 
-std::string print_edge_color(const Graph::Edge& edge) {
-  switch (edge.color()) {
+std::string print_edge_color(Graph::Edge::Color edge_color) {
+  switch (edge_color) {
     case Graph::Edge::Color::Grey:
       return "grey";
     case Graph::Edge::Color::Red:
@@ -43,7 +42,7 @@ std::string print_edge(const Graph::Edge& edge) {
       "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":" + "[" +
       std::to_string(edge.from_vertex_id()) + "," +
       std::to_string(edge.to_vertex_id()) + "]," + "\"color\":";
-  const std::string edge_color = print_edge_color(edge);
+  const std::string edge_color = print_edge_color(edge.color());
   result_json_edge += "\"" + edge_color + "\"" + "}";
   return result_json_edge;
 }

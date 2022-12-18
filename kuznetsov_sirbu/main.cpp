@@ -101,9 +101,9 @@ int main() {
     logger.log(generation_finished_string(i, graph_description, logger));
 
     const auto graph_json = uni_course_cpp::printing::json::print_graph(graph);
+    std::cout << graph_json << '\n';
     write_to_file(graph_json, "graph_" + std::to_string(i) + ".json");
   }
 
   return 0;
 }
-

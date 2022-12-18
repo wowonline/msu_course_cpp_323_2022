@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <fstream>
 #include <iostream>
 #include <map>
 #include <random>
@@ -78,7 +77,8 @@ class Graph {
 
   const std::vector<VertexId>& get_vertices_with_depth(Depth depth) const;
 
-  const std::vector<Graph::EdgeId>& get_edge_ids_with_color(Edge::Color color) const;
+  const std::vector<Graph::EdgeId>& get_edge_ids_with_color(
+      Edge::Color color) const;
 
   Depth depth() const { return depth_to_vertices_.size(); }
 
@@ -97,4 +97,3 @@ class Graph {
 };
 
 }  // namespace uni_course_cpp
-

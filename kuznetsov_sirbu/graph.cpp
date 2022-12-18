@@ -1,7 +1,6 @@
 #include "graph.hpp"
 #include "graph_json_printing.hpp"
 
-
 namespace uni_course_cpp {
 
 Graph::VertexId Graph::add_vertex() {
@@ -105,4 +104,3 @@ const std::vector<Graph::EdgeId>& Graph::get_edge_ids_with_color(
 }
 
 }  // namespace uni_course_cpp
-
