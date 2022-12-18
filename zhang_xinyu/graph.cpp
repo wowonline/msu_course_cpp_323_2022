@@ -56,13 +56,13 @@ class Graph {
   }
   Depth get_vertex_depth(VertexId id) const;
 
-  const std::unordered_map<VertexId, Vertex>& vertices() const {
+  const std::unordered_map<VertexId, Vertex>& get_vertexes() const {
     return vertexes_;
   }
   const std::vector<VertexId>& vertexes_of_depth(Depth depth) const {
     return vertexes_of_depth_[depth];
   };
-  const std::unordered_map<EdgeId, Edge>& edges() const { return edges_; }
+  const std::unordered_map<EdgeId, Edge>& get_edges() const { return edges_; }
   const std::set<EdgeId>& connected_edge_ids(VertexId vertex_id) const {
     return adjacency_list_.at(vertex_id);
   }
@@ -119,9 +119,8 @@ Graph::VertexId Graph::add_vertex() {
   vertexes_.insert(std::make_pair(vertex_id, Vertex(vertex_id)));
 
   if (vertexes_of_depth_.empty()) {
-    std::vector<VertexId> EmptyVertex_ = {};
-    vertexes_of_depth_.emplace_back(EmptyVertex_);
-    vertexes_of_depth_.emplace_back(EmptyVertex_);
+    std::vector<VertexId> empty_vertex_ = {};
+    vertexes_of_depth_.emplace_back(empty_vertex_);
   }
 
   vertexes_of_depth_[kBaseDepth].emplace_back(vertex_id);
@@ -157,8 +156,8 @@ void Graph::set_vertex_depth(VertexId id, Depth depth) {
   const auto graph_depth = get_graph_depth();
 
   if (depth > graph_depth) {
-    std::vector<VertexId> EmptyVertex = {};
-    vertexes_of_depth_.emplace_back(EmptyVertex);
+    std::vector<VertexId> empty_vertex_ = {};
+    vertexes_of_depth_.emplace_back(empty_vertex_);
   }
 
   depth_of_vertexes_[id] = depth;
@@ -278,7 +277,7 @@ void GraphGenerator::generate_grey_edges(Graph& graph) const {
 
 void GraphGenerator::generate_green_edges(Graph& graph) const {
   static float constexpr prob = 0.1;
-  const auto& vertices = graph.vertices();
+  const auto& vertices = graph.get_vertexes();
   for (const auto& [vertex_id, vertex] : vertices) {
     if (check_probability(prob)) {
       graph.add_edge(vertex.id(), vertex.id());
@@ -288,7 +287,7 @@ void GraphGenerator::generate_green_edges(Graph& graph) const {
 
 void GraphGenerator::generate_yellow_edges(Graph& graph) const {
   const auto depth = graph.get_graph_depth();
-  float step = 1.0 / (depth - 2);
+  const float step = 1.0 / (depth - 2);
   for (Graph::Depth current_depth = 2; current_depth <= depth - 1;
        current_depth++) {
     float prob = (float)(step * (current_depth - 1));
@@ -310,10 +309,10 @@ void GraphGenerator::generate_red_edges(Graph& graph) const {
   static float constexpr prob = (float)1 / 3;
   for (Graph::Depth current_depth = 1; current_depth <= depth - 2;
        current_depth++) {
-    const auto& next_vertexes_depth =
+    const auto& next_depth_vertex_ids =
         graph.vertexes_of_depth(current_depth + 2);
     for (const auto from_vertex_id : graph.vertexes_of_depth(current_depth)) {
-      const auto to_vertex_id = get_random_vertex(next_vertexes_depth);
+      const auto to_vertex_id = get_random_vertex(next_depth_vertex_ids);
       if (check_probability(prob)) {
         graph.add_edge(from_vertex_id, to_vertex_id);
       }
@@ -333,7 +332,7 @@ std::string print_edge_color(const Graph::Edge::Color& color) {
     case Graph::Edge::Color::Green:
       return "green";
     default:
-      return "No color";
+      throw std::runtime_error("Failed to determine color");
   }
 }
 namespace json {
@@ -366,8 +365,7 @@ std::string printing::json::print_vertex(const Graph::Vertex& vertex,
 }
 
 std::string printing::json::print_edge(const Graph::Edge& edge) {
-  const auto edge_id = edge.id();
-  return "{\"id\":" + std::to_string(edge_id) + ",\"vertex_ids\":[" +
+  return "{\"id\":" + std::to_string(edge.id()) + ",\"vertex_ids\":[" +
          std::to_string(edge.from_vertex_id()) + "," +
          std::to_string(edge.to_vertex_id()) + "],\"color\":\"" +
          printing::print_edge_color(edge.color()) + "\"}";
@@ -377,7 +375,7 @@ std::string printing::json::print_graph(const Graph& graph) {
   std::string graph_json =
       "{\"depth\":" + std::to_string(graph.get_graph_depth()) +
       ",\"vertices\":[";
-  const auto& vertices = graph.vertices();
+  const auto& vertices = graph.get_vertexes();
 
   if (!vertices.empty()) {
     for (const auto& [vertex_id, vertex] : vertices) {
@@ -389,7 +387,7 @@ std::string printing::json::print_graph(const Graph& graph) {
 
   graph_json += "],\"edges\":[";
 
-  const auto& edges = graph.edges();
+  const auto& edges = graph.get_edges();
 
   if (!edges.empty()) {
     for (const auto& [edge_id, edge] : edges) {
@@ -409,9 +407,9 @@ void write_to_file(const std::string& str, const std::string& filename) {
   out << str << std::endl;
 }
 
-bool is_number(std::string s) {
-  for (int i = 0; i < s.length(); i++) {
-    if (isdigit(s[i]) == false) {
+bool is_number(const std::string& str) {
+  for (int i = 0; i < str.length(); i++) {
+    if (isdigit(str[i]) == false) {
       return false;
     }
   }
