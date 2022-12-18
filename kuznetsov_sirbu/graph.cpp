@@ -270,9 +270,10 @@ class GraphGenerator {
       const auto vertex_from_id = vertex_from.id();
       const Graph::Depth vertex_depth = graph.vertex_depth(vertex_from_id);
       const double probability_generate =
-          1.0 - static_cast<double>((vertex_depth - Graph::kBaseDepth)) /
-                    (graph.depth() - Graph::kBaseDepth);
-      if (!check_probability(probability_generate)) {
+          static_cast<double>((vertex_depth - Graph::kBaseDepth)) /
+          (graph.depth() - Graph::kBaseDepth - Graph::kBaseDepth);
+
+      if (check_probability(probability_generate)) {
         const auto& vertex_ids = graph.get_vertices_with_depth(
             vertex_depth + Graph::kDifferenceYellowEdge);
         const auto not_connected_vertex_ids =
