@@ -30,14 +30,14 @@ class Graph {
     return false;
   }
 
-  bool hasEdge(const EdgeId& edge_id) const {
+ /* bool hasEdge(const EdgeId& edge_id) const {
     for (const auto& edge : edges_) {
       if (edge.id == edge_id) {
         return true;
       }
     }
     return false;
-  }
+  }*/
 
   bool isConnected(const VertexId& from_vertex_id,
                    const VertexId& to_vertex_id) const {
@@ -45,7 +45,7 @@ class Graph {
     assert(hasVertex(to_vertex_id) && "to Vertex index is out of range");
     if (from_vertex_id == to_vertex_id) {
       for (const auto& edge_id : connection_list_.at(from_vertex_id)) {
-        const auto& edge = getEdge(edge_id);
+        const auto& edge = edge_id;
         if (edge.from_vertex_id == from_vertex_id &&
             edge.to_vertex_id == from_vertex_id) {
           return true;
@@ -53,7 +53,7 @@ class Graph {
       }
     } else {
       for (const auto& edge_id : connection_list_.at(from_vertex_id)) {
-        const auto& edge = getEdge(edge_id);
+        const auto& edge = edge_id;
         if (edge.from_vertex_id == to_vertex_id ||
             edge.to_vertex_id == to_vertex_id) {
           return true;
@@ -81,7 +81,7 @@ class Graph {
     }
   }
 
-  const Edge& getEdge(const EdgeId& edge_id) const {
+ /* const Edge& getEdge(const EdgeId& edge_id) const {
     assert(hasEdge(edge_id) && "Edge id is out of range.");
     for (const auto& edge : edges_) {
       if (edge.id == edge_id) {
@@ -89,7 +89,7 @@ class Graph {
       }
     }
     throw std::runtime_error("Cannot be reached.");
-  }
+  }*/
 
  private:
   std::vector<Vertex> vertexes_;
