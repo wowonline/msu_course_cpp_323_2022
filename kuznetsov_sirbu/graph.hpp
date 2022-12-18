@@ -76,14 +76,9 @@ class Graph {
     return vertex_depths_.at(vertex_id);
   }
 
-  const Vertex& get_vertex_with_id(VertexId vertex_id) const {
-    return vertices_.at(vertex_id);
-  }
-
   const std::vector<VertexId>& get_vertices_with_depth(Depth depth) const;
 
-  const std::vector<Graph::EdgeId>& get_edges_with_color(
-      Edge::Color color) const;
+  const std::vector<Graph::EdgeId>& get_edge_ids_with_color(Edge::Color color) const;
 
   Depth depth() const { return depth_to_vertices_.size(); }
 
