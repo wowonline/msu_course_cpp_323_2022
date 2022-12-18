@@ -52,7 +52,7 @@ class Graph {
   void add_edge(VertexId from_vertex_id, VertexId to_vertex_id);
 
   Depth get_graph_depth() const {
-    return vertexes_of_depth_.size() ? vertexes_of_depth_.size() - 1 : 0;
+    return vertexes_of_depth_.size() ? vertexes_of_depth_.size() : 0;
   }
   Depth get_vertex_depth(VertexId id) const;
 
@@ -88,7 +88,7 @@ class Graph {
   std::unordered_map<VertexId, std::set<EdgeId>> adjacency_list_;
 };
 
-static constexpr Graph::Depth kBaseDepth = 0;
+static constexpr Graph::Depth kBaseDepth = 1;
 
 Graph::Depth Graph::get_vertex_depth(Graph::VertexId id) const {
   assert(has_vertex(id));
@@ -121,6 +121,11 @@ Graph::VertexId Graph::add_vertex() {
   if (vertexes_of_depth_.empty()) {
     std::vector<VertexId> empty_vertex = {};
     vertexes_of_depth_.emplace_back(empty_vertex);
+    // vertexes_of_depth_.emplace_back(EmptyVertex_);
+    //[[depth_0]]
+    vertexes_of_depth_.emplace_back(empty_vertex);
+    // vertexes_of_depth_.emplace_back(EmptyVertex_);
+    //[[depth_0] [depth_1]]
   }
 
   vertexes_of_depth_[kBaseDepth].emplace_back(vertex_id);
