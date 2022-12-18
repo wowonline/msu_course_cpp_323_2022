@@ -120,13 +120,10 @@ Graph::VertexId Graph::add_vertex() {
 
   if (vertexes_of_depth_.empty()) {
     std::vector<VertexId> empty_vertex = {};
-    // vertexes_of_depth_.emplace_back(EmptyVertex_);
-    //[[depth_0]]
     // add empty vector to keep vertices at depth 0 of the graph
     vertexes_of_depth_.emplace_back(empty_vertex);
-    // vertexes_of_depth_.emplace_back(EmptyVertex_);
-    //[[depth_0] [depth_1]]
-    // add empty vector to keep vertices at depth 0 and depth 1 of the graph
+
+    // add empty vector to keep vertices at depth 1 of the graph
     vertexes_of_depth_.emplace_back(empty_vertex);
   }
 
