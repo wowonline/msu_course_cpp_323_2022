@@ -258,7 +258,7 @@ class GraphGenerator {
     }
   }
 
-  void try_generate_yellow_edge(Graph& graph,
+  void add_yellow_edge(Graph& graph,
                                 Graph::VertexId vertex_from_id,
                                 Graph::VertexId vertex_to_id) const {
     const Graph::Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
@@ -280,13 +280,13 @@ class GraphGenerator {
         if (!not_connected_vertex_ids.empty()) {
           const Graph::VertexId vertex_to_id = not_connected_vertex_ids.at(
               get_random_vertex_id(not_connected_vertex_ids.size()));
-          try_generate_yellow_edge(graph, vertex_from_id, vertex_to_id);
+          add_yellow_edge(graph, vertex_from_id, vertex_to_id);
         }
       }
     }
   }
 
-  void try_generate_red_edge(Graph& graph,
+  void add_red_edge(Graph& graph,
                              Graph::VertexId vertex_from_id,
                              Graph::VertexId vertex_to_id) const {
     const Graph::Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
@@ -305,7 +305,7 @@ class GraphGenerator {
       if (!vertex_ids.empty()) {
         const Graph::VertexId vertex_to_id =
             vertex_ids.at(get_random_vertex_id(vertex_ids.size()));
-        try_generate_red_edge(graph, vertex_from_id, vertex_to_id);
+        add_red_edge(graph, vertex_from_id, vertex_to_id);
       }
     }
   }
