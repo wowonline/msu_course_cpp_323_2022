@@ -259,8 +259,8 @@ class GraphGenerator {
   }
 
   void add_yellow_edge(Graph& graph,
-                                Graph::VertexId vertex_from_id,
-                                Graph::VertexId vertex_to_id) const {
+                       Graph::VertexId vertex_from_id,
+                       Graph::VertexId vertex_to_id) const {
     const Graph::Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
     graph.add_edge(vertex_from_id, vertex_to_id);
   }
@@ -287,8 +287,8 @@ class GraphGenerator {
   }
 
   void add_red_edge(Graph& graph,
-                             Graph::VertexId vertex_from_id,
-                             Graph::VertexId vertex_to_id) const {
+                    Graph::VertexId vertex_from_id,
+                    Graph::VertexId vertex_to_id) const {
     const Graph::Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
     graph.add_edge(vertex_from_id, vertex_to_id);
   }
