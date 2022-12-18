@@ -1,11 +1,11 @@
 #include "logger.hpp"
+#include "config.hpp"
 
 #include <chrono>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <string>
 
 namespace {
 std::string get_current_date_time() {
@@ -20,6 +20,8 @@ std::string get_current_date_time() {
 
 namespace uni_course_cpp {
 
+Logger::Logger() : log_stream_(config::kLogFilePath, std::ofstream::app) {}
+
 Logger& Logger::get_instance() {
   static Logger logger;
   return logger;
@@ -27,7 +29,7 @@ Logger& Logger::get_instance() {
 
 void Logger::log(const std::string& string) {
   const std::string current_time = get_current_date_time();
-  const std::lock_guard<std::mutex> control(log_control_);
+  std::cout << current_time << string << '\n';
   log_stream_ << current_time << string;
 }
 
