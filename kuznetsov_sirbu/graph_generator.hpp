@@ -28,9 +28,10 @@ class GraphGenerator {
   Graph generate() const;
 
  private:
-  Graph::VertexId try_generate_grey_edge(Graph& graph,
-                                         Graph::Depth current_depth,
-                                         Graph::VertexId vertex_id) const;
+  Graph::VertexId add_grey_edge(Graph& graph,
+                                Graph::Depth current_depth,
+                                Graph::VertexId vertex_id,
+                                std::mutex& graph_mutex) const;
   void generate_grey_edges(Graph& graph,
                            std::mutex& graph_mutex,
                            Graph::VertexId root_vertex_id) const;
