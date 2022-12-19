@@ -22,8 +22,17 @@ struct Vertex {
 class Graph {
  public:
   bool hasVertex(const VertexId& vertex_id) const {
-    for (const auto& vertex : vertexes_) {
+    for (const auto& vertex : vertices_) {
       if (vertex.id == vertex_id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool hasEdge(const EdgeId& edge_id) const {
+    for (const auto& edge : edges_) {
+      if (edge.id == edge_id) {
         return true;
       }
     }
@@ -36,7 +45,7 @@ class Graph {
     assert(hasVertex(to_vertex_id) && "to Vertex index is out of range");
     if (from_vertex_id == to_vertex_id) {
       for (const auto& edge_id : connection_list_.at(from_vertex_id)) {
-        const auto& edge = edges_[edge_id];
+        const auto& edge = getEdge(edge_id);
         if (edge.from_vertex_id == from_vertex_id &&
             edge.to_vertex_id == from_vertex_id) {
           return true;
@@ -44,7 +53,7 @@ class Graph {
       }
     } else {
       for (const auto& edge_id : connection_list_.at(from_vertex_id)) {
-        const auto& edge = edges_[edge_id];
+        const auto& edge = getEdge(edge_id);
         if (edge.from_vertex_id == to_vertex_id ||
             edge.to_vertex_id == to_vertex_id) {
           return true;
@@ -55,7 +64,7 @@ class Graph {
   }
 
   void addVertex() {
-    const auto& new_vertex = vertexes_.emplace_back(getNewVertexId());
+    const auto& new_vertex = vertices_.emplace_back(getNewVertexId());
     connection_list_.insert({new_vertex.id, std::vector<EdgeId>()});
   }
 
@@ -72,8 +81,25 @@ class Graph {
     }
   }
 
+  const Edge& getEdge(const EdgeId& edge_id) const {
+    assert(hasEdge(edge_id) && "Edge id is out of range.");
+    for (const auto& edge : edges_) {
+      if (edge.id == edge_id) {
+        return edge;
+      }
+    }
+    throw std::runtime_error("Cannot be reached.");
+  }
+
+  const std::vector<EdgeId> vertexConnections(const VertexId& id) const {
+    assert(hasVertex(id) && "Vertex id is out of range");
+    return connection_list_.at(id);
+  }
+  const std::vector<Vertex>& vertices() const { return vertices_; }
+  const std::vector<Edge>& edges() const { return edges_; }
+
  private:
-  std::vector<Vertex> vertexes_;
+  std::vector<Vertex> vertices_;
   std::vector<Edge> edges_;
   VertexId new_vertex_id_ = 0;
   EdgeId new_edge_id_ = 0;
