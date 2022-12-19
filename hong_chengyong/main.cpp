@@ -28,7 +28,7 @@ std::string printEdge(const uni_course_cpp::Edge& edge) {
 std::string print_graph(const uni_course_cpp::Graph& graph) {
   std::string graph_string;
   graph_string += "{\n \"vertices\": [\n  ";
-  for (const auto& vertex : graph.vertices()) {
+  for (const auto& vertex : graph.vertexes()) {
     graph_string += printVertex(vertex.id, graph);
   }
   graph_string.pop_back();

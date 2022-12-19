@@ -30,7 +30,6 @@ class Graph {
     return false;
   }
 
-
   bool isConnected(const VertexId& from_vertex_id,
                    const VertexId& to_vertex_id) const {
     assert(hasVertex(from_vertex_id) && "from Vertex index is out of range");
@@ -77,7 +76,7 @@ class Graph {
     assert(hasVertex(id) && "Vertex id is out of range");
     return connection_list_.at(id);
   }
-  const std::vector<Vertex>& vertices() const { return vertices_; }
+  const std::vector<Vertex>& vertexes() const { return vertexes_; }
   const std::vector<Edge>& edges() const { return edges_; }
 
  private:
