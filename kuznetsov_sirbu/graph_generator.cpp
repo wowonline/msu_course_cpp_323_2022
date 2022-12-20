@@ -68,7 +68,7 @@ void generate_red_edges(Graph& graph, std::mutex& graph_mutex) {
       vertices.begin(), vertices.end(),
       [&graph, &graph_mutex](
           const std::unique_ptr<uni_course_cpp::IVertex>& vertex_from) {
-        if (!check_probability(kProbabilityRed)) {  //
+        if (!check_probability(kProbabilityRed)) {
           const auto vertex_from_id = vertex_from->id();
           const Depth vertex_depth = graph.vertex_depth(vertex_from_id);
           const auto& vertex_ids = graph.get_vertices_with_depth(
