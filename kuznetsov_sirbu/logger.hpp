@@ -1,9 +1,6 @@
 #pragma once
 #include <fstream>
-#include <mutex>
 #include <string>
-#include <thread>
-#include "config.hpp"
 
 namespace uni_course_cpp {
 class Logger {
@@ -17,7 +14,7 @@ class Logger {
   void operator=(Logger&& other) = delete;
 
  private:
-  Logger() : log_stream_(config::kLogFilePath, std::ofstream::app) {}
+  Logger();
   ~Logger() { log_stream_.close(); };
 
   std::ofstream log_stream_;

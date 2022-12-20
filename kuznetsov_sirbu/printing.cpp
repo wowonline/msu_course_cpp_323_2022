@@ -9,17 +9,17 @@ namespace uni_course_cpp {
 namespace printing {
 
 static constexpr int kUseColors = 4;
-constexpr std::array<Color, kUseColors> kColors = {
-    Color::Grey, Color::Green,
-    Color::Yellow, Color::Red};
+constexpr std::array<Graph::Edge::Color, kUseColors> kColors = {
+    Graph::Edge::Color::Grey, Graph::Edge::Color::Green,
+    Graph::Edge::Color::Yellow, Graph::Edge::Color::Red};
 
-std::string print_graph(const IGraph& graph) {
+std::string print_graph(const Graph& graph) {
   std::ostringstream result;
   result << "{\n\tdepth: " << graph.depth() << ",\n";
   result << "\tvertices: "
          << "{amount: " << graph.get_vertices().size() << ", "
          << "distribution: [";
-  for (Depth depth = 1; depth <= graph.depth(); ++depth) {
+  for (Graph::Depth depth = 1; depth <= graph.depth(); ++depth) {
     result << graph.get_vertices_with_depth(depth).size();
     if (depth < graph.depth()) {
       result << ", ";
@@ -31,7 +31,7 @@ std::string print_graph(const IGraph& graph) {
   result << ", distribution: {";
   for (const auto color : kColors) {
     result << json::print_edge_color(color) << ": "
-           << graph.get_edge_ids_with_color(color).size()
+           << graph.get_edge_ids_with_color(Graph::Edge::Color::Grey).size()
            << ", ";
   }
   auto graph_string = result.str();
