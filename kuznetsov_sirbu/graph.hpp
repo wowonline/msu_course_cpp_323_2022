@@ -79,11 +79,6 @@ class Graph : public IGraph {
     return vertex_depths_.at(vertex_id);
   }
 
-  const std::unique_ptr<IVertex>& get_vertex_with_id(
-      VertexId vertex_id) const override {
-    return vertices_.at(vertex_id);
-  }
-
   const std::vector<VertexId>& get_vertices_with_depth(
       Depth depth) const override;
 

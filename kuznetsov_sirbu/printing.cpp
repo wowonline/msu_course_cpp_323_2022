@@ -3,6 +3,11 @@
 namespace uni_course_cpp {
 namespace printing {
 
+static constexpr int kUseColors = 4;
+constexpr std::array<Color, kUseColors> kColors = {
+    Color::Grey, Color::Green,
+    Color::Yellow, Color::Red};
+
 std::string print_graph(const IGraph& graph) {
   std::ostringstream result;
   result << "{\n\tdepth: " << graph.depth() << ",\n";
@@ -17,14 +22,18 @@ std::string print_graph(const IGraph& graph) {
   }
 
   result << "]},\n\tedges: {amount: " << graph.get_edges().size();
-  result << ", distribution: {grey: "
-         << graph.get_edges_with_color(Color::Grey).size();
-  result << ", green: " << graph.get_edges_with_color(Color::Green).size();
-  result << ", yellow: " << graph.get_edges_with_color(Color::Yellow).size();
-  result << ", red: " << graph.get_edges_with_color(Color::Red).size()
-         << "}}\n}";
 
-  return result.str();
+  result << ", distribution: {";
+  for (const auto color : kColors) {
+    result << json::print_edge_color(color) << ": "
+           << graph.get_edge_ids_with_color(Graph::Edge::Color::Grey).size()
+           << ", ";
+  }
+  auto graph_string = result.str();
+  graph_string.pop_back();
+  graph_string.pop_back();
+  graph_string += "}}\n}";
+  return graph_string;
 }
 
 }  // namespace printing
