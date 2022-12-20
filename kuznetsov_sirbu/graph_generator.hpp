@@ -28,17 +28,13 @@ class GraphGenerator {
   std::unique_ptr<IGraph> generate() const;
 
  private:
-  VertexId try_generate_grey_edge(Graph& graph,
-                                  Depth current_depth,
-                                  VertexId vertex_id) const;
+  VertexId add_grey_edge(Graph& graph,
+                                Depth current_depth,
+                                VertexId vertex_id,
+                                std::mutex& graph_mutex) const;
   void generate_grey_edges(Graph& graph,
                            std::mutex& graph_mutex,
                            VertexId root_vertex_id) const;
-
-  void try_generate_yellow_edge(Graph& graph,
-                                VertexId vertex_from_id,
-                                VertexId vertex_to_id) const;
-  void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) const;
   void generate_grey_branch(Graph& graph,
                             std::mutex& graph_mutex,
                             VertexId root_vertex_id,

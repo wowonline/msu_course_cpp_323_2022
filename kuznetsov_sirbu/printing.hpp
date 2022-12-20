@@ -1,8 +1,6 @@
 #pragma once
-#include "interfaces/i_graph.hpp"
 
-#include <iostream>
-#include <sstream>
+#include "interfaces/i_graph.hpp"
 #include <string>
 
 namespace uni_course_cpp {

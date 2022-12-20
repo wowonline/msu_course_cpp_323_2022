@@ -82,7 +82,7 @@ class Graph : public IGraph {
   const std::vector<VertexId>& get_vertices_with_depth(
       Depth depth) const override;
 
-  const std::vector<EdgeId>& get_edges_with_color(Color color) const override;
+  const std::vector<EdgeId>& get_edge_ids_with_color(Color color) const override;
 
   Depth depth() const override { return depth_to_vertices_.size(); }
 
