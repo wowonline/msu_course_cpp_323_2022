@@ -31,7 +31,7 @@ std::string print_graph(const Graph& graph) {
   result << ", distribution: {";
   for (const auto color : kColors) {
     result << json::print_edge_color(color) << ": "
-           << graph.get_edge_ids_with_color(Graph::Edge::Color::Grey).size()
+           << graph.get_edge_ids_with_color(color).size()
            << ", ";
   }
   auto graph_string = result.str();
