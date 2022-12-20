@@ -1,7 +1,7 @@
 #pragma once
 #include <fstream>
-#include <string>
 #include <mutex>
+#include <string>
 
 namespace uni_course_cpp {
 class Logger {
