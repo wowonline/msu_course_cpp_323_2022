@@ -24,11 +24,9 @@ class IGraph {
   virtual Color get_edge_color(VertexId from_vertex_id,
                                VertexId to_vertex_id) const = 0;
   virtual Depth vertex_depth(VertexId vertex_id) const = 0;
-  virtual const std::unique_ptr<IVertex>& get_vertex_with_id(
-      VertexId vertex_id) const = 0;
   virtual const std::vector<VertexId>& get_vertices_with_depth(
       Depth depth) const = 0;
-  virtual const std::vector<EdgeId>& get_edges_with_color(
+  virtual const std::vector<EdgeId>& get_edge_ids_with_color(
       Color color) const = 0;
   virtual Depth depth() const = 0;
 };
