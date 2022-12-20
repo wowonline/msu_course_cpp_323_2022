@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <mutex>
 #include <string>
 
 namespace uni_course_cpp {
