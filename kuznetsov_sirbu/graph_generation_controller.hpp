@@ -6,6 +6,7 @@
 #include <queue>
 #include <thread>
 #include "graph_generator.hpp"
+#include "interfaces/i_graph.hpp"
 #include "interfaces/i_worker.hpp"
 
 namespace uni_course_cpp {

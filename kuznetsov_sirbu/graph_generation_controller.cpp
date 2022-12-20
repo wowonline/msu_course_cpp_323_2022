@@ -6,6 +6,8 @@
 #include <optional>
 #include <queue>
 #include <thread>
+#include <utility>
+#include "interfaces/i_graph.hpp"
 
 namespace uni_course_cpp {
 
