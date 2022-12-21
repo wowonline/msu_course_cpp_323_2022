@@ -9,6 +9,7 @@
 #include <random>
 #include <thread>
 #include <utility>
+#include <unistd.h>
 
 namespace uni_course_cpp {
 
@@ -44,10 +45,15 @@ VertexId get_random_vertex_id(int size) {
 std::vector<VertexId> get_unconnected_vertex_ids(
     const Graph& graph,
     VertexId vertex_from_id,
-    const std::vector<VertexId>& vertex_ids) {
+    const std::vector<VertexId>& vertex_ids, std::mutex& graph_mutex) {
   std::vector<VertexId> not_connected_vertex_ids;
   for (const auto& vertex_to_id : vertex_ids) {
-    if (!graph.is_connected(vertex_from_id, vertex_to_id)) {
+    const auto is_connected = [&graph, vertex_from_id, vertex_to_id, &graph_mutex]()
+    {
+      const std::lock_guard<std::mutex> graph_lock(graph_mutex);
+      return graph.is_connected(vertex_from_id, vertex_to_id);
+    }();
+    if (!is_connected) {
       not_connected_vertex_ids.emplace_back(vertex_to_id);
     }
   }
@@ -126,7 +132,7 @@ void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) {
           const auto& vertex_ids = graph.get_vertices_with_depth(
               vertex_depth + Graph::kDifferenceYellowEdge);
           const auto not_connected_vertex_ids =
-              get_unconnected_vertex_ids(graph, vertex_from_id, vertex_ids);
+              get_unconnected_vertex_ids(graph, vertex_from_id, vertex_ids, graph_mutex);
           if (!not_connected_vertex_ids.empty()) {
             const VertexId vertex_to_id = not_connected_vertex_ids.at(
                 get_random_vertex_id(not_connected_vertex_ids.size()));
@@ -149,7 +155,6 @@ std::unique_ptr<IGraph> GraphGenerator::generate() const {
     const auto root_id = graph.add_vertex();
 
     generate_grey_edges(graph, graph_mutex, root_id);
-
     std::thread generating_green_edges(
         [&graph, &graph_mutex]() { generate_green_edges(graph, graph_mutex); });
     std::thread generating_yellow_edges([&graph, &graph_mutex]() {
@@ -157,7 +162,6 @@ std::unique_ptr<IGraph> GraphGenerator::generate() const {
     });
     std::thread generating_red_edges(
         [&graph, &graph_mutex]() { generate_red_edges(graph, graph_mutex); });
-
     generating_green_edges.join();
     generating_yellow_edges.join();
     generating_red_edges.join();

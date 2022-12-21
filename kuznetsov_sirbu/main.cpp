@@ -18,7 +18,7 @@ namespace {
 
 void write_to_file(const std::string& graph_json,
                    const std::string& file_name) {
-  std::ofstream file(file_name);
+  std::ofstream file(uni_course_cpp::config::kTempDirectoryPath + file_name);
   file << graph_json;
 }
 
