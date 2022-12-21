@@ -86,7 +86,7 @@ std::string generation_started_string(int number_of_graph) {
 }
 
 std::string generation_finished_string(int number_of_graph,
-                                       const std::string &content) {
+                                       const std::string& content) {
   std::stringstream result;
   result << " Graph " << number_of_graph << ", Generation Finished " << content
          << "\n";
