@@ -1,4 +1,4 @@
-#include "graph_logger.hpp"
+#include "logger.hpp"
 #include <chrono>
 #include <iomanip>
 #include <iostream>

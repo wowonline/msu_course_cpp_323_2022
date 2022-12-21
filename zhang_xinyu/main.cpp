@@ -6,8 +6,8 @@
 #include "graph.hpp"
 #include "graph_generator.hpp"
 #include "graph_json_printing.hpp"
-#include "graph_logger.hpp"
 #include "graph_printing.hpp"
+#include "logger.hpp"
 
 namespace fs = std::filesystem;
 
@@ -77,8 +77,8 @@ int handle_graphs_count_input() {
 }
 
 void prepare_temp_directory() {
-  if (!fs::exists(config::kTempDirectoryPath)) {
-    if (!fs::create_directories(config::kTempDirectoryPath)) {
+  if (!fs::exists(uni_course_cpp::config::kTempDirectoryPath)) {
+    if (!fs::create_directories(uni_course_cpp::config::kTempDirectoryPath)) {
       throw std::runtime_error("Temp directory error!");
     }
   }
@@ -104,8 +104,9 @@ int main() {
     logger.log(generation_finished_string(i, graph_description));
 
     const auto graph_json = printing::json::print_graph(graph);
-    write_to_file(graph_json, std::string(config::kTempDirectoryPath) +
-                                  "graph_" + std::to_string(i) + ".json");
+    write_to_file(graph_json,
+                  std::string(uni_course_cpp::config::kTempDirectoryPath) +
+                      "graph_" + std::to_string(i) + ".json");
   }
 
   return 0;
