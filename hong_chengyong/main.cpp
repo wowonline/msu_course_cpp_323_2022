@@ -6,10 +6,10 @@
 namespace printing {
 namespace json {
 std::string printVertex(const uni_course_cpp::VertexId& id,
-                        uni_course_cpp::Graph _graph) {
+                        const uni_course_cpp::Graph& graph) {
   std::string vertex_string =
       "{\n   \"id\": " + std::to_string(id) + ",\n   \"edge_ids\": [";
-  for (const auto& edge_id : _graph.vertexConnections(id)) {
+  for (const auto& edge_id : graph.vertexConnections(id)) {
     vertex_string += std::to_string(edge_id) + ", ";
   }
   vertex_string.pop_back();
@@ -25,7 +25,7 @@ std::string printEdge(const uni_course_cpp::Edge& edge) {
   return edge_string;
 }
 
-std::string print_graph(const uni_course_cpp::Graph& graph) {
+std::string printGraph(const uni_course_cpp::Graph& graph) {
   std::string graph_string;
   graph_string += "{\n \"vertices\": [\n  ";
   for (const auto& vertex : graph.vertexes()) {
@@ -76,7 +76,7 @@ uni_course_cpp::Graph generateGraph() {
   return graph;
 }
 
-void write_to_file(const std::string& string, const std::string& file_name) {
+void writeToFile(const std::string& string, const std::string& file_name) {
   std::ofstream file(file_name);
   file << string;
   file.close();
@@ -84,7 +84,7 @@ void write_to_file(const std::string& string, const std::string& file_name) {
 
 int main() {
   const auto graph = generateGraph();
-  const auto graph_json = printing::json::print_graph(graph);
-  write_to_file(graph_json, "graph.json");
+  const auto graphJson = printing::json::printGraph(graph);
+  writeToFile(graphJson, "graph.json");
   return 0;
 }
