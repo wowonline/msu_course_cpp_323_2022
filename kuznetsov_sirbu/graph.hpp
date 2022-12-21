@@ -19,37 +19,6 @@ class Graph : public IGraph {
   static constexpr GraphDepth kDifferenceRedEdge = 2;
   static constexpr GraphDepth kDifferenceYellowEdge = 1;
 
-  struct Vertex : public IVertex {
-   public:
-    explicit Vertex(VertexId id) : id_(id) {}
-    VertexId id() const override { return id_; }
-
-   private:
-    VertexId id_ = 0;
-  };
-
-  struct Edge : public IEdge {
-   public:
-    Edge(EdgeId id,
-         VertexId from_vertex_id,
-         VertexId to_vertex_id,
-         EdgeColor color)
-        : id_(id),
-          from_vertex_id_(from_vertex_id),
-          to_vertex_id_(to_vertex_id),
-          color_(color) {}
-    EdgeId id() const override { return id_; }
-    VertexId from_vertex_id() const override { return from_vertex_id_; }
-    VertexId to_vertex_id() const override { return to_vertex_id_; }
-    EdgeColor color() const override { return color_; }
-
-   private:
-    EdgeColor color_ = EdgeColor::Grey;
-    EdgeId id_ = 0;
-    VertexId from_vertex_id_ = 0;
-    VertexId to_vertex_id_ = 0;
-  };
-
   VertexId add_vertex() override;
 
   EdgeId add_edge(VertexId from_vertex_id, VertexId to_vertex_id) override;
@@ -90,6 +59,37 @@ class Graph : public IGraph {
   GraphDepth depth() const override { return depth_to_vertices_.size(); }
 
  private:
+  struct Vertex : public IVertex {
+   public:
+    explicit Vertex(VertexId id) : id_(id) {}
+    VertexId id() const override { return id_; }
+
+   private:
+    VertexId id_ = 0;
+  };
+
+  struct Edge : public IEdge {
+   public:
+    Edge(EdgeId id,
+         VertexId from_vertex_id,
+         VertexId to_vertex_id,
+         EdgeColor color)
+        : id_(id),
+          from_vertex_id_(from_vertex_id),
+          to_vertex_id_(to_vertex_id),
+          color_(color) {}
+    EdgeId id() const override { return id_; }
+    VertexId from_vertex_id() const override { return from_vertex_id_; }
+    VertexId to_vertex_id() const override { return to_vertex_id_; }
+    EdgeColor color() const override { return color_; }
+
+   private:
+    EdgeColor color_ = EdgeColor::Grey;
+    EdgeId id_ = 0;
+    VertexId from_vertex_id_ = 0;
+    VertexId to_vertex_id_ = 0;
+  };
+
   VertexId get_new_vertex_id() { return vertex_id_counter_++; }
   EdgeId get_new_edge_id() { return edge_id_counter_++; }
 
