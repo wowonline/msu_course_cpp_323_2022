@@ -19,7 +19,6 @@ std::string get_current_date_time() {
 }  // namespace
 
 Logger::Logger()
-    : output_fstream_(std::ofstream(config::kLogFilePath, std::ios::app)) {}
 
 Logger& Logger::get_logger() {
   static Logger instance;

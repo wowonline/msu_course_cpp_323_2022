@@ -1,33 +1,33 @@
+#include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <sstream>
-#include <vector>
+#include <string>
+
 #include "config.hpp"
 #include "graph.hpp"
 #include "graph_generation_controller.hpp"
 #include "graph_generator.hpp"
+#include "graph_json_printing.hpp"
 #include "logger.hpp"
 #include "printing.hpp"
-#include "printing_json.hpp"
 
-void write_to_file(const std::string& output_string,
+namespace {
+
+void write_to_file(const std::string& graph_json,
                    const std::string& file_name) {
-  std::ofstream output(file_name);
-  if (output.is_open()) {
-    output << output_string;
-  } else {
-    std::cout << "Unable to open file";
-  }
+  std::ofstream file(file_name);
+  file << graph_json;
 }
 
 constexpr int kInputSize = 256;
 
-int handle_depth_input() {
-  std::cout << "Enter depth: ";
+uni_course_cpp::Graph::Depth handle_depth_input() {
+  std::cout << "Depth: ";
   int depth = 0;
   while (!(std::cin >> depth) || depth < 0) {
-    std::cout << "Invalid value. Please, try again." << std::endl
-              << "Enter depth: ";
+    std::cout << "Invalid value" << std::endl << "Depth: ";
     std::cin.clear();
     std::cin.ignore(kInputSize, '\n');
   }
@@ -35,11 +35,10 @@ int handle_depth_input() {
 }
 
 int handle_new_vertices_count_input() {
-  std::cout << "Enter new vertices count: ";
+  std::cout << "Vertices count: ";
   int new_vertices_count = 0;
   while (!(std::cin >> new_vertices_count) || new_vertices_count < 0) {
-    std::cout << "Invalid value. Please, try again." << std::endl
-              << "Enter new vertices count: ";
+    std::cout << "Invalid value" << std::endl << "Vertices count: ";
     std::cin.clear();
     std::cin.ignore(kInputSize, '\n');
   }
@@ -47,7 +46,7 @@ int handle_new_vertices_count_input() {
 }
 
 int handle_graphs_count_input() {
-  std::cout << "Enter graph count: ";
+  std::cout << "Graphs count: ";
   int graph_count = 0;
   while (!(std::cin >> graph_count) || graph_count < 0) {
     std::cout << "Invalid value. Please, try again." << std::endl
@@ -59,33 +58,38 @@ int handle_graphs_count_input() {
 }
 
 int handle_threads_count_input() {
-  std::cout << "Enter thread count: ";
-  int thread_count = 0;
-  while (!(std::cin >> thread_count) || thread_count < 0) {
+  std::cout << "Threads count: ";
+  int threads_count = 0;
+  while (!(std::cin >> threads_count) || threads_count < 0) {
     std::cout << "Invalid value. Please, try again." << std::endl
-              << "Enter thread count: ";
+              << "Threads count: ";
     std::cin.clear();
     std::cin.ignore(kInputSize, '\n');
   }
-  return thread_count;
-}
-
-std::string generation_started_string(int num_of_graph) {
-  std::stringstream start_string;
-  start_string << " Graph " << num_of_graph << ", Generation Started\n";
-  return start_string.str();
-}
-
-std::string generation_finished_string(int num_of_graph,
-                                       const std::string& content) {
-  std::stringstream finish_string;
-  finish_string << " Graph " << num_of_graph << ", Generation Finished "
-                << content << "\n";
-  return finish_string.str();
+  return threads_count;
 }
 
 void prepare_temp_directory() {
-  std::filesystem::create_directory(uni_course_cpp::config::kTempDirectoryPath);
+  if (std::filesystem::exists(uni_course_cpp::config::kTempDirectoryPath))
+    return;
+  if (!std::filesystem::create_directory(
+          uni_course_cpp::config::kTempDirectoryPath)) {
+    throw std::runtime_error("Can not create temp directory");
+  }
+}
+
+std::string generation_started_string(int number_of_graph) {
+  std::stringstream result;
+  result << " Graph " << number_of_graph << ", Generation Started\n";
+  return result.str();
+}
+
+std::string generation_finished_string(int number_of_graph,
+                                       const std::string& content) {
+  std::stringstream result;
+  result << " Graph " << number_of_graph << ", Generation Finished " << content
+         << "\n";
+  return result.str();
 }
 
 std::vector<uni_course_cpp::Graph> generate_graphs(
@@ -95,7 +99,7 @@ std::vector<uni_course_cpp::Graph> generate_graphs(
   auto generation_controller = uni_course_cpp::GraphGenerationController(
       threads_count, graphs_count, std::move(params));
 
-  auto& logger = uni_course_cpp::Logger::get_logger();
+  auto& logger = uni_course_cpp::Logger::get_instance();
 
   auto graphs = std::vector<uni_course_cpp::Graph>();
   graphs.reserve(graphs_count);
@@ -107,14 +111,15 @@ std::vector<uni_course_cpp::Graph> generate_graphs(
         const auto graph_description =
             uni_course_cpp::printing::print_graph(graph);
         logger.log(generation_finished_string(index, graph_description));
-        const auto graph_json = uni_course_cpp::json::print_graph(graph);
-        write_to_file(graph_json,
-                      std::string{uni_course_cpp::config::kTempDirectoryPath} +
-                          "graph_" + std::to_string(index) + ".json");
+        const auto graph_json =
+            uni_course_cpp::printing::json::print_graph(graph);
+        write_to_file(graph_json, "graph_" + std::to_string(index) + ".json");
       });
 
   return graphs;
 }
+
+}  // namespace
 
 int main() {
   const int depth = handle_depth_input();
@@ -122,11 +127,10 @@ int main() {
   const int graphs_count = handle_graphs_count_input();
   const int threads_count = handle_threads_count_input();
   prepare_temp_directory();
-
   auto params =
       uni_course_cpp::GraphGenerator::Params(depth, new_vertices_count);
+
   const auto graphs =
       generate_graphs(std::move(params), graphs_count, threads_count);
-
   return 0;
 }

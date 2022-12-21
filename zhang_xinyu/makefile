@@ -1,7 +1,6 @@
 CC = clang++
 
-    LFLAGS = -std = c++ 17 - Werror - pthread CFLAGS = -std =
-                        c++ 17 - Werror - pthread OBJ =
+
                             graph.o graph_generator.o graph_printing
                                     .o graph_json_printing.o main.o logger.o
 
