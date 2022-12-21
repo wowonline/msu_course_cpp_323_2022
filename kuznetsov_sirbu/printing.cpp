@@ -4,22 +4,22 @@
 #include <sstream>
 #include <string>
 #include "graph_json_printing.hpp"
+#include "interfaces/i_graph.hpp"
 
 namespace uni_course_cpp {
 namespace printing {
 
 static constexpr int kUseColors = 4;
-constexpr std::array<Graph::Edge::Color, kUseColors> kColors = {
-    Graph::Edge::Color::Grey, Graph::Edge::Color::Green,
-    Graph::Edge::Color::Yellow, Graph::Edge::Color::Red};
+constexpr std::array<EdgeColor, kUseColors> kColors = {
+    EdgeColor::Grey, EdgeColor::Green, EdgeColor::Yellow, EdgeColor::Red};
 
-std::string print_graph(const Graph& graph) {
+std::string print_graph(const IGraph& graph) {
   std::ostringstream result;
   result << "{\n\tdepth: " << graph.depth() << ",\n";
   result << "\tvertices: "
          << "{amount: " << graph.get_vertices().size() << ", "
          << "distribution: [";
-  for (Graph::Depth depth = 1; depth <= graph.depth(); ++depth) {
+  for (GraphDepth depth = kGraphBaseDepth; depth <= graph.depth(); ++depth) {
     result << graph.get_vertices_with_depth(depth).size();
     if (depth < graph.depth()) {
       result << ", ";

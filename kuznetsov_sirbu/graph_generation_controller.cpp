@@ -6,6 +6,8 @@
 #include <optional>
 #include <queue>
 #include <thread>
+#include <utility>
+#include "interfaces/i_graph.hpp"
 
 namespace uni_course_cpp {
 
@@ -79,7 +81,7 @@ void GraphGenerationController::generate(
             generate_control_mutex);
         gen_started_callback(i);
       }
-      auto graph = graph_generator.generate();
+      std::unique_ptr<IGraph> graph = graph_generator.generate();  //
       {
         const std::lock_guard<std::mutex> gen_finish_lock(
             generate_control_mutex);
@@ -91,10 +93,8 @@ void GraphGenerationController::generate(
   for (auto& worker : workers_) {
     worker.start();
   }
-
   while (count_uncreated_graphs > 0) {
   }
-
   for (auto& worker : workers_) {
     worker.stop();
   }
