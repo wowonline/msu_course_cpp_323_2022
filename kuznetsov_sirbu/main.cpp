@@ -24,7 +24,7 @@ void write_to_file(const std::string& graph_json,
 
 constexpr int kInputSize = 256;
 
-uni_course_cpp::Depth handle_depth_input() {
+uni_course_cpp::GraphDepth handle_depth_input() {
   std::cout << "Depth: ";
   int depth = 0;
   while (!(std::cin >> depth) || depth < 0) {
@@ -108,9 +108,9 @@ std::vector<std::unique_ptr<uni_course_cpp::IGraph>> generate_graphs(
       [&logger](int index) { logger.log(generation_started_string(index)); },
       [&logger, &graphs](int index,
                          std::unique_ptr<uni_course_cpp::IGraph> graph) {
-        graphs.push_back(std::move(graph));
         const auto graph_description =
-            uni_course_cpp::printing::print_graph(*graphs.back());
+            uni_course_cpp::printing::print_graph(*graph);
+        graphs.push_back(std::move(graph));
         logger.log(generation_finished_string(index, graph_description));
         const auto graph_json =
             uni_course_cpp::printing::json::print_graph(*graphs.back());

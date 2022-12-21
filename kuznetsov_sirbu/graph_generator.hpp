@@ -12,14 +12,14 @@ class GraphGenerator {
  public:
   struct Params {
    public:
-    Params(Depth depth, int new_vertices_count)
+    Params(GraphDepth depth, int new_vertices_count)
         : depth_(depth), new_vertices_count_(new_vertices_count) {}
 
-    Depth depth() const { return depth_; }
+    GraphDepth depth() const { return depth_; }
     int new_vertices_count() const { return new_vertices_count_; }
 
    private:
-    Depth depth_ = 0;
+    GraphDepth depth_ = 0;
     int new_vertices_count_ = 0;
   };
 
@@ -29,7 +29,7 @@ class GraphGenerator {
 
  private:
   VertexId add_grey_edge(Graph& graph,
-                         Depth current_depth,
+                         GraphDepth current_depth,
                          VertexId vertex_id,
                          std::mutex& graph_mutex) const;
   void generate_grey_edges(Graph& graph,
@@ -38,7 +38,7 @@ class GraphGenerator {
   void generate_grey_branch(Graph& graph,
                             std::mutex& graph_mutex,
                             VertexId root_vertex_id,
-                            Depth current_depth) const;
+                            GraphDepth current_depth) const;
 
   Params params_ = Params(0, 0);
 };

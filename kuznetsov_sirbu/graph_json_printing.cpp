@@ -23,15 +23,15 @@ std::string print_vertex(const IVertex& vertex, const IGraph& graph) {
   return result_json_vertex;
 }
 
-std::string print_edge_color(Color edge_color) {
+std::string print_edge_color(EdgeColor edge_color) {
   switch (edge_color) {
-    case Color::Grey:
+    case EdgeColor::Grey:
       return "grey";
-    case Color::Red:
+    case EdgeColor::Red:
       return "red";
-    case Color::Yellow:
+    case EdgeColor::Yellow:
       return "yellow";
-    case Color::Green:
+    case EdgeColor::Green:
       return "green";
   }
   throw std::runtime_error("Failed to determine color");

@@ -24,7 +24,8 @@ bool check_probability(double chance) {
   return distribution(generator);
 }
 
-double probaility_generate_grey_edge(Depth current_depth, Depth graph_depth) {
+double probaility_generate_grey_edge(GraphDepth current_depth,
+                                     GraphDepth graph_depth) {
   if (graph_depth == 0) {
     return 1.0;
   } else {
@@ -57,7 +58,7 @@ void add_red_edge(Graph& graph,
                   VertexId vertex_from_id,
                   VertexId vertex_to_id,
                   std::mutex& graph_mutex) {
-  const Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
+  const GraphDepth vertex_from_depth = graph.vertex_depth(vertex_from_id);
   const std::lock_guard<std::mutex> graph_lock(graph_mutex);
   graph.add_edge(vertex_from_id, vertex_to_id);
 }
@@ -70,7 +71,7 @@ void generate_red_edges(Graph& graph, std::mutex& graph_mutex) {
           const std::unique_ptr<uni_course_cpp::IVertex>& vertex_from) {
         if (!check_probability(kProbabilityRed)) {
           const auto vertex_from_id = vertex_from->id();
-          const Depth vertex_depth = graph.vertex_depth(vertex_from_id);
+          const GraphDepth vertex_depth = graph.vertex_depth(vertex_from_id);
           const auto& vertex_ids = graph.get_vertices_with_depth(
               vertex_depth + Graph::kDifferenceRedEdge);
           if (!vertex_ids.empty()) {
@@ -104,7 +105,7 @@ void add_yellow_edge(Graph& graph,
                      VertexId vertex_from_id,
                      VertexId vertex_to_id,
                      std::mutex& graph_mutex) {
-  const Depth vertex_from_depth = graph.vertex_depth(vertex_from_id);
+  const GraphDepth vertex_from_depth = graph.vertex_depth(vertex_from_id);
   const std::lock_guard<std::mutex> graph_lock(graph_mutex);
   graph.add_edge(vertex_from_id, vertex_to_id);
 }
@@ -116,7 +117,7 @@ void generate_yellow_edges(Graph& graph, std::mutex& graph_mutex) {
       [&graph, &graph_mutex](
           const std::unique_ptr<uni_course_cpp::IVertex>& vertex_from) {
         const auto vertex_from_id = vertex_from->id();
-        const Depth vertex_depth = graph.vertex_depth(vertex_from_id);
+        const GraphDepth vertex_depth = graph.vertex_depth(vertex_from_id);
         const double probability_generate =
             static_cast<double>((vertex_depth - Graph::kBaseDepth)) /
             (graph.depth() - Graph::kBaseDepth - Graph::kDifferenceYellowEdge);
@@ -165,7 +166,7 @@ std::unique_ptr<IGraph> GraphGenerator::generate() const {
 }
 
 VertexId GraphGenerator::add_grey_edge(Graph& graph,
-                                       Depth current_depth,
+                                       GraphDepth current_depth,
                                        VertexId vertex_id,
                                        std::mutex& graph_mutex) const {
   const std::lock_guard graph_lock(graph_mutex);
@@ -177,7 +178,7 @@ VertexId GraphGenerator::add_grey_edge(Graph& graph,
 void GraphGenerator::generate_grey_branch(Graph& graph,
                                           std::mutex& graph_mutex,
                                           VertexId root_vertex_id,
-                                          Depth current_depth) const {
+                                          GraphDepth current_depth) const {
   if (current_depth == params_.depth()) {
     return;
   }
