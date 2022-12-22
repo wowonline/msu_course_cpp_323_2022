@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -50,12 +49,6 @@ std::string printGraph(const uni_course_cpp::Graph& graph) {
 constexpr int kVerticesCount = 14;
 
 uni_course_cpp::Graph generateGraph() {
-=======
-#include "graph.hpp"
-constexpr int kVerticesCount = 14;
-
-int main() {
->>>>>>> Stashed changes
   auto graph = uni_course_cpp::Graph();
 
   for (int i = 0; i < kVerticesCount; i++) {
@@ -80,7 +73,6 @@ int main() {
   graph.addEdge(10, 13);
   graph.addEdge(11, 13);
   graph.addEdge(12, 13);
-<<<<<<< Updated upstream
   return graph;
 }
 
@@ -94,8 +86,5 @@ int main() {
   const auto graph = generateGraph();
   const auto graphJson = printing::json::printGraph(graph);
   writeToFile(graphJson, "graph.json");
-=======
-
->>>>>>> Stashed changes
   return 0;
 }

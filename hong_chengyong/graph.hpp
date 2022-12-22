@@ -72,7 +72,6 @@ class Graph {
     }
   }
 
-<<<<<<< Updated upstream
   const std::vector<EdgeId> vertexConnections(const VertexId& id) const {
     assert(hasVertex(id) && "Vertex id is out of range");
     return connection_list_.at(id);
@@ -80,8 +79,6 @@ class Graph {
   const std::vector<Vertex>& vertexes() const { return vertexes_; }
   const std::vector<Edge>& edges() const { return edges_; }
 
-=======
->>>>>>> Stashed changes
  private:
   std::vector<Vertex> vertexes_;
   std::vector<Edge> edges_;
