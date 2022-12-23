@@ -1,5 +1,6 @@
 #include "graph_printing.hpp"
 #include <array>
+#include <stdexcept>
 
 namespace uni_course_cpp {
 
@@ -22,7 +23,7 @@ std::string printing::print_edge_color(const Graph::Edge::Color& color) {
     case Graph::Edge::Color::Green:
       return "green";
     default:
-      return "No color";
+      throw std::runtime_error("Failed to determine color");
   }
 }
 
