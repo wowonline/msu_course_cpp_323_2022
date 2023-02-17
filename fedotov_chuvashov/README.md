@@ -35,3 +35,5 @@ Program gets depth, new vertices count, graph count and thread count.
 - **New vertices count**: specifies *maximum* amount of vertices generated as children of its parent.
 - **Graph count**: specifies amount of generated graphs.
 - **Thread count**: specifies amount of threads working on graph generation.
+
+Generated trees will be saved in `temp` directory.
