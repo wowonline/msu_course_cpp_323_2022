@@ -1,4 +1,4 @@
-# Parallel trees generation
+# Parallel graphs generation
 
 ## Building
 
@@ -36,4 +36,4 @@ Program gets depth, new vertices count, graph count and thread count.
 - **Graph count**: specifies amount of generated graphs.
 - **Thread count**: specifies amount of threads working on graph generation.
 
-Generated trees will be saved in `temp` directory.
+Generated graphs will be saved in `temp` directory.
