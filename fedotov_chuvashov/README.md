@@ -1,4 +1,4 @@
-# Parallel tree generation
+# Parallel trees generation
 
 ## Building
 
